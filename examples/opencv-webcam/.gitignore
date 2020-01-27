@@ -206,5 +206,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
+faces
 # End of https://www.gitignore.io/api/python,pycharm+all,jupyternotebooks
