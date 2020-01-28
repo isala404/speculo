@@ -5,19 +5,28 @@ import os
 
 video_capture = cv2.VideoCapture(0)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
+# out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
 
 known_face_encodings = []
 known_face_names = []
 if not os.path.isdir("faces"):
     os.mkdir("faces")
 
-for face in os.listdir("faces"):
-    if face.endswith("jpg") or face.endswith("jpeg"):
-        face_image = face_recognition.load_image_file("faces/" + face)
-        face_encoding = face_recognition.face_encodings(face_image)[0]
-        known_face_encodings.append(face_encoding)
-        known_face_names.append("".join(face.split(".")[:-1]).title())
+for file in os.listdir("faces"):
+    if os.path.isdir(os.path.join("faces", file)):
+        name = file.title()
+        for file_2 in os.listdir(os.path.join("faces", file)):
+            face_image = face_recognition.load_image_file("faces/" + os.path.join(file, file_2))
+            face_encoding = face_recognition.face_encodings(face_image)
+            if face_encoding:
+                known_face_encodings.append(face_encoding[0])
+                known_face_names.append(name)
+    else:
+        face_image = face_recognition.load_image_file("faces/" + file)
+        face_encoding = face_recognition.face_encodings(face_image)
+        if face_encoding:
+            known_face_encodings.append(face_encoding[0])
+            known_face_names.append("".join(file.split(".")[:-1]).title())
 
 # Initialize some variables
 face_locations = []
@@ -77,10 +86,10 @@ while True:
         cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
     cv2.imshow('Video', frame)
-    out.write(frame)
+    # out.write(frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-out.release()
+# out.release()
 video_capture.release()
 cv2.destroyAllWindows()
