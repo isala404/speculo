@@ -20,7 +20,7 @@ export default class CanvasComponent extends React.Component {
       ctx.drawImage(image, 0, 0);
       ctx.rect(200, 150, 100, 200);
       ctx.stroke();
-    };
+    }; 
   }
   render() {
     return <canvas ref="canvas" width={window.innerWidth} height={700} />;
