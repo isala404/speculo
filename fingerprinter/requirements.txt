@@ -2,3 +2,4 @@ pillow
 opencv-python
 aiohttp
 face_recognition
+numpy
