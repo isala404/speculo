@@ -1,3 +1,4 @@
-tensorflow-gpu
+pillow
 opencv-python
-efficientnet
+aiohttp
+face_recognition
