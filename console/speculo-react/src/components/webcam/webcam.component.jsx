@@ -3,9 +3,11 @@ import Webcam from "react-webcam";
 import CanvasComponent from "../image-canvas/image-canvas.component";
 
 export const WebcamCapture = () => {
+  //using "useState" hook for initialising and assigning of values
   const [imgSrc, setSrc] = useState("");
   const [displayComponent, setVisibility] = useState(true);
 
+  //constraints for the displayed camera component
   const webcamConstraints = {
     width: 1280,
     height: 720
@@ -13,11 +15,13 @@ export const WebcamCapture = () => {
 
   const webcamRef = React.useRef(null);
 
+  //capture function to invoke on button press to capture an image
   const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
-    // console.log(imageSrc);
 
+    //using hooks to assign the "imgSrc" property
     setSrc(imageSrc);
+    //setting the visibility of the Canvas component.
     setVisibility(true);
   }, [webcamRef]);
 
@@ -25,25 +29,36 @@ export const WebcamCapture = () => {
     <>
       <Webcam
         audio={false}
-        height={360}
+        height={480}
         ref={webcamRef}
         screenshotFormat="image/jpeg"
-        width={1280}
+        width={960}
         videoConstraints={webcamConstraints}
       />
       <button
         onClick={() => {
-          console.log("captured");
           capture();
+          //fetching data from the speculo endpoint
+          fetch("http://speculo.isala.me/", {
+            method: "POST",
+            body: JSON.stringify({
+              image: imgSrc
+            })
+          })
+            .then(console.log("successful POST request new"))
+            .catch(err => {
+              console.log(err);
+              console.log(imgSrc);
+            });
         }}
       >
         Capture photo
       </button>
-      {/* {console.log(imgSrc)} */}
-      {displayComponent && imgSrc != "" ? (
-        <CanvasComponent imgSrc={imgSrc} />
+      {/* ternary operator to display the "CanvasComponent" */}
+      {displayComponent && imgSrc !== "" ? (
+        //canvas component
+        <CanvasComponent imgSrc={imgSrc} coordinates={[0, 0, 50, 200]} />
       ) : null}
     </>
   );
 };
-
