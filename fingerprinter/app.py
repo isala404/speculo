@@ -22,7 +22,7 @@ async def predict(request):
             return web.Response(body=json.dumps({'error': 'i said BASE64 image what the fuck is this ?'}),
                                 status=400, content_type='application/json')
         return web.Response(body=json.dumps({'data': speculo.predict(image)}),
-                            status=400, content_type='application/json')
+                            status=200, content_type='application/json')
     except Exception as e:
         print(e)
         return web.Response(body=json.dumps({'error': 'isala messed something up 🤦‍♂️'}),
