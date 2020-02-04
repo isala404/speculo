@@ -7,6 +7,24 @@ export const WebcamCapture = () => {
   const [imgSrc, setSrc] = useState("");
   const [displayComponent, setVisibility] = useState(true);
 
+  const url = "http://speculo.isala.me/";
+  const data = { image: imgSrc };
+
+  const response = () =>
+    fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json"
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *client
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+
   //constraints for the displayed camera component
   const webcamConstraints = {
     width: 1280,
@@ -39,12 +57,7 @@ export const WebcamCapture = () => {
         onClick={() => {
           capture();
           //fetching data from the speculo endpoint
-          fetch("http://speculo.isala.me/", {
-            method: "POST",
-            body: JSON.stringify({
-              image: imgSrc
-            })
-          })
+          response()
             .then(console.log("successful POST request new"))
             .catch(err => {
               console.log(err);
@@ -54,6 +67,7 @@ export const WebcamCapture = () => {
       >
         Capture photo
       </button>
+
       {/* ternary operator to display the "CanvasComponent" */}
       {displayComponent && imgSrc !== "" ? (
         //canvas component
