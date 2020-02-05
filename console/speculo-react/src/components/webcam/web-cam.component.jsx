@@ -2,7 +2,7 @@ import React from "react";
 import Webcam from "react-webcam";
 import CanvasComponent from "../image-canvas/image-canvas.component";
 
-export default class WebCam extends React.Component {
+export default class WebCamComponent extends React.Component {
   constructor() {
     super();
 
@@ -46,7 +46,7 @@ export default class WebCam extends React.Component {
     })
       .then(response => response.json())
       .then(data => this.setState({ faceData: data }))
-      .then(() => console.log(this.state.faceData));
+    //   .then(() => console.log(this.state.faceData));
   };
 
   splitImageValue = imageSrc => {

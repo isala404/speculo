@@ -4,10 +4,10 @@ export default class CanvasComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      coordinates: []
+      coordinates: this.props.coordinateData
     };
   }
-  
+
   //updating canvas component on-mount
   componentDidMount() {
     this.updateCanvas();
@@ -16,7 +16,6 @@ export default class CanvasComponent extends React.Component {
   //updating canvas on component update
   componentDidUpdate() {
     this.updateCanvas();
-    this.setState({ coordinates: this.props.coordinateData });
   }
 
   //method used to update the canvas
