@@ -4,42 +4,45 @@ export default class ImageCanvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
-      coordinates: [],
-      showCanvas: false
+      coordinates: null,
+      toggleCanvas: false
     };
   }
 
-  //method which uses props to retreive data and update
-  setData() {
-    var recievedData = this.props.analysedFaceData;
-    var firstCoordinate = recievedData.data[0].cords[0];
-    var secondCoordinate = recievedData.data[0].cords[1];
-    try {
-      this.setState({
-        name: recievedData.data[0].name,
-        coordinates: firstCoordinate.concat(secondCoordinate),
-        showCanvas: true
-      });
-    } catch (err) {
-      this.setState({ coordinates: [0, 0, 0, 0] });
-      console.log(err);
-    }
+  //setting coordinates retrieved from the endpoint
+  setCoordinates() {
+    var faceData = this.props.analysedFaceData.data[0];
+    var firstCoordinate = faceData.cords[0];
+    var secondCoordinate = faceData.cords[1];
+    this.setState(
+      {
+        toggleCanvas: true
+      },
+      () => {
+        this.setState({
+          coordinates: firstCoordinate.concat(secondCoordinate)
+        });
+      }
+    );
   }
 
   //updating canvas component on-mount
   componentDidMount() {
-    this.setData();
+    this.setCoordinates();
+    this.updateCanvas();
   }
 
   //updating canvas on component update
-  componentDidUpdate() {
-    this.setData();
+  componentDidUpdate(prevProps) {
+    //validation to prevent infinite setState loop
+    if (this.props.analysedFaceData !== prevProps.analysedFaceData) {
+      this.setCoordinates();
+      this.updateCanvas();
+    }
   }
 
   //method used to update the canvas
   updateCanvas() {
-    const { coordinates, name } = this.state;
     const ctx = this.refs.canvas.getContext("2d");
     var image = new Image();
     image.src = `${this.props.imgSrc}`;
@@ -47,10 +50,10 @@ export default class ImageCanvas extends React.Component {
       ctx.drawImage(image, 0, 0); //drawing the captured image on the canvas
       ctx.rect(
         // 4 coordinate values acquired by the "coordinate" prop
-        coordinates[0],
-        coordinates[1],
-        coordinates[2],
-        coordinates[3]
+        this.state.coordinates[0],
+        this.state.coordinates[1],
+        this.state.coordinates[2],
+        this.state.coordinates[3]
       );
       ctx.stroke(); //stroking the drawn rectangle
     };
@@ -59,9 +62,7 @@ export default class ImageCanvas extends React.Component {
   render() {
     return (
       <div>
-        {this.state.showCanvas ? (
-          <canvas ref="canvas" width={window.innerWidth} height={700} />
-        ) : null}
+        <canvas ref="canvas" width={window.innerWidth} height={7000} />
       </div>
     );
   }

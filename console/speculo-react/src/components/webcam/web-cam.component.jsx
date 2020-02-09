@@ -53,7 +53,7 @@ export default class WebCamComponent extends React.Component {
       .then(response => response.json())
       .then(data => this.setState({ faceData: data, isDataRecieved: true }))
       .catch(err => console.log(err))
-      .then(() => console.log(this.state.faceData));
+      // .then(() => console.log(this.state.faceData));
   };
 
   splitImageValue = imageSrc => {
