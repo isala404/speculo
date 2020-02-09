@@ -11,7 +11,7 @@ export default class ImageCanvas extends React.Component {
   }
 
   //method which uses props to retreive data and update
-  async setData() {
+  setData() {
     var recievedData = this.props.analysedFaceData;
     var firstCoordinate = recievedData.data[0].cords[0];
     var secondCoordinate = recievedData.data[0].cords[1];
