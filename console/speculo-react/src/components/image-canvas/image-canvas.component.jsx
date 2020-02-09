@@ -1,25 +1,45 @@
 import React from "react";
 
-export default class CanvasComponent extends React.Component {
+export default class ImageCanvas extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      coordinates: this.props.coordinateData
+      name: "",
+      coordinates: [],
+      showCanvas: false
     };
+  }
+
+  //method which uses props to retreive data and update
+  async setData() {
+    var recievedData = this.props.analysedFaceData;
+    var firstCoordinate = recievedData.data[0].cords[0];
+    var secondCoordinate = recievedData.data[0].cords[1];
+    try {
+      this.setState({
+        name: recievedData.data[0].name,
+        coordinates: firstCoordinate.concat(secondCoordinate),
+        showCanvas: true
+      });
+    } catch (err) {
+      this.setState({ coordinates: [0, 0, 0, 0] });
+      console.log(err);
+    }
   }
 
   //updating canvas component on-mount
   componentDidMount() {
-    this.updateCanvas();
+    this.setData();
   }
 
   //updating canvas on component update
   componentDidUpdate() {
-    this.updateCanvas();
+    this.setData();
   }
 
   //method used to update the canvas
   updateCanvas() {
+    const { coordinates, name } = this.state;
     const ctx = this.refs.canvas.getContext("2d");
     var image = new Image();
     image.src = `${this.props.imgSrc}`;
@@ -27,10 +47,10 @@ export default class CanvasComponent extends React.Component {
       ctx.drawImage(image, 0, 0); //drawing the captured image on the canvas
       ctx.rect(
         // 4 coordinate values acquired by the "coordinate" prop
-        100,
-        100,
-        300,
-        400
+        coordinates[0],
+        coordinates[1],
+        coordinates[2],
+        coordinates[3]
       );
       ctx.stroke(); //stroking the drawn rectangle
     };
@@ -39,8 +59,9 @@ export default class CanvasComponent extends React.Component {
   render() {
     return (
       <div>
-        <canvas ref="canvas" width={window.innerWidth} height={700} />
-        {/* <h3>{this.props.coordinateData.data.}</h3> */}
+        {this.state.showCanvas ? (
+          <canvas ref="canvas" width={window.innerWidth} height={700} />
+        ) : null}
       </div>
     );
   }

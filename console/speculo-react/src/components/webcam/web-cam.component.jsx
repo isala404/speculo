@@ -1,17 +1,21 @@
 import React from "react";
 import Webcam from "react-webcam";
-import CanvasComponent from "../image-canvas/image-canvas.component";
+import "./web-cam.style.scss";
+import { Button } from "../button/button.component";
+import ImageCanvas from "../image-canvas/image-canvas.component";
 
 export default class WebCamComponent extends React.Component {
+  //constructor
   constructor() {
     super();
 
-    //properties required for the demonstration
+    //properties required for demonstration
     this.state = {
       isCanvasVisible: false,
       imageSource: "",
       truncatedImgSrc: "",
-      faceData: []
+      faceData: [],
+      isDataRecieved: false
     };
   }
 
@@ -19,6 +23,7 @@ export default class WebCamComponent extends React.Component {
     this.webcam = webcam;
   };
 
+  //method used to capture the webcam screenshot
   capture = async () => {
     const imageSrc = this.webcam.getScreenshot();
     this.setState(
@@ -36,6 +41,7 @@ export default class WebCamComponent extends React.Component {
     );
   };
 
+  //Method used to fetch data from the endpoint
   fetchFaceData = async imageSrc => {
     fetch("http://speculo.isala.me/", {
       method: "POST",
@@ -45,7 +51,8 @@ export default class WebCamComponent extends React.Component {
       })
     })
       .then(response => response.json())
-      .then(data => this.setState({ faceData: data }))
+      .then(data => this.setState({ faceData: data, isDataRecieved: true }))
+      .catch(err => console.log(err))
       .then(() => console.log(this.state.faceData));
   };
 
@@ -55,30 +62,57 @@ export default class WebCamComponent extends React.Component {
   };
 
   render() {
-    const { isCanvasVisible, imageSource, faceData } = this.state;
+    const {
+      isCanvasVisible,
+      imageSource,
+      faceData,
+      isDataRecieved
+    } = this.state;
+
     const webcamConstraints = {
-      width: 1280,
+      width: 1080,
       height: 720
     };
 
     return (
       <>
-        <Webcam
-          audio={false}
-          height={480}
-          ref={this.setRef}
-          screenshotFormat="image/jpeg"
-          width={960}
-          videoConstraints={webcamConstraints}
+        <div className="webcam-component">
+          <Webcam
+            audio={false}
+            height={720}
+            ref={this.setRef}
+            screenshotFormat="image/jpeg"
+            width={1200}
+            videoConstraints={webcamConstraints}
+          />
+        </div>
+
+        <Button
+          buttonStyle={captureScreenshotBtnStyle}
+          className="grab-webcam-screenshot"
+          onClickHandler={this.capture}
+          buttonTitle="Screenshot!"
         />
-        <button onClick={this.capture}>Capture photo</button>
 
         {/* ternary operator to display the "CanvasComponent" */}
-        {isCanvasVisible && imageSource !== "" ? (
+        {isCanvasVisible && imageSource !== "" && isDataRecieved ? (
           //canvas component
-          <CanvasComponent imgSrc={imageSource} coordinateData={faceData} />
+          <div className="canvas-component">
+            <ImageCanvas imgSrc={imageSource} analysedFaceData={faceData} />
+          </div>
         ) : null}
       </>
     );
   }
 }
+
+const captureScreenshotBtnStyle = {
+  backgroundColor: "#808080",
+  borderRadius: 5,
+  padding: 20,
+  width: "20%",
+  fontStyle: "30",
+  ":hover": {
+    backgroundColor: "#00ff00"
+  }
+};
