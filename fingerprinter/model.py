@@ -50,7 +50,7 @@ class Speculo:
             face_names.append(name)
 
         for (top, right, bottom, left), name in zip(face_locations, face_names):
-            faces.append({"name": name, "cords": [(top, right), (bottom, left)]})
+            faces.append({"name": name, "cords": [(left, top), (right, bottom)]})
 
         return faces
 
