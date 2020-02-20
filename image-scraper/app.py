@@ -5,6 +5,12 @@ import sys
 BASE_URL = 'http://www.cs.columbia.edu/CAVE/databases/pubfig/explore/'
 
 try:
+    os.makedirs('faces/test')
+    os.makedirs('faces/train')
+except Exception:
+    pass
+
+try:
     data_type = sys.argv[1].lower()
 except Exception:
     print("Argument required. Valid arguments : test, train")
