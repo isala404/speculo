@@ -1,35 +1,41 @@
-from google_images_download import google_images_download
-import argparse
+import os
+import requests
+import sys
 
-parser = argparse.ArgumentParser()
-parser.add_argument("query")
-parser.add_argument("limit", type=int)
-args = parser.parse_args()
+BASE_URL = 'http://www.cs.columbia.edu/CAVE/databases/pubfig/explore/'
 
+try:
+    data_type = sys.argv[1].lower()
+except Exception:
+    print("Argument required. Valid arguments : test, train")
+    raise SystemExit(0)
 
-def download_images(query, limit):
-    response = google_images_download.googleimagesdownload()
-    arguments = {"keywords": query,
-                 "limit": limit}
-    try:
-        response.download(arguments)
+if data_type not in ["test", "train"]:
+    print("Invalid argument. Valid arguments : test, train")
+    raise SystemExit(0)
 
+print("Gathering face data for " + sys.argv[1] + "...")
 
-    except FileNotFoundError:
-        arguments = {"keywords": query,
-                     "limit": limit}
+data_type = sys.argv[1].lower()
 
-        try:
-            response.download(arguments)
-        except:
-            pass
+path = os.getcwd() + '/faces/' + data_type
 
+data = [line.rstrip('\n') for line in open(data_type + '_data.txt')]
 
+for name in data:
 
+    celeb_name = name.replace(" ", "_")
 
-def main(query, limit):
-    download_images(query, limit)
-    print("Images Printed")
+    with open(path+'/'+celeb_name+".jpg", 'wb') as handle:
+        response = requests.get(BASE_URL+celeb_name+".jpg", stream=True)
 
-if __name__ == '__main__':
-    main(args.query, args.limit)
+        if not response.ok:
+            print(response)
+
+        for block in response.iter_content(1024):
+            if not block:
+                break
+
+            handle.write(block)
+
+    print(name, "................... DONE")
