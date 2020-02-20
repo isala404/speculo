@@ -4,12 +4,15 @@ import sys
 
 BASE_URL = 'http://www.cs.columbia.edu/CAVE/databases/pubfig/explore/'
 
+
+# creates the folders required to store the images
 try:
     os.makedirs('faces/test')
     os.makedirs('faces/train')
 except Exception:
     pass
 
+# gets which type the user wants
 try:
     data_type = sys.argv[1].lower()
 except Exception:
@@ -28,6 +31,7 @@ path = os.getcwd() + '/faces/' + data_type
 
 data = [line.rstrip('\n') for line in open(data_type + '_data.txt')]
 
+# for every celebrity name in the list, fetch their image and save it
 for name in data:
 
     celeb_name = name.replace(" ", "_")
