@@ -1,62 +1,93 @@
-import face_recognition
-import numpy as np
+from PIL import Image
 import os
+import numpy as np
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
+from tensorflow.keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Dropout
+from tensorflow.keras.models import Model
 
 
 class Speculo:
     def __init__(self):
-        self.known_face_encodings = []
-        self.known_face_names = []
-        if not os.path.isdir("faces"):
-            os.mkdir("faces")
+        self.image_size = (96, 96)
+        self.input_img = Input(shape=(96, 96, 3))
+        self.encoded = self.encoder()
+        self.decoded = self.decoder()
 
-        for file in os.listdir("faces"):
-            if os.path.isdir(os.path.join("faces", file)):
-                name = file.title()
-                for file_2 in os.listdir(os.path.join("faces", file)):
-                    face_image = face_recognition.load_image_file("faces/" + os.path.join(file, file_2))
-                    face_encoding = face_recognition.face_encodings(face_image)
-                    if face_encoding:
-                        self.known_face_encodings.append(face_encoding[0])
-                        self.known_face_names.append(name)
+    def encoder(self):
+        x = Conv2D(72, (3, 3), activation='relu', padding='same')(self.input_img)
+        x = MaxPooling2D((2, 2), padding='same')(x)
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D((2, 2), padding='same')(x)
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D((2, 2), padding='same')(x)
+        x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D((2, 2), padding='same')(x)
+        x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+        x = MaxPooling2D((2, 2), padding='same')(x)
+        # x = Conv2D(4, (3, 3), activation='relu', padding='same')(x)
+        # x = MaxPooling2D((2, 2), padding='same')(x)
+        # x = Dense(512, activation='relu')(x)
+        # x = Dropout(0.4)(x)
+        # x = Dense(128, activation='relu')(x)
+        return x
+
+    def decoder(self):
+        # x = Dropout(0.2)(self.encoded)
+        # x = Dense(128, activation='relu')(x)
+        # x = Dropout(0.4)(x)
+        # x = Dense(512, activation='relu')(x)
+        x = Conv2D(8, (3, 3), activation='relu', padding='same')(self.encoded)
+        x = UpSampling2D((2, 2))(x)
+        x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+        x = UpSampling2D((2, 2))(x)
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+        x = UpSampling2D((2, 2))(x)
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        x = UpSampling2D((2, 2))(x)
+        x = Conv2D(72, (3, 3), activation='relu', padding='same')(x)
+        x = UpSampling2D((2, 2))(x)
+        return Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+
+    def autoencoder(self):
+        autoencoder = Model(self.input_img, self.decoded)
+        autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy', metrics=['accuracy', 'binary_crossentropy', 'mae'])
+        return autoencoder
+
+    def _load_image_set(self, directory):
+        x = []
+        y = []
+        fronts = sorted(os.listdir(f"dataset/processed/{directory}/Front/"))
+        for i, person_dir in enumerate(sorted(os.listdir(f"dataset/processed/{directory}"))):
+            if person_dir == "Front":
+                continue
             else:
-                face_image = face_recognition.load_image_file("faces/" + file)
-                face_encoding = face_recognition.face_encodings(face_image)
-                if face_encoding:
-                    self.known_face_encodings.append(face_encoding[0])
-                    self.known_face_names.append("".join(file.split(".")[:-1]).title())
+                x_image = Image.open(f"dataset/processed/{directory}/Front/{fronts[i - 1]}").resize(self.image_size, Image.ANTIALIAS)
+                for image in os.listdir(f"dataset/processed/{directory}/{person_dir}"):
+                    x.append(np.array(x_image))
+                    y.append(np.array(Image.open(f"dataset/processed/{directory}/{person_dir}/{image}").resize(self.image_size, Image.ANTIALIAS)))
+        return np.reshape(x, [-1, 96, 96, 3]), np.reshape(y, [-1, 96, 96, 3])
 
-    def predict(self, frame):
-        face_names = []
-        faces = []
+    def _create_dataset(self):
+        x_train, y_train = self._load_image_set("train")
+        x_test, y_test = self._load_image_set("test")
+        return x_train, y_train, x_test, y_test
 
-        image_array = np.array(frame)
+    def train(self):
+        x_train, y_train, x_test, y_test = self._create_dataset()
+        model = self.autoencoder()
+        checkpoint = ModelCheckpoint("models/model.h5", monitor='loss', verbose=1, save_best_only=True, mode='min')
+        tensorboard = TensorBoard(log_dir='logs/', histogram_freq=0, write_graph=False)
 
-        face_locations = face_recognition.face_locations(image_array)
-        face_encodings = face_recognition.face_encodings(image_array, face_locations)
+        model.fit(x_train, y_train,
+                  epochs=100,
+                  batch_size=64,
+                  shuffle=True,
+                  validation_data=(x_test, y_test),
 
-        for face_encoding in face_encodings:
-            if self.known_face_encodings:
-                matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
-                face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
-                best_match_index = np.argmin(face_distances)
-                if matches[best_match_index]:
-                    # noinspection PyTypeChecker
-                    name = self.known_face_names[best_match_index]
-                else:
-                    name = self.save_face(face_encoding, frame)
-            else:
-                name = self.save_face(face_encoding, frame)
-            face_names.append(name)
+                  callbacks=[checkpoint, tensorboard])
+        model.save("models/Final-Model.h5")
 
-        for (top, right, bottom, left), name in zip(face_locations, face_names):
-            faces.append({"name": name, "cords": [(left, top), (right, bottom)]})
 
-        return faces
-
-    def save_face(self, face_encoding, frame):
-        name = f"Unknown #{len(self.known_face_names) + 1}"
-        self.known_face_encodings.append(face_encoding)
-        self.known_face_names.append(name)
-        frame.save(f"faces/{name}.jpg", "JPEG")
-        return name
+speculo = Speculo()
+# print(speculo.autoencoder().summary())
+speculo.train()

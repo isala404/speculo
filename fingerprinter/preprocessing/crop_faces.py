@@ -10,8 +10,8 @@ if not os.path.isdir("dataset/raw"):
 yolo = YOLO(draw=False, debug=False)
 
 for person_dir in tqdm(os.listdir("dataset/raw")):
-    if not os.path.isdir(f"dataset/processed/{person_dir}"):
-        os.makedirs(f"dataset/processed/{person_dir}")
+    if not os.path.isdir(f"dataset/cropped/{person_dir}"):
+        os.makedirs(f"dataset/cropped/{person_dir}")
 
     for image in os.listdir("dataset/raw/" + person_dir):
         if image.endswith("txt"):
@@ -20,7 +20,7 @@ for person_dir in tqdm(os.listdir("dataset/raw")):
         boxes = yolo.detect_image_fast(im)
         for top, left, bottom, right in boxes:
             face = im.crop((left, top, right, bottom))
-            face.save(f"dataset/processed/{person_dir}/{image}")
+            face.save(f"dataset/cropped/{person_dir}/{image}")
             del face
         del im
 
