@@ -378,3 +378,7 @@ $RECYCLE.BIN/
 fingerprinter/faces
 fingerprinter/*.avi
 fingerprinter/dataset
+
+*.h5
+*.weights
+*.pb
