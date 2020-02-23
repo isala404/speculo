@@ -29,16 +29,36 @@ tf.disable_v2_behavior()
 
 
 class YOLO(object):
-    def __init__(self, args):
-        self.args = args
-        self.model_path = args.model
-        self.classes_path = args.classes
-        self.anchors_path = args.anchors
+    def __init__(self, args=None,
+                 model=os.path.join(os.path.dirname(os.path.realpath(__file__)), "../model-weights/YOLO_Face.h5"),
+                 classes=os.path.join(os.path.dirname(os.path.realpath(__file__)), "../cfg/face_classes.txt"),
+                 anchors=os.path.join(os.path.dirname(os.path.realpath(__file__)), "../cfg/yolo_anchors.txt"),
+                 img_size=(416, 416),
+                 score=0.5,
+                 iou=0.4,
+                 draw=True,
+                 debug=True
+                 ):
+        if args:
+            self.model_path = args.model
+            self.classes_path = args.classes
+            self.anchors_path = args.anchors
+            self.model_image_size = args.img_size
+            self.score = args.score
+            self.iou = args.iou
+        else:
+            self.model_path = model
+            self.classes_path = classes
+            self.anchors_path = anchors
+            self.model_image_size = img_size
+            self.score = score
+            self.iou = iou
+        self.draw = draw
+        self.debug = debug
         self.class_names = self._get_class()
         self.anchors = self._get_anchors()
         self.sess = K.get_session()
         self.boxes, self.scores, self.classes = self._generate()
-        self.model_image_size = args.img_size
 
     def _get_class(self):
         classes_path = os.path.expanduser(self.classes_path)
@@ -72,8 +92,9 @@ class YOLO(object):
                    num_anchors / len(self.yolo_model.output) * (
                            num_classes + 5), \
                 'Mismatch between model and given anchor and class sizes'
-        print(
-            '*** {} model, anchors, and classes loaded.'.format(model_path))
+        if self.debug:
+            print(
+                '*** {} model, anchors, and classes loaded.'.format(model_path))
 
         # generate colors for drawing bounding boxes
         hsv_tuples = [(x / len(self.class_names), 1., 1.)
@@ -93,8 +114,8 @@ class YOLO(object):
         boxes, scores, classes = eval(self.yolo_model.output, self.anchors,
                                       len(self.class_names),
                                       self.input_image_shape,
-                                      score_threshold=self.args.score,
-                                      iou_threshold=self.args.iou)
+                                      score_threshold=self.score,
+                                      iou_threshold=self.iou)
         return boxes, scores, classes
 
     def detect_image(self, image):
@@ -150,6 +171,22 @@ class YOLO(object):
         print('*** Processing time: {:.2f}ms'.format((end_time -
                                                       start_time) * 1000))
         return image, out_boxes
+
+    def detect_image_fast(self, image):
+        new_image_size = (image.width - (image.width % 32),
+                          image.height - (image.height % 32))
+        boxed_image = letterbox_image(image, new_image_size)
+        image_data = np.array(boxed_image, dtype='float32')
+        image_data /= 255.
+        image_data = np.expand_dims(image_data, 0)
+        out_boxes, out_scores, out_classes = self.sess.run(
+            [self.boxes, self.scores, self.classes],
+            feed_dict={
+                self.yolo_model.input: image_data,
+                self.input_image_shape: [image.size[1], image.size[0]],
+                K.learning_phase(): 0
+            })
+        return out_boxes
 
     def close_session(self):
         self.sess.close()
