@@ -19,10 +19,13 @@ import cv2
 
 from yolo.model import eval
 
-from keras import backend as K
+import tensorflow.python.keras.backend as K
 from keras.models import load_model
+import tensorflow.compat.v1 as tf
 from timeit import default_timer as timer
 from PIL import ImageDraw, Image
+
+tf.disable_v2_behavior()
 
 
 class YOLO(object):
@@ -88,10 +91,10 @@ class YOLO(object):
         # generate output tensor targets for filtered bounding boxes.
         self.input_image_shape = K.placeholder(shape=(2,))
         boxes, scores, classes = eval(self.yolo_model.output, self.anchors,
-                                           len(self.class_names),
-                                           self.input_image_shape,
-                                           score_threshold=self.args.score,
-                                           iou_threshold=self.args.iou)
+                                      len(self.class_names),
+                                      self.input_image_shape,
+                                      score_threshold=self.args.score,
+                                      iou_threshold=self.args.iou)
         return boxes, scores, classes
 
     def detect_image(self, image):
@@ -145,7 +148,7 @@ class YOLO(object):
 
         end_time = timer()
         print('*** Processing time: {:.2f}ms'.format((end_time -
-                                                          start_time) * 1000))
+                                                      start_time) * 1000))
         return image, out_boxes
 
     def close_session(self):
