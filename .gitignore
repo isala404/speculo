@@ -379,7 +379,6 @@ fingerprinter/faces
 fingerprinter/*.avi
 fingerprinter/dataset
 
-facedetector/model-weights/YOLO_Face.h5
-facedetector/model-weights/yolov3-wider_16000.weights
-
-yoloface
+*.h5
+*.weights
+*.pb
