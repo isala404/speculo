@@ -25,5 +25,16 @@ Starter Model came from https://www.pyimagesearch.com/2020/02/17/autoencoders-wi
 - Build upon Model 3
 - Increased image size
 - Increased filter size
-- EarlyStopping Keras call back kicked in 11th epoch
+- EarlyStopping keras call back kicked in 11th epoch
 - Found out dataset was too small
+
+##### Both Model 3 and 4 perform poorly because I forgot to scaled down the input's between 0 and 1 while NN is output's are scaled with sigmoid function and I asked the NN to do something impossible
+
+# Model 5
+- Scaled the input's between 0 and 1
+    - We need do this because our final model's final layer has sigmoid activation
+    - it scaled the output the model output between 0 and 1 this is needed in order have out loss function works properly
+```shell script
+2498/2498 [==============================] - 37s 15ms/sample - loss: 0.0166 - accuracy: 0.9797 - mae: 0.0166 - val_loss: 0.0909 - val_accuracy: 0.9705 - val_mae: 0.0909
+```
+Note - I used wrong reshaping mechanisms in pre processing step for the labels although model had good accuracy need to retrain and see if it make real difference
