@@ -2,60 +2,64 @@ from PIL import Image
 import os
 import numpy as np
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
-from tensorflow.keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Dropout
+from tensorflow.keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Dropout, Conv2DTranspose, \
+    LeakyReLU, BatchNormalization, Flatten, Reshape, Activation
+from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 
 
 class Speculo:
     def __init__(self):
-        self.image_size = (96, 96)
+        self.image_size = (32, 32, 3)
         self.optimizer = 'adam'
         self.loss_function = 'mae'
-        self.input_img = Input(shape=(96, 96, 3))
-        self.encoded = self.encoder()
-        self.decoded = self.decoder()
+        self.input_img = Input(shape=(self.image_size[0], self.image_size[1], 3))
+        self.filters = (64, 128)
+        self.latent_size = 128
 
         model_number = 1
         if os.path.isdir("logs"):
             model_number = len(os.listdir("logs/")) + 1
         self.name = f"v{model_number}-{self.optimizer}-{self.loss_function}"
 
-    def encoder(self):
-        x = Conv2D(72, (3, 3), activation='relu', padding='same')(self.input_img)
-        x = MaxPooling2D((2, 2), padding='same')(x)
-        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-        x = MaxPooling2D((2, 2), padding='same')(x)
-        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-        x = MaxPooling2D((2, 2), padding='same')(x)
-        x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
-        x = MaxPooling2D((2, 2), padding='same')(x)
-        # x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-        # x = MaxPooling2D((2, 2), padding='same')(x)
-        x = Dense(512, activation='relu')(x)
-        x = Dropout(0.4)(x)
-        x = Dense(128, activation='relu')(x)
-        return x
+    def _build_model(self):
+        chan_dim = -1
 
-    def decoder(self):
-        x = Dropout(0.2)(self.encoded)
-        x = Dense(128, activation='relu')(x)
-        x = Dropout(0.4)(x)
-        x = Dense(512, activation='relu')(x)
-        # x = Conv2D(8, (3, 3), activation='relu', padding='same')(self.encoded)
-        # x = UpSampling2D((2, 2))(x)
-        x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-        x = Conv2D(72, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-        return Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+        x = self.input_img
+
+        for f in self.filters:
+            x = Conv2D(f, (3, 3), strides=(2, 2), padding="same")(x)
+            x = LeakyReLU(alpha=0.2)(x)
+            x = BatchNormalization(axis=chan_dim)(x)
+
+        volume_size = K.int_shape(x)
+        x = Flatten()(x)
+        latent = Dense(self.latent_size)(x)
+
+        encoder = Model(self.input_img, latent, name="encoder")
+
+        latent_inputs = Input(shape=(self.latent_size,))
+        x = Dense(np.prod(volume_size[1:]))(latent_inputs)
+        x = Reshape((volume_size[1], volume_size[2], volume_size[3]))(x)
+
+        for f in self.filters[::-1]:
+            x = Conv2DTranspose(f, (3, 3), strides=(2, 2), padding="same")(x)
+            x = LeakyReLU(alpha=0.2)(x)
+            x = BatchNormalization(axis=chan_dim)(x)
+
+        x = Conv2DTranspose(self.image_size[2], (3, 3), padding="same")(x)
+        outputs = Activation("sigmoid")(x)
+
+        decoder = Model(latent_inputs, outputs, name="decoder")
+
+        autoencoder = Model(self.input_img, decoder(encoder(self.input_img)), name="autoencoder")
+
+        return encoder, decoder, autoencoder
 
     def autoencoder(self):
-        autoencoder = Model(self.input_img, self.decoded)
+        _, _, autoencoder = self._build_model()
+
         autoencoder.compile(optimizer=Adam(lr=1e-3), loss=self.loss_function,
                             metrics=['accuracy', 'binary_crossentropy', 'mae'])
         return autoencoder
@@ -75,7 +79,8 @@ class Speculo:
                         Image.open(f"dataset/processed/{directory}/{person_dir}/{image}").resize(self.image_size,
                                                                                                  Image.ANTIALIAS)))
                     y.append(np.array(y_image))
-        return np.reshape(x, [-1, 96, 96, 3]), np.reshape(y, [-1, 96, 96, 3])
+        return np.reshape(x, [-1, self.image_size[0], self.image_size[1], 3]), np.reshape(y, [-1, self.image_size[0],
+                                                                                              self.image_size[1], 3])
 
     def _create_dataset(self):
         x_train, y_train = self._load_image_set("train")
