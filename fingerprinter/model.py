@@ -22,22 +22,22 @@ class Speculo:
         x = MaxPooling2D((2, 2), padding='same')(x)
         x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
         x = MaxPooling2D((2, 2), padding='same')(x)
-        x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-        x = MaxPooling2D((2, 2), padding='same')(x)
+        # x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+        # x = MaxPooling2D((2, 2), padding='same')(x)
         # x = Conv2D(4, (3, 3), activation='relu', padding='same')(x)
         # x = MaxPooling2D((2, 2), padding='same')(x)
-        # x = Dense(512, activation='relu')(x)
-        # x = Dropout(0.4)(x)
-        # x = Dense(128, activation='relu')(x)
+        x = Dense(512, activation='relu')(x)
+        x = Dropout(0.4)(x)
+        x = Dense(128, activation='relu')(x)
         return x
 
     def decoder(self):
-        # x = Dropout(0.2)(self.encoded)
-        # x = Dense(128, activation='relu')(x)
-        # x = Dropout(0.4)(x)
-        # x = Dense(512, activation='relu')(x)
-        x = Conv2D(8, (3, 3), activation='relu', padding='same')(self.encoded)
-        x = UpSampling2D((2, 2))(x)
+        x = Dropout(0.2)(self.encoded)
+        x = Dense(128, activation='relu')(x)
+        x = Dropout(0.4)(x)
+        x = Dense(512, activation='relu')(x)
+        # x = Conv2D(8, (3, 3), activation='relu', padding='same')(self.encoded)
+        # x = UpSampling2D((2, 2))(x)
         x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
         x = UpSampling2D((2, 2))(x)
         x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
@@ -61,10 +61,10 @@ class Speculo:
             if person_dir == "Front":
                 continue
             else:
-                x_image = Image.open(f"dataset/processed/{directory}/Front/{fronts[i - 1]}").resize(self.image_size, Image.ANTIALIAS)
+                y_image = Image.open(f"dataset/processed/{directory}/Front/{fronts[i - 1]}").resize(self.image_size, Image.ANTIALIAS)
                 for image in os.listdir(f"dataset/processed/{directory}/{person_dir}"):
-                    x.append(np.array(x_image))
-                    y.append(np.array(Image.open(f"dataset/processed/{directory}/{person_dir}/{image}").resize(self.image_size, Image.ANTIALIAS)))
+                    x.append(np.array(Image.open(f"dataset/processed/{directory}/{person_dir}/{image}").resize(self.image_size, Image.ANTIALIAS)))
+                    y.append(np.array(y_image))
         return np.reshape(x, [-1, 96, 96, 3]), np.reshape(y, [-1, 96, 96, 3])
 
     def _create_dataset(self):
