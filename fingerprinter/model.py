@@ -4,7 +4,7 @@ import numpy as np
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 from tensorflow.keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Dropout
 from tensorflow.keras.models import Model
-
+from datetime import datetime
 
 class Speculo:
     def __init__(self):
@@ -50,7 +50,7 @@ class Speculo:
 
     def autoencoder(self):
         autoencoder = Model(self.input_img, self.decoded)
-        autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy', metrics=['accuracy', 'binary_crossentropy', 'mae'])
+        autoencoder.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', 'binary_crossentropy', 'mae'])
         return autoencoder
 
     def _load_image_set(self, directory):
@@ -75,8 +75,12 @@ class Speculo:
     def train(self):
         x_train, y_train, x_test, y_test = self._create_dataset()
         model = self.autoencoder()
+        model_number = 1
+        if os.path.isdir("logs"):
+            model_number = len(os.listdir("logs/"))+1
+
         checkpoint = ModelCheckpoint("models/model.h5", monitor='loss', verbose=1, save_best_only=True, mode='min')
-        tensorboard = TensorBoard(log_dir='logs/', histogram_freq=0, write_graph=False)
+        tensorboard = TensorBoard(log_dir=f'logs/{model_number}-{datetime.now()}', histogram_freq=0, write_graph=False)
 
         model.fit(x_train, y_train,
                   epochs=100,
