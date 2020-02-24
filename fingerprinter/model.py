@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 import numpy as np
-from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 from tensorflow.keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Dropout, Conv2DTranspose, \
     LeakyReLU, BatchNormalization, Flatten, Reshape, Activation
 from tensorflow.keras import backend as K
@@ -11,11 +11,11 @@ from tensorflow.keras.optimizers import Adam
 
 class Speculo:
     def __init__(self):
-        self.image_size = (32, 32, 3)
+        self.image_size = (64, 64, 3)
         self.optimizer = 'adam'
         self.loss_function = 'mae'
         self.input_img = Input(shape=(self.image_size[0], self.image_size[1], 3))
-        self.filters = (64, 128)
+        self.filters = (128, 256)
         self.latent_size = 128
 
         model_number = 1
@@ -61,7 +61,7 @@ class Speculo:
         _, _, autoencoder = self._build_model()
 
         autoencoder.compile(optimizer=Adam(lr=1e-3), loss=self.loss_function,
-                            metrics=['accuracy', 'binary_crossentropy', 'mae'])
+                            metrics=['accuracy', 'mae'])
         return autoencoder
 
     def _load_image_set(self, directory):
@@ -72,11 +72,11 @@ class Speculo:
             if person_dir == "Front":
                 continue
             else:
-                y_image = Image.open(f"dataset/processed/{directory}/Front/{fronts[i - 1]}").resize(self.image_size,
+                y_image = Image.open(f"dataset/processed/{directory}/Front/{fronts[i - 1]}").resize(self.image_size[:2],
                                                                                                     Image.ANTIALIAS)
                 for image in os.listdir(f"dataset/processed/{directory}/{person_dir}"):
                     x.append(np.array(
-                        Image.open(f"dataset/processed/{directory}/{person_dir}/{image}").resize(self.image_size,
+                        Image.open(f"dataset/processed/{directory}/{person_dir}/{image}").resize(self.image_size[:2],
                                                                                                  Image.ANTIALIAS)))
                     y.append(np.array(y_image))
         return np.reshape(x, [-1, self.image_size[0], self.image_size[1], 3]), np.reshape(y, [-1, self.image_size[0],
@@ -94,14 +94,14 @@ class Speculo:
         checkpoint = ModelCheckpoint(f"models/{self.name}.h5", monitor='loss', verbose=1, save_best_only=True,
                                      mode='min')
         tensorboard = TensorBoard(log_dir=f'logs/{self.name}', histogram_freq=0, write_graph=False)
+        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=1, mode='auto')
 
         model.fit(x_train, y_train,
                   epochs=100,
                   batch_size=64,
                   shuffle=True,
                   validation_data=(x_test, y_test),
-
-                  callbacks=[checkpoint, tensorboard])
+                  callbacks=[checkpoint, tensorboard, early_stopping])
 
         model.save(f"models/{self.name}.h5")
 
