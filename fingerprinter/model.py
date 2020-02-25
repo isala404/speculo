@@ -6,15 +6,14 @@ from tensorflow.keras.layers import Input, Dense, Conv2D, Conv2DTranspose, \
     LeakyReLU, BatchNormalization, Flatten, Reshape, Activation
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model, load_model
-from tensorflow.keras.optimizers import Adam
 
 
 class Speculo:
     def __init__(self):
         self.image_size = (64, 64, 3)
-        self.optimizer = 'adam'
-        self.loss_function = 'mae'
-        self.input_img = Input(shape=(self.image_size[0], self.image_size[1], 3))
+        self.optimizer = 'RMSprop'
+        self.loss_function = 'mse'
+        self.input_img = Input(shape=self.image_size)
         self.filters = (128, 256)
         self.latent_size = 128
 
@@ -62,8 +61,7 @@ class Speculo:
     def autoencoder(self):
         _, _, autoencoder = self._build_model()
 
-        autoencoder.compile(optimizer=Adam(lr=1e-3), loss=self.loss_function,
-                            metrics=['accuracy', 'mae'])
+        autoencoder.compile(optimizer=self.optimizer, loss=self.loss_function, metrics=['accuracy'])
         return autoencoder
 
     def _load_image_set(self, directory):
@@ -74,19 +72,23 @@ class Speculo:
             if person_dir == "Front":
                 continue
             else:
-                y_image = Image.open(f"dataset/processed/{directory}/Front/{fronts[i - 1]}").resize(self.image_size[:2],
-                                                                                                    Image.ANTIALIAS)
+                y_image = Image.open(f"dataset/processed/{directory}/Front/{fronts[i - 1]}")
+                y_image = y_image.resize(self.image_size[:2], Image.ANTIALIAS)
+                if self.image_size[2] == 1:
+                    y_image = y_image.convert('L')
                 for image in os.listdir(f"dataset/processed/{directory}/{person_dir}"):
-                    x.append(np.array(
-                        Image.open(f"dataset/processed/{directory}/{person_dir}/{image}").resize(self.image_size[:2],
-                                                                                                 Image.ANTIALIAS)))
+                    x_image = Image.open(f"dataset/processed/{directory}/{person_dir}/{image}")
+                    x_image = x_image.resize(self.image_size[:2], Image.ANTIALIAS)
+                    if self.image_size[2] == 1:
+                        x_image = x_image.convert('L')
+                    x.append(np.array(x_image))
                     y.append(np.array(y_image))
-        # x = np.expand_dims(x, axis=-1)
-        x = np.reshape(x, [-1, self.image_size[0], self.image_size[1], 3])
+
+        x = np.reshape(x, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
         x = x.astype("float32") / 255.0
-        y = np.expand_dims(y, axis=-1)
-        # y = np.reshape(y, [-1, self.image_size[0], self.image_size[1], 3])
+        y = np.reshape(y, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
         y = y.astype("float32") / 255.0
+        print(x.shape, y.shape)
         return x, y
 
     def _create_dataset(self):
@@ -95,7 +97,7 @@ class Speculo:
         return x_train, y_train, x_test, y_test
 
     def _load_model(self):
-        self.model = load_model("models/v5-adam-mae.h5")
+        self.model = load_model("models/v6-RMSprop-mse.h5")
         return self.model
 
     def predict(self, image):
@@ -123,11 +125,23 @@ class Speculo:
         model.save(f"models/{self.name}.h5")
 
 
+def test_nn(nn):
+    Image.open("dataset/processed/test/Front/personne03146+0+0.jpg").show()
+    im = Image.open("dataset/processed/test/Person03/person03262+15+45.jpg")
+    im = im.resize(speculo.image_size[:2], Image.ANTIALIAS)
+    if nn.image_size[2] == 1:
+        im = im.convert('L')
+    im.show()
+    pred = nn.predict(im)
+    print(pred.shape)
+    if nn.image_size[2] == 1:
+        out = Image.fromarray(pred[:, :, 0], 'L')
+    else:
+        out = Image.fromarray(pred)
+    out.show()
+
+
 speculo = Speculo()
 # print(speculo.autoencoder().summary())
 # speculo.train()
-Image.open("dataset/processed/test/Front/personne03146+0+0.jpg").show()
-im = Image.open("dataset/processed/test/Person03/person03262+15+45.jpg").resize(speculo.image_size[:2], Image.ANTIALIAS)
-im.show()
-im = Image.fromarray(speculo.predict(im))
-im.show()
+test_nn(speculo)
