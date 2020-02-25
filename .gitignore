@@ -182,7 +182,7 @@ build/Release
 node_modules/
 jspm_packages/
 
-# TypeScript v1 declaration files
+# TypeScript 6 declaration files
 typings/
 
 # TypeScript cache
@@ -382,3 +382,6 @@ fingerprinter/dataset
 *.h5
 *.weights
 *.pb
+
+facedetector/yoloface/model-weights
+fingerprinter/models

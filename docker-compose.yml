@@ -1,0 +1,18 @@
+version: '3'
+services:
+  facedetector:
+    image: tensorflow/serving
+    ports:
+      - 8500:8501
+    volumes:
+      - ./facedetector/yoloface/model-weights:/models/facedetector
+    environment:
+      - MODEL_NAME=facedetector
+  fingerprinter:
+    image: tensorflow/serving
+    ports:
+      - 8501:8501
+    volumes:
+      - ./fingerprinter/models:/models/fingerprinter
+    environment:
+      - MODEL_NAME=fingerprinter
