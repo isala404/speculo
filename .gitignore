@@ -379,6 +379,7 @@ fingerprinter/faces
 fingerprinter/*.avi
 fingerprinter/dataset
 
+**/logs
 *.h5
 *.weights
 *.pb

@@ -1,0 +1,12 @@
+/faces
+.vscode/
+.DS_Store
+
+*.class
+*.pyc                                                                           
+colors                                                                          
+**/.DS_Store                                                                                                                                              
+
+# Byte-compiled / optimized / DLL files                                         
+__pycache__/                                                                    
+*.py[cod]                                                                       
