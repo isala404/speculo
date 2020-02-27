@@ -142,6 +142,7 @@ def test_nn(nn):
 
 
 speculo = Speculo()
+# print(speculo._load_model().summary())
 # print(speculo.autoencoder().summary())
 # speculo.train()
 test_nn(speculo)
