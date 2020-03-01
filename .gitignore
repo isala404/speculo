@@ -384,5 +384,5 @@ fingerprinter/dataset
 *.weights
 *.pb
 
-facedetector/yoloface/model-weights
+facedetector/model-weights
 fingerprinter/models

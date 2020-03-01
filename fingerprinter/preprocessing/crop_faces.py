@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 from tqdm import tqdm
-from facedetector.yoloface.yolo.yolo import YOLO
+from facedetector.yolo.yolo import YOLO
 
 
 if not os.path.isdir("dataset/raw"):

@@ -97,7 +97,7 @@ class Speculo:
         return x_train, y_train, x_test, y_test
 
     def _load_model(self):
-        self.model = load_model("models/v6-RMSprop-mse.h5")
+        self.model = load_model("models/v5-adam-mae.h5")
         return self.model
 
     def predict(self, image):
@@ -126,8 +126,8 @@ class Speculo:
 
 
 def test_nn(nn):
-    Image.open("dataset/processed/test/Front/personne03146+0+0.jpg").show()
-    im = Image.open("dataset/processed/test/Person03/person03262+15+45.jpg")
+    Image.open("dataset/cropped/Front/personne01146+0+0.jpg").show()
+    im = Image.open("dataset/cropped/Person01/person01101-60-90.jpg")
     im = im.resize(speculo.image_size[:2], Image.ANTIALIAS)
     if nn.image_size[2] == 1:
         im = im.convert('L')

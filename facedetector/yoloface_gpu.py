@@ -1,6 +1,6 @@
 import argparse
 
-from yolo.yolo import YOLO, detect_video, detect_img
+from facedetector.yolo.yolo import YOLO, detect_video, detect_img
 
 
 #####################################################################
