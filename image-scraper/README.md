@@ -1,19 +1,25 @@
 # image-scraper
 
-Used to scrape & save images of celebrities from a public database.
+Used to scrape & save images of celebrities from a public database along with the co-ordinates of the face.
 
 # Usage
 
 `python3 app.py [argument]`
 
 There are two types of arguments:
-    * test
-    * train
+    * dev
+    * eval
 
-##### test
+##### dev (80%)
 
-Images should be used to test the model.
+Images that should be used to develop the model.
 
-##### train
+##### eval (20%)
 
-Images should be used to train the model.
+Images that should be used to evaluate the model.
+
+# Misc
+
+The file is saved as 
+
+`id-celebrity_name-facecoordinates.jpg`

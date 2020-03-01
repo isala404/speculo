@@ -5,7 +5,7 @@ services:
     ports:
       - 8500:8501
     volumes:
-      - ./facedetector/yoloface/model-weights:/models/facedetector
+      - /Users/akassharjun/Code/SDGP/speculo/facedetector/yoloface/model-weights:/models/facedetector
     environment:
       - MODEL_NAME=facedetector
   fingerprinter:
@@ -13,6 +13,8 @@ services:
     ports:
       - 8501:8501
     volumes:
-      - ./fingerprinter/models:/models/fingerprinter
+      - /Users/akassharjun/Code/SDGP/speculo/fingerprinter/models:/models/fingerprinter
     environment:
       - MODEL_NAME=fingerprinter
+
+      
