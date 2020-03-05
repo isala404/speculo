@@ -17,7 +17,7 @@ import numpy as np
 # noinspection PyUnresolvedReferences
 import cv2
 
-from yolo.model import eval
+from facedetector.yolo.model import eval
 
 import tensorflow.python.keras.backend as K
 from keras.models import load_model

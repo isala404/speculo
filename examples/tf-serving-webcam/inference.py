@@ -1,8 +1,5 @@
 import cv2
-import numpy as np
-from PIL import Image
-
-from facedetector.yoloface.yolo.yolo import YOLO
+from facedetector.yolo.yolo import YOLO
 
 video_capture = cv2.VideoCapture(0)
 

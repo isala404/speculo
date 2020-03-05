@@ -220,6 +220,11 @@ Trainable params: 18,031,747
 Non-trainable params: 1,536
 _________________________________________________________________
 ```
+Note - After running some validation we found out this model is overfitted
+# Model 7
+- Increased size of latent space
+- Added Dropouts
+
 ## References
 - https://github.com/aymericdamien/TensorFlow-Examples/blob/master/notebooks/3_NeuralNetworks/autoencoder.ipynb
 - https://blog.keras.io/building-autoencoders-in-keras.html

@@ -3,24 +3,25 @@ import os
 import numpy as np
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 from tensorflow.keras.layers import Input, Dense, Conv2D, Conv2DTranspose, \
-    LeakyReLU, BatchNormalization, Flatten, Reshape, Activation
+    LeakyReLU, BatchNormalization, Flatten, Reshape, Activation, Dropout
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model, load_model
+from random import shuffle
 
 
 class Speculo:
     def __init__(self):
-        self.image_size = (64, 64, 3)
-        self.optimizer = 'RMSprop'
+        self.image_size = (64, 64, 1)
+        self.optimizer = 'adam'
         self.loss_function = 'mse'
         self.input_img = Input(shape=self.image_size)
         self.filters = (128, 256)
-        self.latent_size = 128
+        self.latent_size = 10240
 
         model_number = 1
         if os.path.isdir("logs"):
             model_number = len(os.listdir("logs/")) + 1
-        self.name = f"v{model_number}-{self.optimizer}-{self.loss_function}"
+        self.name = f"v{model_number}-{self.optimizer}-{self.loss_function}-bw"
 
         self.model = None
 
@@ -33,9 +34,11 @@ class Speculo:
             x = Conv2D(f, (3, 3), strides=(2, 2), padding="same")(x)
             x = LeakyReLU(alpha=0.2)(x)
             x = BatchNormalization(axis=chan_dim)(x)
+            x = Dropout(0.1)(x)
 
         volume_size = K.int_shape(x)
         x = Flatten()(x)
+        x = Dropout(0.2)(x)
         latent = Dense(self.latent_size)(x)
 
         encoder = Model(self.input_img, latent, name="encoder")
@@ -48,6 +51,7 @@ class Speculo:
             x = Conv2DTranspose(f, (3, 3), strides=(2, 2), padding="same")(x)
             x = LeakyReLU(alpha=0.2)(x)
             x = BatchNormalization(axis=chan_dim)(x)
+            x = Dropout(0.1)(x)
 
         x = Conv2DTranspose(self.image_size[2], (3, 3), padding="same")(x)
         outputs = Activation("sigmoid")(x)
@@ -64,7 +68,7 @@ class Speculo:
         autoencoder.compile(optimizer=self.optimizer, loss=self.loss_function, metrics=['accuracy'])
         return autoencoder
 
-    def _load_image_set(self, directory):
+    def _load_image_set(self, directory, noise_factors=None):
         x = []
         y = []
         fronts = sorted(os.listdir(f"dataset/processed/{directory}/Front/"))
@@ -88,16 +92,28 @@ class Speculo:
         x = x.astype("float32") / 255.0
         y = np.reshape(y, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
         y = y.astype("float32") / 255.0
-        print(x.shape, y.shape)
-        return x, y
+
+        if noise_factors:
+            noisy_x = []
+            noisy_y = []
+            for noise_factor in noise_factors:
+                noisy_x += x + (noise_factor / 10) * np.random.normal(loc=0.0, scale=1.0, size=x.shape)
+                noisy_y += y
+            out = list(zip(np.clip(noisy_x, 0., 1.), y))
+            shuffle(out)
+            return zip(*out)
+        out = list(zip(x, y))
+        shuffle(out)
+        return zip(*out)
 
     def _create_dataset(self):
-        x_train, y_train = self._load_image_set("train")
-        x_test, y_test = self._load_image_set("test")
+        x_train, y_train = self._load_image_set("train", noise_factors=(3, 4, 5, 6))
+
+        x_test, y_test = self._load_image_set("test", noise_factors=(1, 2))
         return x_train, y_train, x_test, y_test
 
     def _load_model(self):
-        self.model = load_model("models/v6-RMSprop-mse.h5")
+        self.model = load_model("models/v5-adam-mae.h5")
         return self.model
 
     def predict(self, image):
@@ -126,8 +142,8 @@ class Speculo:
 
 
 def test_nn(nn):
-    Image.open("dataset/processed/test/Front/personne03146+0+0.jpg").show()
-    im = Image.open("dataset/processed/test/Person03/person03262+15+45.jpg")
+    # Image.open("dataset/cropped/Front/personne01146+0+0.jpg").show()
+    im = Image.open("/home/supiri/Desktop/Car-red.jpg")
     im = im.resize(speculo.image_size[:2], Image.ANTIALIAS)
     if nn.image_size[2] == 1:
         im = im.convert('L')
@@ -142,7 +158,14 @@ def test_nn(nn):
 
 
 speculo = Speculo()
-# print(speculo._load_model().summary())
-# print(speculo.autoencoder().summary())
-# speculo.train()
-test_nn(speculo)
+speculo.train()
+# encoder, decoder, autoencoder = speculo._build_model()
+# print(encoder.summary())
+# print(decoder.summary())
+# print(autoencoder.summary())
+# test_nn(speculo)
+
+def marksresult(marklist0,marks,output): #process inputs
+    for i in markslist0:
+        if i == marks:
+            print(output)
