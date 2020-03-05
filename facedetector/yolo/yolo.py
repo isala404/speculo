@@ -17,7 +17,7 @@ import numpy as np
 # noinspection PyUnresolvedReferences
 import cv2
 
-from yolo.model import eval
+from facedetector.yolo.model import eval
 
 import tensorflow.python.keras.backend as K
 from keras.models import load_model
@@ -173,19 +173,20 @@ class YOLO(object):
         return image, out_boxes
 
     def detect_image_fast(self, image):
-        new_image_size = (image.width - (image.width % 32),
-                          image.height - (image.height % 32))
-        boxed_image = letterbox_image(image, new_image_size)
-        image_data = np.array(boxed_image, dtype='float32')
+        start_time = timer()
+        image_data = np.array(image, dtype='float32')
         image_data /= 255.
         image_data = np.expand_dims(image_data, 0)
         out_boxes, out_scores, out_classes = self.sess.run(
             [self.boxes, self.scores, self.classes],
             feed_dict={
                 self.yolo_model.input: image_data,
-                self.input_image_shape: [image.size[1], image.size[0]],
+                self.input_image_shape: [image.shape[0], image.shape[1]],
                 K.learning_phase(): 0
             })
+        end_time = timer()
+        print('*** Processing time: {:.2f}ms'.format((end_time -
+                                                      start_time) * 1000))
         return out_boxes
 
     def close_session(self):

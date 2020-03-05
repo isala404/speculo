@@ -1,0 +1,2 @@
+aiohttp==3.6.2
+opencv-python==4.2.0.32

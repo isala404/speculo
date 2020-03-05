@@ -1,13 +1,11 @@
 version: '3'
 services:
   facedetector:
-    image: tensorflow/serving
+    build:
+      context: facedetector/
+      dockerfile: Dockerfile
     ports:
-      - 8500:8501
-    volumes:
-      - ./facedetector/yoloface/model-weights:/models/facedetector
-    environment:
-      - MODEL_NAME=facedetector
+      - 8500:8080
   fingerprinter:
     image: tensorflow/serving
     ports:
