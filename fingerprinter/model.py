@@ -164,8 +164,3 @@ speculo.train()
 # print(decoder.summary())
 # print(autoencoder.summary())
 # test_nn(speculo)
-
-def marksresult(marklist0,marks,output): #process inputs
-    for i in markslist0:
-        if i == marks:
-            print(output)

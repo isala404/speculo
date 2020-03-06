@@ -17,10 +17,10 @@ import numpy as np
 # noinspection PyUnresolvedReferences
 import cv2
 
-from facedetector.yolo.model import eval
+from yolo.model import eval
 
-import tensorflow.python.keras.backend as K
-from keras.models import load_model
+import tensorflow.keras.backend as K
+from tensorflow.keras.models import load_model
 import tensorflow.compat.v1 as tf
 from timeit import default_timer as timer
 from PIL import ImageDraw, Image
@@ -57,7 +57,7 @@ class YOLO(object):
         self.debug = debug
         self.class_names = self._get_class()
         self.anchors = self._get_anchors()
-        self.sess = K.get_session()
+        self.sess = tf.compat.v1.keras.backend.get_session()
         self.boxes, self.scores, self.classes = self._generate()
 
     def _get_class(self):
