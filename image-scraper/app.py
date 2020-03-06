@@ -27,22 +27,33 @@ print("Gathering face data for " + sys.argv[1] + "...")
 path = os.getcwd() + '/faces/' + data_type
 
 # takes the file and converts it to a list by separating each line by '\n'
-data = [line.rstrip('\n') for line in open(data_type + '_urls.txt')]
+data = [line.rstrip('\n') for line in open('new_' + data_type + '_url.txt')]
 
-# removing the unwanted first two lines
-data.pop(0)
-data.pop(0)
 
 failure = {}
 success = {}
+
+count = 0
+prevName = ''
 
 for line in data:
     # parsing the data
     info = line.split('\t')
     name = info[0].lower().replace(" ", "_")
-    infoId = info[1]
-    url = info[2]
-    coordinates = info[3]
+    url = info[1]
+    coordinates = info[2]
+
+    print(name)
+    print(url)
+    print(coordinates)
+
+
+    if name != prevName:
+        count = 0
+
+    prevName = name
+  
+    count = count + 1
 
     if name not in failure.keys():
         failure[name] = 0
@@ -54,16 +65,16 @@ for line in data:
     try:
         response = requests.get(url, timeout=5)
     except Exception:
-        print(infoId, name, "-----", "Failed to fetch!")
+        print(count, name, "-----", "Failed to fetch!")
         failure[name] = failure[name] + 1
         continue
 
     if not response.ok:
         failure[name] = failure[name] + 1
-        print(infoId, name, "-----", "Failed to fetch!")
+        print(count, name, "-----", "Failed to fetch!")
         continue
 
-    handle = open(path + '/' + infoId + "-" + name + "-" + coordinates + ".jpg", 'wb')
+    handle = open(path + '/' + str(count) + "-" + name + "-" + coordinates + ".jpg", 'wb')
 
     for block in response.iter_content(1024):
         if not block:
@@ -71,7 +82,7 @@ for line in data:
 
         handle.write(block)
 
-    print(infoId, name, "-----", "Fetched successfully!")
+    print(count, name, "-----", "Fetched successfully!")
     success[name] = success[name] + 1
 
 
