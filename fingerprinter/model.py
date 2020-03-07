@@ -3,153 +3,253 @@ import os
 import numpy as np
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 from tensorflow.keras.layers import Input, Dense, Conv2D, Conv2DTranspose, \
-    LeakyReLU, BatchNormalization, Flatten, Reshape, Activation, Dropout
+    MaxPooling2D, BatchNormalization, Flatten, Reshape, Activation, Dropout
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model, load_model
-from random import shuffle
+from sklearn.utils import shuffle
+import matplotlib.pyplot as plt
+from tensorflow.keras.utils import plot_model
 
 
 class Speculo:
-    def __init__(self):
-        self.image_size = (64, 64, 1)
+    def __init__(self, image_size=(64, 64, 3), model_path="models/v5-adam-mae.h5", visualize=True):
         self.optimizer = 'adam'
-        self.loss_function = 'mse'
-        self.input_img = Input(shape=self.image_size)
-        self.filters = (128, 256)
-        self.latent_size = 10240
+        self.loss_function = 'mae'
+        self.LR = 1e-3
+
+        self.filters = (128, )
+        self.latent_size = 256
+
+        self.image_size = image_size
+        self.model_path = model_path
+        self.visualize = visualize
 
         model_number = 1
         if os.path.isdir("logs"):
-            model_number = len(os.listdir("logs/")) + 1
-        self.name = f"v{model_number}-{self.optimizer}-{self.loss_function}-bw"
+            model_number += len(os.listdir("logs/"))
+
+        self.model_name = f"v{model_number}"
 
         self.model = None
 
     def _build_model(self):
-        chan_dim = -1
-
-        x = self.input_img
+        input_img = Input(shape=self.image_size, name="input")
+        x = input_img
 
         for f in self.filters:
-            x = Conv2D(f, (3, 3), strides=(2, 2), padding="same")(x)
-            x = LeakyReLU(alpha=0.2)(x)
-            x = BatchNormalization(axis=chan_dim)(x)
+            x = Conv2D(f, (3, 3), activation='relu', padding='same')(x)
+            x = MaxPooling2D((2, 2))(x)
             x = Dropout(0.1)(x)
 
-        volume_size = K.int_shape(x)
+        size = K.int_shape(x)
         x = Flatten()(x)
         x = Dropout(0.2)(x)
-        latent = Dense(self.latent_size)(x)
+        x = Dense(self.latent_size, name="latent_space")(x)
 
-        encoder = Model(self.input_img, latent, name="encoder")
-
-        latent_inputs = Input(shape=(self.latent_size,))
-        x = Dense(np.prod(volume_size[1:]))(latent_inputs)
-        x = Reshape((volume_size[1], volume_size[2], volume_size[3]))(x)
+        x = Dense(np.prod(size[1:]))(x)
+        x = Reshape((size[1], size[2], size[3]))(x)
 
         for f in self.filters[::-1]:
-            x = Conv2DTranspose(f, (3, 3), strides=(2, 2), padding="same")(x)
-            x = LeakyReLU(alpha=0.2)(x)
-            x = BatchNormalization(axis=chan_dim)(x)
+            x = Conv2DTranspose(f, (3, 3), strides=2, activation='relu', padding='same')(x)
+            x = BatchNormalization()(x)
             x = Dropout(0.1)(x)
 
-        x = Conv2DTranspose(self.image_size[2], (3, 3), padding="same")(x)
-        outputs = Activation("sigmoid")(x)
+        x = Conv2DTranspose(self.image_size[2], (3, 3), activation='relu', padding='same')(x)
+        output = Activation("sigmoid", name="output")(x)
 
-        decoder = Model(latent_inputs, outputs, name="decoder")
-
-        self.model = Model(self.input_img, decoder(encoder(self.input_img)), name="autoencoder")
-
-        return encoder, decoder, self.model
+        return Model(inputs=input_img, outputs=output)
 
     def autoencoder(self):
-        _, _, autoencoder = self._build_model()
-
+        autoencoder = self._build_model()
         autoencoder.compile(optimizer=self.optimizer, loss=self.loss_function, metrics=['accuracy'])
         return autoencoder
 
+    def read_image(self, file):
+        im = Image.open(file)
+        im = im.resize(self.image_size[:2], Image.ANTIALIAS)
+        if self.image_size[2] == 1:
+            im = im.convert('L')
+        return np.array(im)
+
     def _load_image_set(self, directory, noise_factors=None):
-        x = []
-        y = []
-        fronts = sorted(os.listdir(f"dataset/processed/{directory}/Front/"))
-        for i, person_dir in enumerate(sorted(os.listdir(f"dataset/processed/{directory}"))):
+        x, y = [], []
+        fronts = sorted(os.listdir(f"dataset/{directory}/Front/"))
+        for i, person_dir in enumerate(sorted(os.listdir(f"dataset/{directory}"))):
             if person_dir == "Front":
                 continue
             else:
-                y_image = Image.open(f"dataset/processed/{directory}/Front/{fronts[i - 1]}")
-                y_image = y_image.resize(self.image_size[:2], Image.ANTIALIAS)
-                if self.image_size[2] == 1:
-                    y_image = y_image.convert('L')
-                for image in os.listdir(f"dataset/processed/{directory}/{person_dir}"):
-                    x_image = Image.open(f"dataset/processed/{directory}/{person_dir}/{image}")
-                    x_image = x_image.resize(self.image_size[:2], Image.ANTIALIAS)
-                    if self.image_size[2] == 1:
-                        x_image = x_image.convert('L')
+                y_image = self.read_image(f"dataset/{directory}/Front/{fronts[i - 1]}")
+                for image in os.listdir(f"dataset/{directory}/{person_dir}"):
+                    x_image = self.read_image(f"dataset/{directory}/{person_dir}/{image}")
                     x.append(np.array(x_image))
                     y.append(np.array(y_image))
 
-        x = np.reshape(x, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
-        x = x.astype("float32") / 255.0
-        y = np.reshape(y, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
-        y = y.astype("float32") / 255.0
+        x = np.array(x).astype("float32") / 255.0
+        y = np.array(y).astype("float32") / 255.0
+        x = x.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
+        y = y.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
 
         if noise_factors:
-            noisy_x = []
-            noisy_y = []
+            noisy_x, noisy_y = [], []
             for noise_factor in noise_factors:
-                noisy_x += x + (noise_factor / 10) * np.random.normal(loc=0.0, scale=1.0, size=x.shape)
-                noisy_y += y
-            out = list(zip(np.clip(noisy_x, 0., 1.), y))
-            shuffle(out)
-            return zip(*out)
-        out = list(zip(x, y))
-        shuffle(out)
-        return zip(*out)
+                noisy_x.append(x + (noise_factor / 10) * np.random.normal(loc=0.0, scale=1.0, size=x.shape))
+                noisy_y.append(y)
+
+            noisy_x = np.reshape(noisy_x, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
+            noisy_y = np.reshape(noisy_y, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
+
+            return shuffle(np.clip(noisy_x, 0., 1.), noisy_y)
+
+        return shuffle(x, y)
+
+    def display_image_array(self, n, *image_sets, figsize=(8, 4), title=None, labels=None, save_dir=""):
+        plt.figure(figsize=figsize)
+        if title:
+            plt.suptitle(title)
+        i = 1
+        row = 0
+        if labels and len(labels) != len(image_sets):
+            labels = None
+        for image_set in image_sets:
+            for x in range(n):
+                ax = plt.subplot(len(image_sets), n, i)
+                if x == 0 and labels:
+                    ax.set_title(labels[row])
+                if self.image_size[2] == 1:
+                    plt.imshow(image_set[x].reshape(self.image_size[:2]))
+                    plt.gray()
+                else:
+                    plt.imshow(image_set[x].reshape(self.image_size))
+                ax.get_xaxis().set_visible(False)
+                ax.get_yaxis().set_visible(False)
+                i += 1
+            row += 1
+        plt.savefig(save_dir)
+        plt.show()
 
     def _create_dataset(self):
-        x_train, y_train = self._load_image_set("train", noise_factors=(3, 4, 5, 6))
-
-        x_test, y_test = self._load_image_set("test", noise_factors=(1, 2))
+        # x_train, y_train = self._load_image_set("train", noise_factors=(0.3, 0.6, 0.9, 1))
+        x_train, y_train = self._load_image_set("train")
+        x_test, y_test = self._load_image_set("test", noise_factors=(0.3, 0.6))
+        if self.visualize:
+            self.display_image_array(10, x_train, y_train, x_test, y_test,
+                                     title=f"Dataset ({len(x_train) + len(x_test)})",
+                                     labels=["x_train", "y_train", "x_test", "y_test"],
+                                     save_dir=f'models/{self.model_name}/img/dataset.png')
         return x_train, y_train, x_test, y_test
 
+    def train(self):
+        if os.path.exists(f"models/{self.model_name}"):
+            raise FileExistsError(f"models/{self.model_name} already existing")
+        os.makedirs(f"models/{self.model_name}/img")
+
+        x_train, y_train, x_test, y_test = self._create_dataset()
+        self.model = self.autoencoder()
+
+        plot_model(self.model, to_file=f'models/{self.model_name}/img/model.png')
+
+        with open(f"models/{self.model_name}/README.md", "w") as f:
+            f.write(f"# Model {self.model_name}\n")
+            f.write(f"Optimizer - {self.optimizer} (LR - {self.LR}) <br>\n")
+            f.write(f"Loss Function - {self.loss_function} <br>\n")
+            f.write(f"Input Shape - {self.image_size} <br>\n")
+            f.write(f"Filters - {self.filters} <br>\n")
+            f.write(f"Latent Size - {self.latent_size} <br>\n\n")
+            if self.visualize:
+                f.write("### Dataset Sample\n")
+                f.write("![DataSet](img/dataset.png)\n\n")
+            f.write(f"## Model Summary\n```shell script\n")
+            self.model.summary(print_fn=lambda x: f.write(x + '\n'))
+            f.write("```\n")
+            f.write("![Model](img/model.png)\n\n")
+            f.write(f"## Training Log\n```shell script\n\n```\n\n")
+
+        checkpoint = ModelCheckpoint(f"models/{self.model_name}/Model-{self.model_name}.h5", monitor='loss', verbose=1,
+                                     save_best_only=True, mode='min')
+
+        tensorboard = TensorBoard(log_dir=f'logs/{self.model_name}', histogram_freq=0, write_graph=False)
+        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=1, mode='auto')
+        history = None
+        try:
+            history = self.model.fit(x_train, y_train,
+                                     epochs=3,
+                                     batch_size=16,
+                                     shuffle=True,
+                                     validation_data=(x_test, y_test),
+                                     callbacks=[checkpoint, tensorboard, early_stopping])
+
+            self.model.save(f"models/{self.model_name}/Model-{self.model_name}-Final.h5")
+        except KeyboardInterrupt:
+            pass
+
+        finally:
+            if history:
+                plt.plot(history.history['accuracy'])
+                plt.plot(history.history['val_accuracy'])
+                plt.title('Model accuracy')
+                plt.ylabel('Accuracy')
+                plt.xlabel('Epoch')
+                plt.legend(['Train', 'Test'], loc='upper left')
+                plt.savefig(f'models/{self.model_name}/img/accuracy.png')
+                plt.show()
+
+                plt.plot(history.history['loss'])
+                plt.plot(history.history['val_loss'])
+                plt.title('Model loss')
+                plt.ylabel('Loss')
+                plt.xlabel('Epoch')
+                plt.legend(['Train', 'Test'], loc='upper left')
+                plt.savefig(f'models/{self.model_name}/img/loss.png')
+                plt.show()
+
+            with open(f"models/{self.model_name}/README.md", "a") as f:
+                if history:
+                    f.write("### Model accuracy\n")
+                    f.write("![accuracy](img/accuracy.png)\n\n")
+                    f.write("### Model loss\n")
+                    f.write("![loss](img/loss.png)\n\n")
+                f.write("## Predictions \n")
+                f.write("![loss](img/predictions.png)\n\n")
+                f.write("## Notes\n")
+
+            self.evaluate(f'models/{self.model_name}/img/predictions.png')
+
     def _load_model(self):
-        self.model = load_model("models/v5-adam-mae.h5")
+        self.model = load_model(self.model_path)
         return self.model
 
-    def predict(self, image):
+    def _get_latent_space(self):
         autoencoder = self._load_model()
-        output = autoencoder.predict(np.reshape(image, [1, self.image_size[0], self.image_size[1], self.image_size[2]]))
-        output = (output * 255).astype("uint8")
-        return np.reshape(output, self.image_size)
+        encoder = Model(inputs=autoencoder.input,
+                        outputs=autoencoder.get_layer("latent_space").output)
+        self.model = encoder
 
-    def train(self):
-        x_train, y_train, x_test, y_test = self._create_dataset()
-        model = self.autoencoder()
+    def evaluate(self, file=None):
+        if self.model is None:
+            self._load_model()
+        gen_image = []
+        org_image = []
+        for image in os.listdir("dataset/evaluate"):
+            image = self.read_image(os.path.join("dataset/evaluate", image))
+            org_image.append(image)
+            gen_image.append(self.predict(image))
 
-        checkpoint = ModelCheckpoint(f"models/{self.name}.h5", monitor='loss', verbose=1, save_best_only=True,
-                                     mode='min')
-        tensorboard = TensorBoard(log_dir=f'logs/{self.name}', histogram_freq=0, write_graph=False)
-        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=1, mode='auto')
+        self.display_image_array(len(gen_image), org_image, gen_image,
+                                 title="Model Predictions", figsize=(8, 2), save_dir=file)
 
-        model.fit(x_train, y_train,
-                  epochs=100,
-                  batch_size=64,
-                  shuffle=True,
-                  validation_data=(x_test, y_test),
-                  callbacks=[checkpoint, tensorboard, early_stopping])
-
-        model.save(f"models/{self.name}.h5")
+    def predict(self, image, preview=False):
+        if self.model is None:
+            self._load_model()
+        output = self.model.predict(np.reshape(image, [1, self.image_size[0], self.image_size[1], self.image_size[2]]))
+        if preview:
+            output = (output * 255).astype("uint8")
+            return np.reshape(output, self.image_size)
+        return output.reshape([-1])
 
 
 def test_nn(nn):
-    # Image.open("dataset/cropped/Front/personne01146+0+0.jpg").show()
-    im = Image.open("/home/supiri/Desktop/Car-red.jpg")
-    im = im.resize(speculo.image_size[:2], Image.ANTIALIAS)
-    if nn.image_size[2] == 1:
-        im = im.convert('L')
-    im.show()
-    pred = nn.predict(im)
-    print(pred.shape)
+    img = nn.read_image("dataset/cropped/Front/personne01146+0+0.jpg")
+    pred = nn.predict(img, preview=True)
     if nn.image_size[2] == 1:
         out = Image.fromarray(pred[:, :, 0], 'L')
     else:
@@ -157,15 +257,7 @@ def test_nn(nn):
     out.show()
 
 
-speculo = Speculo()
-speculo.train()
-# encoder, decoder, autoencoder = speculo._build_model()
-# print(encoder.summary())
-# print(decoder.summary())
-# print(autoencoder.summary())
-# test_nn(speculo)
-
-def marksresult(marklist0,marks,output): #process inputs
-    for i in markslist0:
-        if i == marks:
-            print(output)
+if __name__ == "__main__":
+    speculo = Speculo()
+    speculo.train()
+    # test_nn(speculo)
