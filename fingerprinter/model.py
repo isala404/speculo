@@ -17,7 +17,7 @@ class Speculo:
         self.loss_function = 'mae'
         self.LR = 1e-3
 
-        self.filters = (128, )
+        self.filters = (128, 256)
         self.latent_size = 256
 
         self.image_size = image_size
@@ -28,7 +28,7 @@ class Speculo:
         if os.path.isdir("logs"):
             model_number += len(os.listdir("logs/"))
 
-        self.model_name = f"v{model_number}"
+        self.model_number = f"{model_number}"
 
         self.model = None
 
@@ -57,7 +57,7 @@ class Speculo:
         x = Conv2DTranspose(self.image_size[2], (3, 3), activation='relu', padding='same')(x)
         output = Activation("sigmoid", name="output")(x)
 
-        return Model(inputs=input_img, outputs=output)
+        return Model(inputs=input_img, outputs=output, name=f"Speculo-v{self.model_number}")
 
     def autoencoder(self):
         autoencoder = self._build_model()
@@ -102,7 +102,7 @@ class Speculo:
 
         return shuffle(x, y)
 
-    def display_image_array(self, n, *image_sets, figsize=(8, 4), title=None, labels=None, save_dir=""):
+    def display_image_array(self, n, *image_sets, figsize=(8, 4), title=None, labels=None, save_dir=None):
         plt.figure(figsize=figsize)
         if title:
             plt.suptitle(title)
@@ -124,32 +124,32 @@ class Speculo:
                 ax.get_yaxis().set_visible(False)
                 i += 1
             row += 1
-        plt.savefig(save_dir)
+        if save_dir:
+            plt.savefig(save_dir)
         plt.show()
 
     def _create_dataset(self):
-        # x_train, y_train = self._load_image_set("train", noise_factors=(0.3, 0.6, 0.9, 1))
-        x_train, y_train = self._load_image_set("train")
+        x_train, y_train = self._load_image_set("train", noise_factors=(0.3, 0.6, 0.9, 1))
         x_test, y_test = self._load_image_set("test", noise_factors=(0.3, 0.6))
         if self.visualize:
             self.display_image_array(10, x_train, y_train, x_test, y_test,
                                      title=f"Dataset ({len(x_train) + len(x_test)})",
                                      labels=["x_train", "y_train", "x_test", "y_test"],
-                                     save_dir=f'models/{self.model_name}/img/dataset.png')
+                                     save_dir=f'models/{self.model_number}/img/dataset.png')
         return x_train, y_train, x_test, y_test
 
     def train(self):
-        if os.path.exists(f"models/{self.model_name}"):
-            raise FileExistsError(f"models/{self.model_name} already existing")
-        os.makedirs(f"models/{self.model_name}/img")
+        if os.path.exists(f"models/{self.model_number}"):
+            raise FileExistsError(f"models/{self.model_number} already existing")
+        os.makedirs(f"models/{self.model_number}/img")
 
         x_train, y_train, x_test, y_test = self._create_dataset()
         self.model = self.autoencoder()
 
-        plot_model(self.model, to_file=f'models/{self.model_name}/img/model.png')
+        plot_model(self.model, to_file=f'models/{self.model_number}/img/model.png')
 
-        with open(f"models/{self.model_name}/README.md", "w") as f:
-            f.write(f"# Model {self.model_name}\n")
+        with open(f"models/{self.model_number}/README.md", "w") as f:
+            f.write(f"# Model v{self.model_number}\n")
             f.write(f"Optimizer - {self.optimizer} (LR - {self.LR}) <br>\n")
             f.write(f"Loss Function - {self.loss_function} <br>\n")
             f.write(f"Input Shape - {self.image_size} <br>\n")
@@ -164,21 +164,21 @@ class Speculo:
             f.write("![Model](img/model.png)\n\n")
             f.write(f"## Training Log\n```shell script\n\n```\n\n")
 
-        checkpoint = ModelCheckpoint(f"models/{self.model_name}/Model-{self.model_name}.h5", monitor='loss', verbose=1,
-                                     save_best_only=True, mode='min')
+        checkpoint = ModelCheckpoint(f"models/{self.model_number}/Model-v{self.model_number}.h5", monitor='loss',
+                                     verbose=1, save_best_only=True, mode='min')
 
-        tensorboard = TensorBoard(log_dir=f'logs/{self.model_name}', histogram_freq=0, write_graph=False)
+        tensorboard = TensorBoard(log_dir=f'logs/Model-v{self.model_number}', histogram_freq=0, write_graph=False)
         early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=1, mode='auto')
         history = None
         try:
             history = self.model.fit(x_train, y_train,
-                                     epochs=3,
+                                     epochs=10,
                                      batch_size=16,
                                      shuffle=True,
                                      validation_data=(x_test, y_test),
                                      callbacks=[checkpoint, tensorboard, early_stopping])
 
-            self.model.save(f"models/{self.model_name}/Model-{self.model_name}-Final.h5")
+            self.model.save(f"models/{self.model_number}/Model-v{self.model_number}-Final.h5")
         except KeyboardInterrupt:
             pass
 
@@ -190,7 +190,7 @@ class Speculo:
                 plt.ylabel('Accuracy')
                 plt.xlabel('Epoch')
                 plt.legend(['Train', 'Test'], loc='upper left')
-                plt.savefig(f'models/{self.model_name}/img/accuracy.png')
+                plt.savefig(f'models/{self.model_number}/img/accuracy.png')
                 plt.show()
 
                 plt.plot(history.history['loss'])
@@ -199,10 +199,10 @@ class Speculo:
                 plt.ylabel('Loss')
                 plt.xlabel('Epoch')
                 plt.legend(['Train', 'Test'], loc='upper left')
-                plt.savefig(f'models/{self.model_name}/img/loss.png')
+                plt.savefig(f'models/{self.model_number}/img/loss.png')
                 plt.show()
 
-            with open(f"models/{self.model_name}/README.md", "a") as f:
+            with open(f"models/{self.model_number}/README.md", "a") as f:
                 if history:
                     f.write("### Model accuracy\n")
                     f.write("![accuracy](img/accuracy.png)\n\n")
@@ -212,7 +212,7 @@ class Speculo:
                 f.write("![loss](img/predictions.png)\n\n")
                 f.write("## Notes\n")
 
-            self.evaluate(f'models/{self.model_name}/img/predictions.png')
+            self.evaluate(f'models/{self.model_number}/img/predictions.png')
 
     def _load_model(self):
         self.model = load_model(self.model_path)
