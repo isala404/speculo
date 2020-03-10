@@ -12,12 +12,12 @@ from tensorflow.keras.utils import plot_model
 
 
 class Speculo:
-    def __init__(self, image_size=(64, 64, 3), model_path="models/v5-adam-mae.h5", visualize=True):
+    def __init__(self, image_size=(128, 128, 1), model_path="models/v5-adam-mae.h5", visualize=True):
         self.optimizer = 'adam'
-        self.loss_function = 'mae'
+        self.loss_function = 'mse'
         self.LR = 1e-3
 
-        self.filters = (128, 256)
+        self.filters = (128, 128, 64)
         self.latent_size = 256
 
         self.image_size = image_size
@@ -33,7 +33,10 @@ class Speculo:
         self.model = None
 
     def _build_model(self):
-        input_img = Input(shape=self.image_size, name="input")
+        if self.image_size[2] == 1:
+            input_img = Input(shape=self.image_size, name="input")
+        else:
+            input_img = Input(shape=self.image_size, name="input")
         x = input_img
 
         for f in self.filters:
@@ -61,7 +64,7 @@ class Speculo:
 
     def autoencoder(self):
         autoencoder = self._build_model()
-        autoencoder.compile(optimizer=self.optimizer, loss=self.loss_function, metrics=['accuracy'])
+        autoencoder.compile(optimizer=self.optimizer, loss=self.loss_function)
         return autoencoder
 
     def read_image(self, file):
@@ -86,8 +89,13 @@ class Speculo:
 
         x = np.array(x).astype("float32") / 255.0
         y = np.array(y).astype("float32") / 255.0
-        x = x.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
-        y = y.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
+        if self.image_size[2] == 1:
+            x = x.reshape([-1, self.image_size[0], self.image_size[1]])
+            y = y.reshape([-1, self.image_size[0], self.image_size[1]])
+
+        else:
+            x = x.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
+            y = y.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
 
         if noise_factors:
             noisy_x, noisy_y = [], []
@@ -168,7 +176,7 @@ class Speculo:
                                      verbose=1, save_best_only=True, mode='min')
 
         tensorboard = TensorBoard(log_dir=f'logs/Model-v{self.model_number}', histogram_freq=0, write_graph=False)
-        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=1, mode='auto')
+        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=2, verbose=1, mode='auto')
         history = None
         try:
             history = self.model.fit(x_train, y_train,
@@ -184,15 +192,6 @@ class Speculo:
 
         finally:
             if history:
-                plt.plot(history.history['accuracy'])
-                plt.plot(history.history['val_accuracy'])
-                plt.title('Model accuracy')
-                plt.ylabel('Accuracy')
-                plt.xlabel('Epoch')
-                plt.legend(['Train', 'Test'], loc='upper left')
-                plt.savefig(f'models/{self.model_number}/img/accuracy.png')
-                plt.show()
-
                 plt.plot(history.history['loss'])
                 plt.plot(history.history['val_loss'])
                 plt.title('Model loss')
@@ -204,8 +203,6 @@ class Speculo:
 
             with open(f"models/{self.model_number}/README.md", "a") as f:
                 if history:
-                    f.write("### Model accuracy\n")
-                    f.write("![accuracy](img/accuracy.png)\n\n")
                     f.write("### Model loss\n")
                     f.write("![loss](img/loss.png)\n\n")
                 f.write("## Predictions \n")
