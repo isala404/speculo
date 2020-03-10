@@ -163,7 +163,7 @@ lib-cov
 coverage
 *.lcov
 
-# nyc test coverage
+# nyc test.png coverage
 .nyc_output
 
 # Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
@@ -283,7 +283,7 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# Unit test.png / coverage reports
 htmlcov/
 .tox/
 .nox/
@@ -375,8 +375,8 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/code,linux,macos,windows,intellij+all,python,node
 
-fingerprinter/faces
-fingerprinter/*.avi
+**/faces
+*.avi
 fingerprinter/dataset
 
 **/logs
@@ -385,4 +385,4 @@ fingerprinter/dataset
 *.pb
 
 facedetector/model-weights
-fingerprinter/models
+fingerprinter/archive

@@ -173,7 +173,6 @@ class YOLO(object):
         return image, out_boxes
 
     def detect_image_fast(self, image):
-        start_time = timer()
         image_data = np.array(image, dtype='float32')
         image_data /= 255.
         image_data = np.expand_dims(image_data, 0)
@@ -184,9 +183,6 @@ class YOLO(object):
                 self.input_image_shape: [image.shape[0], image.shape[1]],
                 K.learning_phase(): 0
             })
-        end_time = timer()
-        print('*** Processing time: {:.2f}ms'.format((end_time -
-                                                      start_time) * 1000))
         return out_boxes
 
     def close_session(self):
