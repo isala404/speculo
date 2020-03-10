@@ -36,10 +36,21 @@ for person_dir in os.listdir("faces"):
 
 
 def best_match(f_encoding):
-    distances = []
-    for known_face_encoding in known_face_encodings:
-        distances.append(distance.euclidean(f_encoding, known_face_encoding))
-    return known_face_names[int(np.argmin(distances))]
+    persons = {}
+    for i, known_face_encoding in enumerate(known_face_encodings):
+        if known_face_names[i] not in persons:
+            persons[known_face_names[i]] = [distance.euclidean(f_encoding, known_face_encoding)]
+        else:
+            persons[known_face_names[i]].append(distance.euclidean(f_encoding, known_face_encoding))
+
+    for person in persons:
+        persons[person] = sum(persons[person])/len(persons[person])
+
+    print(persons)
+
+    return min(persons.keys(), key=(lambda k: persons[k]))
+
+    # return known_face_names[int(np.argmin(distances))]
 
 
 print("Start Detecting .... ")
@@ -47,6 +58,7 @@ video_capture = cv2.VideoCapture(0)
 
 while True:
     ret, frame = video_capture.read()
+    org_frame = frame.copy()
     height, width, _ = frame.shape
     small_frame = cv2.resize(frame, (SIZE, SIZE))
     boxes = yolo.detect_image_fast(small_frame)
@@ -57,6 +69,8 @@ while True:
         left = int(left * width / SIZE)
 
         face = frame[top:bottom, left:right]
+        if not face.any():
+            continue
         if FINGERPRINT_SIZE[2] == 1:
             face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
         face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
@@ -66,6 +80,7 @@ while True:
         cv2.putText(frame, best_match(speculo.predict(face)), (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
     cv2.imshow('Video', frame)
+    cv2.imshow('ORG Video', org_frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
