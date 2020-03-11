@@ -46,11 +46,15 @@ def best_match(f_encoding):
     for person in persons:
         persons[person] = sum(persons[person])/len(persons[person])
 
+<<<<<<< HEAD
     print(persons)
 
     return min(persons.keys(), key=(lambda k: persons[k]))
 
     # return known_face_names[int(np.argmin(distances))]
+=======
+    return min(persons.keys(), key=(lambda k: persons[k]))
+>>>>>>> cb9025eeadd33d5bce4f8f82e75d77dd0d4a024b
 
 
 print("Start Detecting .... ")

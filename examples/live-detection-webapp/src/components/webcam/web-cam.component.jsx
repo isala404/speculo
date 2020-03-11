@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createElement } from "react";
 import Webcam from "react-webcam";
 import "./web-cam.style.scss";
 import { Button } from "../button/button.component";
@@ -15,9 +15,23 @@ export default class WebCamComponent extends React.Component {
       imageSource: "",
       truncatedImgSrc: "",
       faceData: [],
-      isDataRecieved: false
+      isDataRecieved: false,
+      displayComponent: true
     };
   }
+
+  componentDidMount() {
+    if (this.state.displayComponent) {
+      setInterval(() => {
+        console.log("interval");
+        this.capture();
+      }, 1000);
+    }
+  }
+  componentDidUpdate() {
+    this.captureOnInterval();
+  }
+
 
   setRef = webcam => {
     this.webcam = webcam;
@@ -25,40 +39,66 @@ export default class WebCamComponent extends React.Component {
 
   //method used to capture the webcam screenshot
   capture = async () => {
-    const imageSrc = this.webcam.getScreenshot();
-    this.setState(
-      {
-        isCanvasVisible: true
-      },
-      () => {
-        var newImageSource = this.splitImageValue(imageSrc)[1];
-        this.setState({
-          truncatedImgSrc: newImageSource,
-          imageSource: imageSrc
-        });
-        this.fetchFaceData(newImageSource);
+    try {
+      const imageSrc = this.webcam.getScreenshot();
+      if (imageSrc != null && this.state.displayComponent) {
+        this.setState(
+          {
+            isCanvasVisible: true
+          },
+          () => {
+            var newImageSource = this.splitImageValue(imageSrc)[1];
+            this.setState({
+              truncatedImgSrc: newImageSource,
+              imageSource: imageSrc
+            });
+            // var newImage = this.downscaledImage(imageSrc, 480, 288);
+            // console.log(newImage);
+            this.fetchFaceData(newImageSource);
+          }
+        );
+      } else {
+        console.log("image == null");
       }
-    );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //Method used to fetch data from the endpoint
   fetchFaceData = async imageSrc => {
-    fetch("http://speculo.isala.me/", {
-      method: "POST",
-      mode: "cors",
-      body: JSON.stringify({
-        image: imageSrc
+    if (imageSrc != null) {
+      fetch("http://speculo.isala.me/", {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({
+          image: imageSrc
+        })
       })
-    })
-      .then(response => response.json())
-      .then(data => this.setState({ faceData: data, isDataRecieved: true }))
-      .catch(err => console.log(err))
+        .then(response => response.json())
+        .then(data => this.setState({ faceData: data, isDataRecieved: true }))
+        .catch(err => console.log(err));
       // .then(() => console.log(this.state.faceData));
+    } else {
+      console.log("null image referenced");
+    }
   };
 
   splitImageValue = imageSrc => {
     var newImageStringArr = imageSrc.split(",");
     return newImageStringArr;
+  };
+
+  downscaledImage = (imgSrc, width, height) => {
+    var canvas = document.getElementById("canvas");
+    const ctx = this.refs.canvasOne.getContext("2d");
+    var image = new Image();
+    image.src = `${imgSrc}`;
+    image.onload = () => {
+      ctx.drawImage(image, 0, 0, width, height);
+      console.log("returned base64 image " + ctx.toDataURL);
+    };
+    return ctx.toDataURL();
   };
 
   render() {
@@ -90,15 +130,29 @@ export default class WebCamComponent extends React.Component {
         <Button
           buttonStyle={captureScreenshotBtnStyle}
           className="grab-webcam-screenshot"
-          onClickHandler={this.capture}
-          buttonTitle="Screenshot!"
+          onClickHandler={() => {
+            if (this.state.displayComponent) {
+              this.setState({displayComponent: false})
+            }else{
+              this.setState({displayComponent: true})
+            }
+          }}
+          buttonTitle="Stop/Start Live demo"
         />
 
         {/* ternary operator to display the "CanvasComponent" */}
-        {isCanvasVisible && imageSource !== "" && isDataRecieved ? (
+        {isCanvasVisible &&
+        imageSource !== "" &&
+        isDataRecieved &&
+        this.state.displayComponent ? (
           //canvas component
-          <div className="canvas-component">
-            <ImageCanvas imgSrc={imageSource} analysedFaceData={faceData} />
+          <div>
+            <div className="canvas-component">
+              <ImageCanvas imgSrc={imageSource} analysedFaceData={faceData} />
+            </div>
+            <div>
+              <canvas id="" ref="canvasOne" width={480} height={288} />
+            </div>
           </div>
         ) : null}
       </>

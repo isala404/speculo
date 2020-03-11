@@ -11,6 +11,7 @@ export default class ImageCanvas extends React.Component {
 
   //setting coordinates retrieved from the endpoint
   setCoordinates() {
+    
     var faceData = this.props.analysedFaceData.data[0];
     var firstCoordinate = faceData.cords[0];
     var secondCoordinate = faceData.cords[1];
@@ -52,8 +53,8 @@ export default class ImageCanvas extends React.Component {
         // 4 coordinate values acquired by the "coordinate" prop
         this.state.coordinates[0],
         this.state.coordinates[1],
-        this.state.coordinates[2],
-        this.state.coordinates[3]
+        this.state.coordinates[2] - this.state.coordinates[0],
+        this.state.coordinates[3] - this.state.coordinates[1]
       );
       ctx.stroke(); //stroking the drawn rectangle
     };
