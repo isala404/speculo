@@ -36,10 +36,17 @@ for person_dir in os.listdir("faces"):
 
 
 def best_match(f_encoding):
-    distances = []
-    for known_face_encoding in known_face_encodings:
-        distances.append(distance.euclidean(f_encoding, known_face_encoding))
-    return known_face_names[int(np.argmin(distances))]
+    persons = {}
+    for i, known_face_encoding in enumerate(known_face_encodings):
+        if known_face_names[i] not in persons:
+            persons[known_face_names[i]] = [distance.euclidean(f_encoding, known_face_encoding)]
+        else:
+            persons[known_face_names[i]].append(distance.euclidean(f_encoding, known_face_encoding))
+
+    for person in persons:
+        persons[person] = sum(persons[person])/len(persons[person])
+
+    return min(persons.keys(), key=(lambda k: persons[k]))
 
 
 print("Start Detecting .... ")
