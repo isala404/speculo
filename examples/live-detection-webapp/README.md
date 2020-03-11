@@ -1,8 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Speculo
 
-## Available Scripts
-
-In the project directory, you can run:
+Speculo, in Latin translates to "glass" which describes the product it self. Speculo is a software solution which is capable of harnessing the true potential of Object detection to reduce time taken by law enforcement to the bare minimum
 
 ### `npm start`
 
