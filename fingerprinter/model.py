@@ -257,4 +257,3 @@ def test_nn(nn):
 if __name__ == "__main__":
     speculo = Speculo()
     speculo.train()
-    # test_nn(speculo)
