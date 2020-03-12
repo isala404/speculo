@@ -1,5 +1,6 @@
 import React from "react";
 
+//class component for accessing state
 export default class ImageCanvas extends React.Component {
   constructor(props) {
     super(props);
