@@ -16,17 +16,19 @@ export default class WebCamComponent extends React.Component {
       truncatedImgSrc: "",
       faceData: [],
       isDataRecieved: false,
-      displayComponent: true
+      displayComponent: true,
+      numberOfFaces: 0
     };
   }
 
   componentDidMount() {
-    if (this.state.displayComponent) {
-      setInterval(() => {
-        this.capture();
-        console.log("captured is " + this.state.displayComponent);
-      }, 1000);
-    }
+    //invoking a method call at a set interval.
+    // if (this.state.displayComponent) {
+    //   setInterval(() => {
+    //     this.capture();
+    //     console.log("captured is " + this.state.displayComponent);
+    //   }, 1000);
+    // }
   }
 
   setRef = webcam => {
@@ -36,7 +38,9 @@ export default class WebCamComponent extends React.Component {
   //method used to capture the webcam screenshot
   capture = async () => {
     const imageSrc = this.webcam.getScreenshot();
-    if (imageSrc != null) {
+    //verifying if the image is null and if display component is true
+    if (imageSrc != null && this.state.displayComponent) {
+      console.log("captured image");
       this.setState(
         {
           isCanvasVisible: true
@@ -55,7 +59,9 @@ export default class WebCamComponent extends React.Component {
 
   //Method used to fetch data from the endpoint
   fetchFaceData = async imageSrc => {
+    //verifying if the image is null
     if (imageSrc != null) {
+      console.log("image sent to backend");
       fetch("http://speculo.isala.me/", {
         method: "POST",
         mode: "cors",
@@ -64,9 +70,13 @@ export default class WebCamComponent extends React.Component {
         })
       })
         .then(response => response.json())
-        .then(data => this.setState({ faceData: data, isDataRecieved: true }))
-        .catch(err => console.log(err));
-      // .then(() => console.log(this.state.faceData));
+        .then(data => this.setState({ faceData: data }))
+        .catch(err => console.log(err))
+        .then(() => {
+          //retrieving the number of faces in the json array
+          var len = Object.keys(this.state.faceData.data).length;
+          this.setState({ numberOfFaces: len, isDataRecieved: true });
+        });
     } else {
       console.log("image is null");
     }
@@ -82,7 +92,8 @@ export default class WebCamComponent extends React.Component {
       isCanvasVisible,
       imageSource,
       faceData,
-      isDataRecieved
+      isDataRecieved,
+      numberOfFaces
     } = this.state;
 
     const webcamConstraints = {
@@ -107,15 +118,17 @@ export default class WebCamComponent extends React.Component {
           buttonStyle={captureScreenshotBtnStyle}
           className="grab-webcam-screenshot"
           onClickHandler={() => {
-            if (this.state.displayComponent) {
-              console.log("display component is false");
-              this.setState({ displayComponent: false });
-            } else {
-              console.log("display component is true");
-              this.setState({ displayComponent: true });
-            }
+            this.capture();
+            //toggling of enabling and disabling the live demonstration
+            // if (this.state.displayComponent) {
+            //   console.log("display component is false");
+            //   this.setState({ displayComponent: false });
+            // } else {
+            //   console.log("display component is true");
+            //   this.setState({ displayComponent: true });
+            // }
           }}
-          buttonTitle="Screenshot!"
+          buttonTitle="Toggle Live Demo"
         />
 
         {/* ternary operator to display the "CanvasComponent" */}
@@ -125,7 +138,11 @@ export default class WebCamComponent extends React.Component {
         this.state.displayComponent ? (
           //canvas component
           <div className="canvas-component">
-            <ImageCanvas imgSrc={imageSource} analysedFaceData={faceData} />
+            <ImageCanvas
+              imgSrc={imageSource}
+              analysedFaceData={faceData.data}
+              numberOfFaces={numberOfFaces}
+            />
           </div>
         ) : null}
       </>
