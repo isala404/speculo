@@ -1,11 +1,20 @@
 import React, {Component} from "react";
+import '../styles/commonStyles.css';
 
 class Person extends Component{
-    state={};
+    state={
+        name: this.props.name
+    };
 
     render(){
         return(
-            <h1>This is a Person</h1>
+            <React.Fragment>
+                {/* show Time cards when clicked */}
+                <div onClick = {this.props.onChoose} style={{cursor: "pointer"}}>
+                    <div>~Image of the Person~</div>
+                    <p>{this.props.name}</p>
+                </div>
+            </React.Fragment>
             )
     }
 }
