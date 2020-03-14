@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import '../styles/commonStyles.css';
+import '../styles/commonStyles.scss';
 
 class Person extends Component{
     state={
