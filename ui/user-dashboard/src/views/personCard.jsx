@@ -8,13 +8,13 @@ class Person extends Component{
 
     render(){
         return(
-            <React.Fragment>
-                {/* show Time cards when clicked */}
+            <div id="personCard">
+            {/* show Time cards when clicked */}
                 <div onClick = {this.props.onChoose} style={{cursor: "pointer"}}>
                     <div>~Image of the Person~</div>
                     <p>{this.props.name}</p>
                 </div>
-            </React.Fragment>
+            </div>
             )
     }
 }

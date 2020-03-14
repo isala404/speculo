@@ -1,5 +1,35 @@
-/* .faceCard{
-    border-style: solid;
-    border: medium;
-    border-color: blue;
-} */
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+.allDetectedFaces {
+    position: relative;
+    display: inline-block;
+}
+
+#videoContainer{
+    max-width: 65%;
+}
+
+#videoPlayer{
+    position: relative;
+    float:left;
+}
+
+.allTimeCards {
+    clear: both;
+}
+
+#timeCard{
+    display: inline-block;
+    border: 3px solid blue;
+}
+
+#personCard{
+    border: 3px solid red;
+}
