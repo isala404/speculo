@@ -1,5 +1,6 @@
 import React from "react";
 
+//class component for accessing state
 export default class ImageCanvas extends React.Component {
   constructor(props) {
     super(props);
@@ -52,8 +53,8 @@ export default class ImageCanvas extends React.Component {
         // 4 coordinate values acquired by the "coordinate" prop
         this.state.coordinates[0],
         this.state.coordinates[1],
-        this.state.coordinates[2],
-        this.state.coordinates[3]
+        this.state.coordinates[2] - this.state.coordinates[0],
+        this.state.coordinates[3] - this.state.coordinates[1]
       );
       ctx.stroke(); //stroking the drawn rectangle
     };
