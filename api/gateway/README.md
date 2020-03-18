@@ -2,6 +2,9 @@
 
 API Gateway for Speculo.
 
+* The data sent in the body must be encoded in `x-www-form-urlencoded`.
+* Gateway runs on port 3000
+
 ## Installation
 
 Use the node package manager [npm](https://www.npmjs.com/) to install the dependancies.
@@ -18,8 +21,6 @@ Run this in your terminal.
 npm index.js
 ```
 
-* The data sent in the body must be encoded in `x-www-form-urlencoded`.
-* Gateway runs on port 3000
 
 ## Authentication API service
 
