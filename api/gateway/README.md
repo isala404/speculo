@@ -21,6 +21,8 @@ npm index.js
 * The data sent in the body must be encoded in `x-www-form-urlencoded`.
 * Gateway runs on port 3000
 
+## Authentication API service
+
 ### Registration
 
 ```bash
