@@ -4,7 +4,7 @@ API Gateway for Speculo.
 
 ## Registration
 
-`curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/register`
+```curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/register```
 
 ##### Response 
 
@@ -31,7 +31,7 @@ API Gateway for Speculo.
 
 ## Authentication
 
-`curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authenticate`
+```curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authenticate```
 
 ##### Response
 
