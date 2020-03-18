@@ -2,9 +2,30 @@
 
 API Gateway for Speculo.
 
-## Registration
+## Installation
 
-```curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/register```
+Use the node package manager [npm](https://www.npmjs.com/) to install the dependancies.
+
+```bash
+npm install
+```
+
+## Usage
+
+Run this in your terminal.
+
+```bash
+npm index.js
+```
+
+* The data sent in the body must be encoded in `x-www-form-urlencoded`.
+* Gateway runs on port 3000
+
+### Registration
+
+```bash
+curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/register
+```
 
 ##### Response 
 
@@ -20,18 +41,11 @@ API Gateway for Speculo.
 }
 ```
 
-###### If the user already exists
+### Authentication
 
-```javascript
-{
-    "status": "unsucessful",
-    "message": "User already exists!"
-}
+```bash
+curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authenticate
 ```
-
-## Authentication
-
-```curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authenticate```
 
 ##### Response
 
@@ -51,3 +65,8 @@ API Gateway for Speculo.
     }
 }
 ```
+
+Here's a more detailed [documentation](https://web.postman.co/collections/4847812-ec1143e9-3e6c-408c-8d6c-86dd81b62467?version=latest&workspace=5cd5ce26-92d0-47e9-8ffb-9e2d98effd0c) about the Authentication API.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
