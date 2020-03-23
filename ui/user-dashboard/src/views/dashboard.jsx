@@ -6,12 +6,15 @@ import TimeCard from "../components/TimeCard";
 import Person from "../components/PersonCard";
 import '../styles/commonStyles.scss';
 
+import {retrieveAllDetections} from "../services/DetectionsManagement";
+
 
 export default class Dashboard extends Component{
   constructor(props){
     super(props)
 
     this.state={
+      // allDetections:[]       // used when dealing with the back-end
       allDetections: [
         {id: 1, faceName: "Akassh", timestamps: [60,100,1200]},
         {id: 2, faceName: "Visal", timestamps: [1000]},
@@ -33,6 +36,9 @@ export default class Dashboard extends Component{
         this.player = videojs(this.videoNode, this.props, function onPlayerReady() {
           console.log('onPlayerReady', this)
         });
+
+        // get detected faces with timestamps from the backend
+        this.getAllDetections();
       }
     
       // destroy player on unmount
@@ -54,6 +60,25 @@ export default class Dashboard extends Component{
 
     this.setState({selectedPerson:person})    // updating state of selectedPerson
   }
+
+
+  async getAllDetections() {
+
+    const res = await retrieveAllDetections()
+
+    if (res != null) {
+      // console.log(res.data.detections)
+      let detections = res.data.map(detection => {
+        return{
+          id: detection._id,
+          faceName: detection.name,
+          timestamps: detection.timestamps
+        };
+      }); this.setState({allDetections: detections});         //adding newly created array into already existing array
+
+    }
+  }
+  
 
   render(){
     return(

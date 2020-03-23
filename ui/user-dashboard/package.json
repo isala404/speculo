@@ -7,11 +7,13 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@videojs/themes": "^1.0.0",
+    "axios": "^0.19.2",
     "node-sass": "^4.13.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0"
+    "react-scripts": "3.4.0",
+    "video.js": "^7.6.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,7 +36,5 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "video.js": "^7.6.6"
-  }
+  "devDependencies": {}
 }
