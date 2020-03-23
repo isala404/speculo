@@ -389,3 +389,5 @@ fingerprinter/archive
 
 **/variables
 **/assets
+
+api/image-preprocessor/videos/**
