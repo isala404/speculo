@@ -2,12 +2,12 @@ import React, {Component} from "react";
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import '@videojs/themes/dist/fantasy/index.css';
-import TimeCard from "./timeCard";
-import Person from "./personCard";
+import TimeCard from "../components/TimeCard";
+import Person from "../components/PersonCard";
 import '../styles/commonStyles.scss';
 
 
-export default class DashBoard extends Component{
+export default class Dashboard extends Component{
   constructor(props){
     super(props)
 

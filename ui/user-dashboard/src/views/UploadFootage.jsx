@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-class AllFaces extends Component{
+class UploadFootage extends Component{
     state={};
 
     render(){
@@ -15,4 +15,4 @@ class AllFaces extends Component{
     }
 }
 
-export default AllFaces;
+export default UploadFootage;
