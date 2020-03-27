@@ -1,6 +1,12 @@
 import numpy as np
-import mongoengine
-from mongoengine import connect
+from mongoengine import Document, StringField, ListField, IntField, connect
+
+connect('face_matrix', host='mongodb+srv://user:4313Samadhi@cluster0-jqb4b.mongodb.net/speculo?retryWrites=true&w=majority')
+
+class Face(Document):
+    face_id = IntField(required=True)
+    face_label = StringField(max_length=50)
+    face_matrix = ListField(required=True)
 
 
 class ImageComparator:
@@ -33,10 +39,8 @@ class ImageComparator:
 	
 	def matrix_matcher(self, matrix):
 		saved_matrix = []
-		
-		# kushan
-		# for fingerprints in database
-		for x in []:
+
+		for x in Face.objects:
 			saved_matrix.append(x)
 		
 		identity = self._compare(matrix, saved_matrix)
