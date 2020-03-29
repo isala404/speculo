@@ -1,7 +1,12 @@
 import numpy as np
 from mongoengine import Document, StringField, ListField, IntField, connect
 
-connect('face_matrix', host='mongodb+srv://user:4313Samadhi@cluster0-jqb4b.mongodb.net/speculo?retryWrites=true&w=majority')
+connect(
+    db='face',
+    username='user',
+    password='4313Samadhi',
+    host='mongodb+srv://user:4313Samadhi@cluster0-jqb4b.mongodb.net/speculo'
+)
 
 class Face(Document):
     face_id = IntField(required=True)
@@ -42,6 +47,8 @@ class ImageComparator:
 
 		for x in Face.objects:
 			saved_matrix.append(x)
+
+		#  saved_matrix[0].face_id will return face_id
 		
 		identity = self._compare(matrix, saved_matrix)
 		data = {'id': identity}
