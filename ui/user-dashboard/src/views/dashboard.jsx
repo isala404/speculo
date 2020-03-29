@@ -14,12 +14,12 @@ export default class Dashboard extends Component{
     super(props)
 
     this.state={
-      // allDetections:[]       // used when dealing with the back-end
-      allDetections: [
+      // allDetections:[]       // stores all the detected faces with the timestamps
+      allDetections: [          // hard coded example
         {id: 1, faceName: "Akassh", timestamps: [60,100,1200]},
         {id: 2, faceName: "Visal", timestamps: [1000]},
         {id: 3, faceName: "Nisal", timestamps: [100,500,1200, 1500]}
-      ]     // stores all the detected faces with the timestamps  ~ one time stamp each per person for now
+      ]
       ,
       selectedPerson: null
       ,

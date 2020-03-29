@@ -8,7 +8,6 @@ export async function retrieveAllDetections(){
         //get allDetections data
         const res = await axios.get(GetDetectionsURL,
             {headers: {
-                // 'Authorization': "bearer " + token,
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': '*',
             }
