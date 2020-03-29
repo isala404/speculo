@@ -46,7 +46,7 @@ class ImageComparator:
 		saved_matrix = []
 
 		for x in Face.objects:
-			saved_matrix.append(x)
+			saved_matrix.append(list(x.face_matrix))
 
 		#  saved_matrix[0].face_id will return face_id
 		
