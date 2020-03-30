@@ -57,4 +57,4 @@ class ImageComparator:
 		identity = self._compare(matrix, saved_matrix)
 		data = {'id': identity}
 		
-		return {'id': '1'}
+		return data
