@@ -4,6 +4,8 @@ from aiohttp import web
 
 from app import ImageComparator
 
+import numpy as np
+
 
 async def handle_get(request):
 	return web.Response(text=json.dumps({'status': 'success'}))
@@ -13,7 +15,8 @@ async def handle_post(request):
 	try:
 		body = await request.json()
 		
-		matrix = body['instances']
+		recievedMatrix = body['instances']
+		matrix=np.array(matrix)
 		
 		# return a success json response with status code 200 i.e. 'OK'
 		return web.Response(text=json.dumps(ImageComparator().matrix_matcher(matrix=matrix)), status=200)

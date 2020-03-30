@@ -35,6 +35,16 @@ def compare(face_encodings_list,known_face_encodings_list):
     for known_encoding in known_face_encodings_list:
         print("*************************************")
         for face_encoding in face_encodings_list:
+            #print(known_encoding)
+            #print(face_encoding)
+
+            test=np.array(known_encoding).tolist()
+            test2=np.array(test)
+
+            print(test2)
+            
+
+            
             face_distance=distance02(known_encoding,face_encoding)
             print(face_distance)
             if face_distance<0.6: #Accurate Range checking, over 6 means not an accurate match.

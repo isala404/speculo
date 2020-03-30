@@ -19,11 +19,15 @@ class ImageComparator:
 		self._MONGO_URI = ''
 	
 	def _distance01(self, matrix_one, matrix_two):
-		distance_value = np.linalg.norm(matrix_one - matrix_two)
+                mat_one=np.array(matrix_one)
+                mat_two=np.array(matrix_two)
+		distance_value = np.linalg.norm(mat_one - mat_two)
 		return distance_value
 	
 	def _distance02(self, matrix_one, matrix_two):
-		return np.sqrt(np.sum((matrix_one - matrix_two) ** 2))
+                mat_one=np.array(matrix_one)
+                mat_two=np.array(matrix_two)
+		return np.sqrt(np.sum((mat_one - mat_two) ** 2))
 	
 	def _compare(self, detected_encoding, known_face_encodings_list):
 		indexes = []
