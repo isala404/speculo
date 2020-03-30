@@ -16,7 +16,7 @@ async def handle_post(request):
 		body = await request.json()
 		
 		recievedMatrix = body['instances']
-		matrix=np.array(matrix)
+		matrix=np.array(recievedMatrix)
 		
 		# return a success json response with status code 200 i.e. 'OK'
 		return web.Response(text=json.dumps(ImageComparator().matrix_matcher(matrix=matrix)), status=200)
