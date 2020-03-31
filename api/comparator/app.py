@@ -47,6 +47,7 @@ class ImageComparator:
 			return "Error"
 
 	def matrix_matcher(self, matrix):
+		matrix=np.array(matrix)
 		saved_matrix = []
 		saved_names = []
 		saved_ids = []

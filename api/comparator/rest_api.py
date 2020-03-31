@@ -7,16 +7,12 @@ from app import ImageComparator
 import numpy as np
 
 
-async def handle_get(request):
-	return web.Response(text=json.dumps({'status': 'success'}))
-
-
 async def handle_post(request):
 	try:
 		body = await request.json()
 		
-		recievedMatrix = body['instances']
-		matrix=np.array(recievedMatrix)
+		# get the fingerprint from the request body
+		matrix = body['instances']
 		
 		# return a success json response with status code 200 i.e. 'OK'
 		return web.Response(text=json.dumps(ImageComparator().matrix_matcher(matrix=matrix)), status=200)
@@ -32,8 +28,7 @@ async def handle_post(request):
 app = web.Application()
 
 routes = [
-	web.get('/test', handle_get),
-	web.post('/matrix-matcher', handle_post),
+	web.post('api/v1/comparator', handle_post),
 ]
 
 app.add_routes(routes)
