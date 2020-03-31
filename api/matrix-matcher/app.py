@@ -44,7 +44,7 @@ class ImageComparator:
 			val = indexes[high_matches.index(min(high_matches))] + 1
 			return val
 		else:
-			return len(known_face_encodings_list) + 1
+			return "Error"
 
 	def matrix_matcher(self, matrix):
 		saved_matrix = []
@@ -57,10 +57,16 @@ class ImageComparator:
 		#  saved_matrix[0].face_id will return face_id
 
 		identity = self._compare(matrix, saved_matrix)
-		name_label = saved_names[identity-1]
-		data = {
-			'id': identity,
-			'name': name_label
-		}
+		if(identity=="Error"):
+			data = {
+				'found':False
+			}
+		else:
+			name_label = "".join(saved_names[identity-1])
+			data = {
+				'found':True,
+				'id': identity,
+				'name': name_label
+			}
 
 		return data
