@@ -9,10 +9,13 @@ class ImagePreprocessor:
 	def __init__(self, filename):
 		self._SIZE = 192
 		self._FINGERPRINT_SIZE = (128, 128, 1)
-		self._FINGERPRINT_ENDPOINT = 'http://localhost:8501/v1/models/fingerprinter:predict'
 		self._FACEDETECTOR_ENDPOINT = 'http://localhost:8500/v1/models/facedetector:predict'
+		self._FINGERPRINT_ENDPOINT = 'http://localhost:8501/v1/models/fingerprinter:predict'
 		self._BESTMATCHER_ENDPOINT = 'http://localhost:8502/api/matrix_matcher'
-		self.filename = 'head-pose-face-detection-male.mp4'
+		self.filename = filename
+		self.file = None
+		self.not_found = []
+		self.unknown_face_count = 0
 	
 	def _get_faces(self, current_frame):
 		body = json.dumps({'instances': current_frame.tolist()})
@@ -22,8 +25,8 @@ class ImagePreprocessor:
 		data = json.loads(response.text)
 		
 		if 'error' in data.keys():
-			print("error")
-			return 0
+			print(data['error'])
+			return data['error']
 		
 		return data['predictions']
 	
@@ -41,26 +44,20 @@ class ImagePreprocessor:
 		
 		return data['predictions']
 	
-	def _get_bestmatch(self, predictions):
-		body = json.dumps({'instances': np.reshape(predictions, [-1]).tolist()})
-		print(body)
+	def _get_bestmatch(self, fingerprint):
+		body = json.dumps({'instances': np.reshape(fingerprint, [-1]).tolist()})
+		# print(body)
 		response = requests.post(url=self._BESTMATCHER_ENDPOINT, data=body)
-		
-		print(response.status_code)
-		print(response.content)
 		
 		data = json.loads(response.text)
 		
-		print(data)
+		if not data["found"]:
+			return {}
 		
-		if 'error' in data.keys():
-			print("error in retrieving bestmatcher")
-			return 0
-		
-		return 0
+		return {"id": "1", "name": "Akassh"}
 	
 	def preprocess(self):
-		value = []
+		all_detections = []
 		video_capture = cv2.VideoCapture(self.filename)
 		fps = video_capture.get(cv2.CAP_PROP_FPS)
 		ret, frame = video_capture.read()
@@ -71,6 +68,7 @@ class ImagePreprocessor:
 			resized_frame = cv2.resize(frame, (self._SIZE, self._SIZE))
 			
 			print("time stamp current frame:", count / fps)
+			timestamp = count / fps
 			
 			boxes = self._get_faces(current_frame=resized_frame)
 			
@@ -89,13 +87,29 @@ class ImagePreprocessor:
 				
 				cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 				
-				predictions = self._get_fingerprint(current_face=face)
+				fingerprint = self._get_fingerprint(current_face=face)
 				
-				fingerprint = self._get_bestmatch(predictions=predictions)
+				face_data = self._get_bestmatch(fingerprint=fingerprint)
 				
-				print(fingerprint)
+				flag = False
+				for x in all_detections:
+					if x['id'] == face_data['id']:
+						print("hi")
+						print(x['id'])
+						print(face_data['id'])
+						flag = True
+						timestamps = x['timestamps']
+						timestamps.append(timestamp)
+						x['timestamps'] = timestamps
+				
+				if not flag:
+					all_detections.append({
+						'id': face_data['id'],
+						'name': face_data['name'],
+						'timestamps': [timestamp]
+					})
 			
-			break
+			# break
 			# font = cv2.FONT_HERSHEY_DUPLEX
 			# Best_Match API, send the above response to it. (returns the name)
 			# call best match api here
@@ -105,6 +119,6 @@ class ImagePreprocessor:
 			
 			ret, frame = video_capture.read()
 			count += 1
+		return all_detections
 
-
-ImagePreprocessor('head-pose-face-detection-male.mp4').preprocess()
+# ImagePreprocessor('head-pose-face-detection-male.mp4').preprocess()
