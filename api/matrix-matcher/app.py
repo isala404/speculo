@@ -49,10 +49,12 @@ class ImageComparator:
 	def matrix_matcher(self, matrix):
 		saved_matrix = []
 		saved_names = []
+		saved_ids = []
 
 		for x in Face.objects:
 			saved_matrix.append(list(x.face_matrix))
 			saved_names.append(list(x.face_label))
+			saved_ids.append(list(x.face_id))
 
 		#  saved_matrix[0].face_id will return face_id
 
@@ -63,9 +65,10 @@ class ImageComparator:
 			}
 		else:
 			name_label = "".join(saved_names[identity-1])
+			face_id = "".join(saved_ids[identity-1])
 			data = {
 				'found':True,
-				'id': identity,
+				'id': face_id,
 				'name': name_label
 			}
 
