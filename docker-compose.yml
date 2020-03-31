@@ -16,7 +16,7 @@ services:
       - MODEL_NAME=fingerprinter
   comparator:
     build:
-      context: api/image-comparator/
+      context: api/matrix-matcher/
       dockerfile: Dockerfile
     ports:
       - 8502:8000
