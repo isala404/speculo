@@ -57,7 +57,7 @@ class ImageComparator:
 		#  saved_matrix[0].face_id will return face_id
 
 		identity = self._compare(matrix, saved_matrix)
-		name_label = saved_names[identity]
+		name_label = saved_names[identity-1]
 		data = {
 			'id': identity,
 			'name': name_label
