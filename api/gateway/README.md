@@ -47,7 +47,7 @@ curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/register
 ### Authentication
 
 ```bash
-curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authenticate
+curl -d "email=X&password=X" -X POST http://localhost:3000/user/authenticate
 ```
 
 ##### Response
