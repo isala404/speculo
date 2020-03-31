@@ -7,7 +7,7 @@ class UploadFootage extends Component{
     
     render(){
 
-        const MyUploader = () => {
+        const MyVideoUploader = () => {
             // specify upload params and url for files
             const getUploadParams = ({ meta }) => { return { url: 'https://httpbin.org/post' } }
             
@@ -22,10 +22,11 @@ class UploadFootage extends Component{
             
             return (
                 <Dropzone
-                  getUploadParams={getUploadParams}
-                  onChangeStatus={handleChangeStatus}
-                  onSubmit={handleSubmit}
-                  accept="video/*"      // allow only video files to be uploaded
+                    getUploadParams={getUploadParams}
+                    onChangeStatus={handleChangeStatus}
+                    onSubmit={handleSubmit}
+                    accept="video/*"      // allow only video files to be uploaded
+                    maxFiles = "1"
                 />
               )
         }
@@ -42,7 +43,7 @@ class UploadFootage extends Component{
                     </div>
                 </form> */}
 
-                <MyUploader />
+                <MyVideoUploader />
 
             </div>
         )
