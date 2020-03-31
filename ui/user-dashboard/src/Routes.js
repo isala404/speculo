@@ -1,4 +1,4 @@
-import Home from "./views/Home.jsx";
+import {Home} from "./views/Home.jsx";
 import DashBoard from "./views/dashboard.jsx";
 
 // data object to make code simpler
