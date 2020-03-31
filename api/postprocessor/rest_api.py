@@ -2,9 +2,10 @@ import json
 import os
 from aiohttp import web
 from multidict import MultiDict
+from app import ImagePostprocessor
 
 
-def save_image(request):
+async def save_image(request):
 	reader = await request.multipart()
 	
 	# /!\ Don't forget to validate your inputs /!\
@@ -28,7 +29,9 @@ def save_image(request):
 
 async def save_face_data(request):
 	try:
-		filename = save_image(request)
+		filename = await save_image(request)
+		
+		ImagePostprocessor(filename=filename).save_face_data()
 		
 		return web.Response(text='{} successfully saved'''.format(filename))
 	
@@ -43,7 +46,7 @@ async def save_face_data(request):
 
 async def edit_face_data(request):
 	try:
-		filename = save_image(request)
+		filename = await save_image(request)
 		
 		return web.Response(text='{} successfully edited'''.format(filename))
 	
