@@ -2,13 +2,13 @@ import requests
 import json
 import numpy as np
 import PIL
-from PIL import Image
+from PIL import Image, ImageDraw
 
 
 class ImagePostprocessor:
 	def __init__(self, filename):
 		self._SIZE = 192
-		self._FINGERPRINT_SIZE = (128, 128, 1)
+		self._FINGERPRINT_SIZE = (128, 128)
 		self._FACEDETECTOR_ENDPOINT = 'http://localhost:8500/v1/models/facedetector:predict'
 		self._FINGERPRINT_ENDPOINT = 'http://localhost:8501/v1/models/fingerprinter:predict'
 		self.filename = filename
@@ -28,7 +28,8 @@ class ImagePostprocessor:
 	
 	def _get_fingerprint(self, current_face):
 		# using old model
-		body = json.dumps({'instances': np.reshape(current_face, [-1, 64, 64, 3]).tolist()})
+		# body = json.dumps({'instances': np.reshape(current_face, [-1, 64, 64, 3]).tolist()})
+		body = json.dumps({'instances': np.reshape(np.array(current_face), [-1, 64, 64, 3]).tolist()})
 		
 		response = requests.post(url=self._FINGERPRINT_ENDPOINT, data=body)
 		
@@ -49,6 +50,8 @@ class ImagePostprocessor:
 		
 		boxes = self._get_faces(resized_image=resized_im)
 		
+		print(boxes)
+		
 		for top, left, bottom, right in boxes:
 			# Setting the points for cropped image
 			top = int(top * height / self._SIZE)
@@ -58,6 +61,15 @@ class ImagePostprocessor:
 			
 			# Cropped image of above dimension
 			# (It will not change orginal image)
-			im1 = im.crop((left, top, right, bottom))
+			face = im.crop((left, top, right, bottom))
 			
-			im1.show()
+			face = face.resize(self._FINGERPRINT_SIZE,  Image.ANTIALIAS)
+			
+			image_drawer = ImageDraw.Draw(face)
+			image_drawer.rectangle(((left, top), (right, bottom)), fill=None, outline="red")
+			
+			fingerprint = self._get_fingerprint(current_face=face)
+			
+			print(fingerprint)
+			
+			break
