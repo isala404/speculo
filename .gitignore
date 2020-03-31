@@ -411,3 +411,8 @@ fingerprinter/dataset
 
 facedetector/model-weights
 fingerprinter/archive
+
+**/variables
+**/assets
+
+api/image-preprocessor/videos/**
