@@ -411,3 +411,6 @@ fingerprinter/dataset
 
 facedetector/model-weights
 fingerprinter/archive
+
+**/variables
+**/assets
