@@ -1,5 +1,5 @@
 import numpy as np
-from mongoengine import Document, StringField, ListField, IntField, connect
+from mongoengine import Document, StringField, ListField, IntField, connect, BooleanField
 
 connect(
     db='face',
@@ -8,11 +8,16 @@ connect(
     host='mongodb+srv://user:4313Samadhi@cluster0-jqb4b.mongodb.net/speculo'
 )
 
-class Face(Document):
-    face_id = IntField(required=True)
-    face_label = StringField(max_length=50)
-    face_matrix = ListField(required=True)
+# class Face(Document):
+#     face_id = IntField(required=True)
+#     face_label = StringField(max_length=50)
+#     face_matrix = ListField(required=True)
 
+class Face(Document):
+	face_id = Document.pk
+	face_label = StringField(max_length=50)
+	face_matrix = ListField(required=True)
+	face_blacklisted = (BooleanField(default=False))
 
 class ImageComparator:
 	def __init__(self):
@@ -51,26 +56,45 @@ class ImageComparator:
 		saved_matrix = []
 		saved_names = []
 		saved_ids = []
+		saved_blacklist = []
 
 		for x in Face.objects:
 			saved_matrix.append(list(x.face_matrix))
 			saved_names.append(list(x.face_label))
-			saved_ids.append(list(x.face_id))
+			saved_ids.append(list(str(x.face_id)))
+			saved_blacklist.append(list(str(x.face_blacklisted)))
 
 		#  saved_matrix[0].face_id will return face_id
 
 		identity = self._compare(matrix, saved_matrix)
 		if(identity=="Error"):
+			
+			face_matrix = matrix
+			face_label = "Unknown"
+			face_blacklist= False
+
+			# data = {
+			# 	'found':False
+			# }
+
+			added_face = Face(face_label=face_label, face_matrix=face_matrix ,face_blacklisted= face_blacklist)
+			added_face.save()
+
 			data = {
-				'found':False
+				'found':False,
+				'id': str(added_face.id),
+				'name': face_label
 			}
+
 		else:
 			name_label = "".join(saved_names[identity-1])
 			face_id = "".join(saved_ids[identity-1])
+			face_blacklist = "".join(saved_blacklist[identity-1])
 			data = {
 				'found':True,
 				'id': face_id,
-				'name': name_label
+				'name': name_label,
+				'blacklist': face_blacklist=="True"
 			}
 
 		return data

@@ -28,7 +28,7 @@ async def handle_post(request):
 app = web.Application()
 
 routes = [
-	web.post('api/v1/comparator', handle_post),
+	web.post('/api/v1/comparator', handle_post),
 ]
 
 app.add_routes(routes)
