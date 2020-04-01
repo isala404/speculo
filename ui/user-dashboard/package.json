@@ -35,6 +35,6 @@
     ]
   },
   "devDependencies": {
-    "video.js": "^7.6.6"
+    "video.js": "^7.7.5"
   }
 }
