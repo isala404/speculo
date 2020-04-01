@@ -1,23 +1,24 @@
-const userModel = require("../models/user");
+const adminModel = require("../models/admin");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 module.exports = {
     create: function (req, res, next) {
-
-        userModel.findOne({email: req.body.email}, function (err, user) {
+        // queries the db to check if the email is already in use
+        adminModel.findOne({email: req.body.email}, function (err, admin) {
             if (err) next(err);
 
-            if (user != null) {
+            if (admin != null) {
                 res.json({
                     status: "failed",
-                    message: "User already exists!"
+                    message: "Admin already exists!"
                 });
 
                 return;
             }
 
-            userModel.create(
+            // if there isn't an existing account, then it creates a new entry in the database
+            adminModel.create(
                 {
                     name: req.body.name,
                     email: req.body.email,
@@ -28,7 +29,7 @@ module.exports = {
                     else
                         res.json({
                             status: "success",
-                            message: "User added successfully!",
+                            message: "Admin added successfully!",
                             data: {
                                 name: req.body.name,
                                 email: req.body.email,
@@ -42,20 +43,23 @@ module.exports = {
 
     },
     authenticate: function (req, res, next) {
-        userModel.findOne({email: req.body.email}, function (err, userInfo) {
+        // finds a record with the same email address provided
+        adminModel.findOne({email: req.body.email}, function (err, adminInfo) {
             if (err) {
                 next(err);
             } else {
-                if (bcrypt.compareSync(req.body.password, userInfo.password)) {
+                // checks if the hash value in the db and the hashed value of the password in the request body match
+                if (bcrypt.compareSync(req.body.password, adminInfo.password)) {
+                    console.log(adminInfo.password)
                     const token = jwt.sign(
-                        {id: userInfo._id},
+                        {id: adminInfo._id},
                         req.app.get("secretKey"),
-                        {expiresIn: "24h"}
+                        {expiresIn: "1h"}
                     );
                     res.json({
                         status: "success",
-                        message: "User found!",
-                        data: {user: userInfo, token: token}
+                        message: "Admin found!",
+                        data: {admin: adminInfo, token: token}
                     });
                 } else {
                     res.json({
