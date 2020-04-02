@@ -1,27 +1,19 @@
 import React from "react";
-import { Col } from "react-flexbox-grid";
 import styled from "styled-components";
-import "../../styles/fonts.css";
+import {Row} from "react-flexbox-grid"
 
-export const FeatureItem = ({
-  iconSource,
-  featureContent,
+export const SystemFeatureItem = (
+  {featureIcon,
   featureHeading,
-  xs,
-  sm,
-  md,
-  lg
-}) => {
+  featureContent,
+toggleBottomSpace,
+screenwidth}
+) => {
   return (
-    <Col
-      xs={xs == null ? 12 : xs}
-      sm={sm == null ? 12 : sm}
-      md={md == null ? 4 : md}
-      lg={lg == null ? 4 : lg}
-    >
-      <FeatureDiv>
+    <Row style={{marginBottom : toggleBottomSpace && screenwidth>990 ? "15em": "0em"}}>
+      <FeatureDiv toggleBottomSpace={toggleBottomSpace}>
         <FeatureIconDiv>
-          <Icon src={iconSource} />
+          <Icon src={featureIcon} />
         </FeatureIconDiv>
         <FeatureHeadingDiv>
           <FeatureHeading>{featureHeading}</FeatureHeading>
@@ -30,13 +22,12 @@ export const FeatureItem = ({
           <FeatureContent>{featureContent}</FeatureContent>
         </FeatureContentDiv>
       </FeatureDiv>
-    </Col>
+    </Row>
   );
 };
 
 const FeatureDiv = styled.div`
   margin: auto;
-  padding: 1em;
 `;
 
 const FeatureIconDiv = styled.div`
@@ -47,6 +38,7 @@ const FeatureHeadingDiv = styled.div`
 `;
 const FeatureContentDiv = styled.div`
   margin: auto;
+  padding: 1em
 `;
 const FeatureHeading = styled.h3`
   font-family: "Gilroy-SemiBold";

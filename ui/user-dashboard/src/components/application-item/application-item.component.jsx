@@ -29,7 +29,7 @@ export const ApplicationItem =({appName, appContent, buttonOnclick, isFinalEleme
 
 const ApplicationDiv = styled.div`
   text-align: left;
-  margin-bottom: ${props => !props.finalElement ? "2em" : "0em"}
+  margin-bottom: ${props => !props.isFinalElement ? "2em" : "0em"}
 `;
 
 const ApplicationHeading = styled.h3`
