@@ -1,5 +1,5 @@
 requests==2.23.0
 mongoengine==0.19.1
 aiohttp==3.6.2
-numpy==1.18.1
+numpy==1.18.2
 Pillow==7.1.0
