@@ -19,4 +19,4 @@ services:
       context: api/comparator/
       dockerfile: Dockerfile
     ports:
-      - 8502:8000
+      - 8502:8080

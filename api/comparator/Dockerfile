@@ -1,6 +1,6 @@
-FROM python:3.8-alpine
+FROM python:3.8-slim-buster
 
-RUN apk add --update --no-cache py3-numpy
+RUN apt-get update && apt-get install -y python3-numpy
 
 ENV PYTHONPATH=/usr/lib/python3.8/site-packages
 
@@ -12,4 +12,4 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]
+CMD python3 rest_api.py
