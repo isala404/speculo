@@ -1,62 +1,63 @@
 import React from "react";
 import { Grid, Row, Col } from "react-flexbox-grid";
 import styled from "styled-components";
+import { Logo } from "../../assets/speculo-logo";
+import FacebookIcon from "../../assets/footer-icons/facebook_color.png";
+import GoogleIcon from "../../assets/footer-icons/google_color.png";
+import TwitterIcon from "../../assets/footer-icons/twitter_color.png";
+import LinkedinIcon from "../../assets/footer-icons/linkedin_color.png";
+import { GetWindowSize } from "../../helpers/window-size";
+import { FooterLinkColumn } from "../home-footer-Column/home-footer-column.component";
 
 const links = ["apple", "bear", "canopy", "doctor", "elephant", "fan", "golem"];
 
 export const Footer = () => {
+  //getting windowsize
+  const [width, height] = GetWindowSize();
   return (
     <FooterDiv>
       <Grid>
         <Row>
-          <Col xs={4} sm={4} md={4} lg={2}>
-            <FooterColumnDiv>
-              <FooterColumnHeading>Features</FooterColumnHeading>
-              <MapLinks list={links} />
-            </FooterColumnDiv>
+          <Col xs={12} sm={4} md={4} lg={2}>
+            <FooterLinkColumn
+              links={links}
+              windowWidth={width}
+              columnHeading={"Features"}
+            />
           </Col>
-          <Col xs={4} sm={4} md={4} lg={2}>
-            <FooterColumnDiv>
-              <FooterColumnHeading>Features</FooterColumnHeading>
-              <MapLinks list={links} />
-            </FooterColumnDiv>
+          <Col xs={12} sm={4} md={4} lg={2}>
+          <FooterLinkColumn
+              links={links}
+              windowWidth={width}
+              columnHeading={"Features"}
+            />
           </Col>
-          <Col xs={4} sm={4} md={4} lg={2}>
-            <FooterColumnDiv>
-              <FooterColumnHeading>Features</FooterColumnHeading>
-              <MapLinks list={links} />
-            </FooterColumnDiv>
+          <Col xs={12} sm={4} md={4} lg={2}>
+          <FooterLinkColumn
+              links={links}
+              windowWidth={width}
+              columnHeading={"Features"}
+            />
           </Col>
           <Col
-            xs={4}
-            sm={4}
-            md={4}
+            xs={12}
+            sm={12}
+            md={12}
             lg={6}
             style={{ color: "#ffffff", textAlign: "left" }}
           >
             <Row>
-              <Row>LOGO GOES HERE</Row>
-              <Row>{content}</Row>
-              <Row>ICONS GO HERE</Row>
               <Row>
-                <Col xs={4} sm={4} md={4} lg={4}>
-                  <FooterColumnDiv>
-                    <FooterColumnHeading>Features</FooterColumnHeading>
-                    <MapLinks list={links} />
-                  </FooterColumnDiv>
-                </Col>
-                <Col xs={4} sm={4} md={4} lg={4}>
-                  <FooterColumnDiv>
-                    <FooterColumnHeading>Features</FooterColumnHeading>
-                    <MapLinks list={links} />
-                  </FooterColumnDiv>
-                </Col>
-                <Col xs={4} sm={4} md={4} lg={4}>
-                  <FooterColumnDiv>
-                    <FooterColumnHeading>Features</FooterColumnHeading>
-                    <MapLinks list={links} />
-                  </FooterColumnDiv>
-                </Col>
+                <Logo />
+              </Row>
+              <Row>
+                <FooterContent>{content}</FooterContent>
+              </Row>
+              <Row>
+                <FooterIcon src={FacebookIcon} />
+                <FooterIcon src={GoogleIcon} />
+                <FooterIcon src={LinkedinIcon} />
+                <FooterIcon src={TwitterIcon} />
               </Row>
             </Row>
           </Col>
@@ -66,33 +67,22 @@ export const Footer = () => {
   );
 };
 
-const FooterColumnDiv = styled.div``;
 const FooterDiv = styled.div`
   background: #0b162b;
-  padding: 1em;
+  padding: 5%;
 `;
 
-const FooterColumnHeading = styled.h4`
-  color: #ffffff;
-  font-family: "Gilroy-SemiBold";
-`;
-
-const FooterLink = styled.a`
+const FooterContent = styled.span`
   font-family: "Lexend Deca", sans-serif;
-  color: #ffffff;
-  transition: 0.3s ease-in-out;
-  &:hover {
-    color: #1ddd96;
-  }
+  text-align: justify;
+  color: #979797;
+  margin: 1em 1em 1em 0em;
 `;
 
-//test method
-const MapLinks = ({ list }) =>
-  list.map(link => (
-    <div style={{ margin: "0.1em" }}>
-      <FooterLink href="#">{link}</FooterLink>
-    </div>
-  ));
+const FooterIcon = styled.img`
+  margin: 0.5em;
+  height: 1.5em;
+`;
 
 var content =
   "Nunc porta erat ut lectus posuere molestie. Vestibulum risus ligula, rhoncus eleifend rhoncus sed, malesuada id metus. Aenean lorem nibh, varius fermentum viverra vel, efficitur nec elit.";

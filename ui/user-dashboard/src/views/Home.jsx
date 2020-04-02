@@ -6,6 +6,8 @@ import { Applications } from "../components/home-applications/applications.compo
 import DashBoard from "./dashboard";
 import { SystemFeatures } from "../components/system-features/system-features.component";
 import { Footer } from "../components/home-footer/footer.component";
+import { UsageMap } from "../components/location-map/location-map.component";
+import { AlliedCompanies } from "../components/companies/companies.component";
 
 export const Home = () => {
   return (
@@ -28,6 +30,12 @@ export const Home = () => {
       <div className="SystemFeatures"
       >
         <SystemFeatures />
+      </div>
+      <div className="UsageMap" style={{ background: "#F8F8F8"}}>
+        <UsageMap />
+      </div>
+      <div className="Customers">
+        <AlliedCompanies />
       </div>
       <div className="Footer">
         <Footer />

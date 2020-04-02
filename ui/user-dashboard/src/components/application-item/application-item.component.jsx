@@ -40,6 +40,7 @@ const ApplicationHeading = styled.h3`
 const ApplicationContent = styled.span`
   font-family: "Lexend Deca", sans-serif;
   text-align: justify;
+  color: #979797;
 `;
 
 const ApplicationButtonDiv = styled.div`

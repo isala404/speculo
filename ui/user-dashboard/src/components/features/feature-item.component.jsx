@@ -55,6 +55,7 @@ const FeatureHeading = styled.h3`
 const FeatureContent = styled.span`
   font-family: "Lexend Deca", sans-serif;
   text-align: justify;
+  color: #979797;
 `;
 const Icon = styled.img`
   height: 1.5em;
