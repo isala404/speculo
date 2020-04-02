@@ -5,13 +5,12 @@ from facedetector.yolo.yolo import YOLO
 from tqdm import tqdm
 import numpy as np
 
-BASE_DIR = "/mnt/hdd/YouTubeFaces"
+BASE_DIR = "/mnt/hdd/Projects/SDGP/RAW_Data/YouTubeFaces"
 
-faces = {}
 yolo = YOLO(draw=False, debug=False)
-if not os.path.isdir("../dataset_youtube"):
-    os.makedirs("../dataset_youtube")
-os.chdir("../dataset_youtube")
+if not os.path.isdir("../dataset_processed"):
+    os.makedirs("../dataset_processed")
+os.chdir("../dataset_processed")
 
 
 def crop_face(read, write):
@@ -30,6 +29,7 @@ def crop_face(read, write):
 person_total = len(os.listdir(f"{BASE_DIR}/aligned_images_DB/"))
 for person_index, person in enumerate(os.listdir(f"{BASE_DIR}/aligned_images_DB/")):
     for video_index, video in enumerate(os.listdir(f"{BASE_DIR}/aligned_images_DB/{person}")):
+        faces = {}
         headpose = loadmat(f"{BASE_DIR}/headpose_DB/headorient_apirun_{person}_{video}.mat")['headpose']
         target = {"file": None, "pos": float("inf")}
         for i, frame in enumerate(sorted(os.listdir(f"{BASE_DIR}/aligned_images_DB/{person}/{video}"))):
@@ -57,3 +57,5 @@ for person_index, person in enumerate(os.listdir(f"{BASE_DIR}/aligned_images_DB/
             person_name = file_name.split("/")[0]
             file_name = file_name.split("/")[-1]
             crop_face(file, f"{person_name}/X/{file_name}")
+
+yolo.close_session()
