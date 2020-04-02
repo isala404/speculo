@@ -399,7 +399,7 @@ yarn-error.log*
 
 **/faces
 *.avi
-fingerprinter/dataset
+fingerprinter/dataset*
 
 **/logs
 *.h5
