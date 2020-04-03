@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8500:8080
+    env_file:
+      - service_endpoint.env
   fingerprinter:
     image: tensorflow/serving
     ports:
@@ -14,21 +16,29 @@ services:
       - ./fingerprinter/models:/models/fingerprinter
     environment:
       - MODEL_NAME=fingerprinter
+    env_file:
+      - service_endpoint.env
   comparator:
     build:
       context: api/comparator/
       dockerfile: Dockerfile
     ports:
       - 8502:8080
+    env_file:
+      - service_endpoint.env
   postprocessor:
     build:
       context: api/postprocessor/
       dockerfile: Dockerfile
     ports:
       - 8503:8080
+    env_file:
+      - service_endpoint.env
   listingservice:
     build:
       context: api/listing-service/
       dockerfile: Dockerfile
     ports:
       - 8504:8080
+    env_file:
+      - service_endpoint.env
