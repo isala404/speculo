@@ -2,7 +2,7 @@ import json
 
 from aiohttp import web
 
-from app import ImageComparator
+from comparator import ImageComparator
 
 
 async def compare_fingerprint(request):

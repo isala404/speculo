@@ -6,7 +6,7 @@ import json
 from aiohttp import web
 
 # local package
-from app import ImagePostprocessor
+from postprocessor import ImagePostprocessor
 
 
 async def save_image(request):

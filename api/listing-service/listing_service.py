@@ -11,8 +11,8 @@ from mongoengine import Document, StringField, ListField, BooleanField, connect
 
 class Face(Document):
 	id = Document.pk
-	face_label = StringField(max_length=50)
-	face_matrix = ListField(required=True)
+	label = StringField(max_length=50)
+	matrix = ListField(required=True)
 	blacklisted = BooleanField(default=False)
 
 
@@ -43,7 +43,7 @@ class ListingService:
 		
 		face.save()
 		
-		return face.face_label.capitalize()
+		return face.label.capitalize()
 	
 	def whitelist(self):
 		self.__connect_mongo()
@@ -59,4 +59,4 @@ class ListingService:
 		
 		face.save()
 		
-		return face.face_label.capitalize()
+		return face.label.capitalize()
