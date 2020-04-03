@@ -30,8 +30,8 @@ class ImagePostprocessor:
 	def __init__(self, filename):
 		self._SIZE = 192
 		self._FINGERPRINT_SIZE = (128, 128)
-		self._FACEDETECTOR_ENDPOINT = 'http://localhost:8500/v1/models/facedetector:predict'
-		self._FINGERPRINT_ENDPOINT = 'http://localhost:8501/v1/models/fingerprinter:predict'
+		self._FACEDETECTOR_ENDPOINT = os.getenv("FACEDETECTOR_URL")
+		self._FINGERPRINT_ENDPOINT = os.getenv("FINGERPRINTER_URL")
 		self.filename = filename
 	
 	def _get_faces(self, resized_image):
@@ -101,7 +101,7 @@ class ImagePostprocessor:
 			label = self.filename.split('.')[0]
 			
 			# instantiate an object with the face data
-			face_data = Face(label=label, matrix=fingerprint, blacklist=False)
+			face_data = Face(label=label, matrix=fingerprint, blacklisted=False)
 			
 			# save the object
 			face_data.save()

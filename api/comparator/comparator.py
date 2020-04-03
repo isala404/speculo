@@ -17,8 +17,6 @@ class Face(Document):
 
 
 class ImageComparator:
-	def __init__(self):
-		self._MONGO_URI = ''
 	
 	@staticmethod
 	def _distance01(matrix_one, matrix_two):
@@ -39,7 +37,7 @@ class ImageComparator:
 		
 		for index, face_encoding in enumerate(known_face_encodings_list):
 			face_distance = self._distance01(detected_encoding, face_encoding)
-
+			
 			if face_distance < 0.6:
 				indexes.append(index)
 				high_matches.append(face_distance)
