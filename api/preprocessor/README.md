@@ -26,11 +26,17 @@ curl --;location --;request; POST; 'localhost:8080/api/v1/preprocess'; \
 ```json
 {
     "status" : "success",
-    "data" : []
+    "data" : [
+      { 
+        "id" : "5e8636c0f8e0675aa12ab0cd",
+        "name" : "John Doe",
+        "timestamps" : [0.12, 0.17, 1.15]
+      }     
+    ]
 }
 ```
 
-The data is very long, you can find it [here](https://hastebin.com/ediqulobug.json)
+Here's an example of how the actual [response](https://hastebin.com/ediqulobug.json) will look like.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

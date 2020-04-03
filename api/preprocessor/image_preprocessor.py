@@ -11,9 +11,8 @@ class ImagePreprocessor:
 		self._FINGERPRINT_SIZE = (128, 128, 1)
 		self._FACEDETECTOR_ENDPOINT = 'http://localhost:8500/v1/models/facedetector:predict'
 		self._FINGERPRINT_ENDPOINT = 'http://localhost:8501/v1/models/fingerprinter:predict'
-		self._BESTMATCHER_ENDPOINT = 'http://localhost:8502/api/matrix_matcher'
+		self._COMPARATOR_ENDPOINT = 'http://localhost:8502/api/v1/compare'
 		self.filename = filename
-		self.file = None
 		self.not_found = []
 		self.unknown_face_count = 0
 	
@@ -44,81 +43,104 @@ class ImagePreprocessor:
 		
 		return data['predictions']
 	
-	def _get_bestmatch(self, fingerprint):
+	def _get_comparison(self, fingerprint):
 		body = json.dumps({'instances': np.reshape(fingerprint, [-1]).tolist()})
-		# print(body)
-		response = requests.post(url=self._BESTMATCHER_ENDPOINT, data=body)
+		
+		response = requests.post(url=self._COMPARATOR_ENDPOINT, data=body)
 		
 		data = json.loads(response.text)
+		print(data)
 		
-		if not data["found"]:
-			return {}
+		if 'error' in data.keys():
+			print("error in retrieving fingerprint")
+			return 0
 		
-		return {"id": "1", "name": "Akassh"}
+		return data
 	
 	def preprocess(self):
 		all_detections = []
+		
 		video_capture = cv2.VideoCapture(self.filename)
+		
+		# video_capture.set(cv2.CAP_PROP_FPS, 30)
+		time = video_capture.get(cv2.CAP_PROP_POS_MSEC)
 		fps = video_capture.get(cv2.CAP_PROP_FPS)
+		total_frames = (video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
+		print("time", time, "fps", fps, "total frames", total_frames)
+		print(total_frames/fps)
+		
 		ret, frame = video_capture.read()
+		
+		skip_frame = fps / 3
+		skip_frame_number = skip_frame
+		
 		count = 0
 		
 		while ret:
+			skip_frame_number += skip_frame
+			print(skip_frame_number)
+			
 			height, width, _ = frame.shape
 			resized_frame = cv2.resize(frame, (self._SIZE, self._SIZE))
-			
-			print("time stamp current frame:", count / fps)
+
 			timestamp = count / fps
-			
+			print(f"TIMESTAMP: {timestamp}")
+
 			boxes = self._get_faces(current_frame=resized_frame)
-			
+			print(boxes)
+
 			for top, left, bottom, right in boxes:
 				top = int(top * height / self._SIZE)
 				right = int(right * width / self._SIZE)
 				bottom = int(bottom * height / self._SIZE)
 				left = int(left * width / self._SIZE)
-				
+
 				face = frame[top:bottom, left:right]
-				
+
 				if self._FINGERPRINT_SIZE[2] == 1:
 					face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
-				
+
 				face = cv2.resize(face, self._FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
-				
+
 				cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-				
+
 				fingerprint = self._get_fingerprint(current_face=face)
-				
-				face_data = self._get_bestmatch(fingerprint=fingerprint)
-				
-				flag = False
-				for x in all_detections:
-					if x['id'] == face_data['id']:
-						print("hi")
-						print(x['id'])
-						print(face_data['id'])
-						flag = True
-						timestamps = x['timestamps']
-						timestamps.append(timestamp)
-						x['timestamps'] = timestamps
-				
-				if not flag:
+
+				print(fingerprint)
+
+				face_data = self._get_comparison(fingerprint=fingerprint)
+
+				index, entry = self._find(all_detections, face_data['id'])
+
+				print(face_data)
+
+				if index == -1:
 					all_detections.append({
 						'id': face_data['id'],
 						'name': face_data['name'],
 						'timestamps': [timestamp]
 					})
-			
-			# break
-			# font = cv2.FONT_HERSHEY_DUPLEX
-			# Best_Match API, send the above response to it. (returns the name)
-			# call best match api here
-			
-			# cv2.putText(frame, best_match(speculo.predict(face)),
-			# (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-			
+				else:
+					timestamps = entry['timestamps']
+					timestamps.append(timestamp)
+					entry['timestamps'] = timestamps
+					all_detections[index] = entry
+
+			print(all_detections)
+
+			video_capture.set(cv2.CAP_PROP_POS_FRAMES, skip_frame_number)
 			ret, frame = video_capture.read()
 			count += 1
+		
+		print("count", count)
 		return all_detections
+	
+	@staticmethod
+	def _find(lst, value):
+		for i, dic in enumerate(lst):
+			if dic["id"] == value:
+				return i, dic
+		return -1, None
 
-# ImagePreprocessor('head-pose-face-detection-male.mp4').preprocess()
+
+ImagePreprocessor(filename='small.mp4').preprocess()

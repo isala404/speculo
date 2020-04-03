@@ -2,10 +2,13 @@ import json
 import os
 from aiohttp import web
 
-from app import ImagePreprocessor
+from image_preprocessor import ImagePreprocessor
 
 
-async def handle_post(request):
+async def preprocess_video(request):
+	if not os.path.isdir("../videos"):
+		os.makedirs("../videos")
+	
 	try:
 		# Success path where name is set
 		response_obj = {'status': 'success'}
@@ -14,7 +17,6 @@ async def handle_post(request):
 		
 		field = await reader.next()
 		filename = field.filename
-		print(os.getcwd())
 		
 		size = 0
 		with open(os.getcwd() + '/videos/' + filename, 'wb') as f:
@@ -43,7 +45,7 @@ async def handle_post(request):
 app = web.Application()
 
 routes = [
-	web.post('/api/v1/preprocess', handle_post),
+	web.post('/api/v1/preprocess', preprocess_video),
 ]
 
 app.add_routes(routes)
