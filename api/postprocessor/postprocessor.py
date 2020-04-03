@@ -101,7 +101,7 @@ class ImagePostprocessor:
 			label = self.filename.split('.')[0]
 			
 			# instantiate an object with the face data
-			face_data = Face(label=label, matrix=fingerprint, blacklist=False)
+			face_data = Face(label=label, matrix=fingerprint, blacklisted=False)
 			
 			# save the object
 			face_data.save()
