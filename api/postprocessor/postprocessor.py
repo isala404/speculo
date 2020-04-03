@@ -91,10 +91,10 @@ class ImagePostprocessor:
 			
 			# connect to the mongodb server
 			connect(
-				db='face',
-				username='user',
-				password='4313Samadhi',
-				host='mongodb+srv://user:4313Samadhi@cluster0-jqb4b.mongodb.net/speculo'
+				db=os.getenv('DB_NAME'),
+				username=os.getenv('DB_USERNAME'),
+				password=os.getenv('DB_PASSWORD'),
+				host=os.getenv('DB_HOST')
 			)
 			
 			# retrieve the label of the face from the filename

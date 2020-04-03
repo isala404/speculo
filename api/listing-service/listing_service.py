@@ -6,6 +6,8 @@ __email__ = "akassharjun@ieee.org"
 __status__ = "Testing"
 
 # 3rd party package
+import os
+
 from mongoengine import Document, StringField, ListField, BooleanField, connect
 
 
@@ -19,14 +21,14 @@ class Face(Document):
 class ListingService:
 	def __init__(self, face_id):
 		self.face_id = face_id
-
+	
 	@staticmethod
 	def __connect_mongo():
 		connect(
-			db='face',
-			username='user',
-			password='4313Samadhi',
-			host='mongodb+srv://user:4313Samadhi@cluster0-jqb4b.mongodb.net/speculo'
+			db=os.getenv('DB_NAME'),
+			username=os.getenv('DB_USERNAME'),
+			password=os.getenv('DB_PASSWORD'),
+			host=os.getenv('DB_HOST')
 		)
 	
 	def blacklist(self):
