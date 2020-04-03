@@ -1,0 +1,82 @@
+version: 1
+update_configs:
+  # Keep the front end libraries updated
+
+  ## user dashboard
+  - package_manager: "javascript"
+    directory: "/ui/user-dashboard/"
+    update_schedule: "live"
+    default_assignees:
+      - "mrsupiri"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"
+
+  # Keeping the microservices dependencies updated
+
+  ## api gateway
+  - package_manager: "javascript"
+    directory: "/api/gateway/"
+    update_schedule: "live"
+    default_assignees:
+      - "mrsupiri"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"
+
+  ## image postprocessor
+  - package_manager: "python"
+    directory: "/api/postprocessor/"
+    update_schedule: "live"
+    default_assignees:
+      - "mrsupiri"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"
+
+  ## image preprocessor
+  - package_manager: "python"
+    directory: "/api/preprocessor/"
+    update_schedule: "live"
+    default_assignees:
+      - "mrsupiri"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"
+
+  ## image comparator
+  - package_manager: "python"
+    directory: "/api/comparator/"
+    update_schedule: "live"
+    default_assignees:
+      - "mrsupiri"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"
+
+  ## facedetector
+  - package_manager: "python"
+    directory: "/facedetector/"
+    update_schedule: "live"
+    default_assignees:
+      - "mrsupiri"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"
+
+  ## fingerprinter
+  - package_manager: "python"
+    directory: "/fingerprinter/"
+    update_schedule: "live"
+    default_assignees:
+      - "mrsupiri"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"

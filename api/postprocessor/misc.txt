@@ -1,0 +1,19 @@
+# data = await request.post()
+		#
+		# mp3 = data['png']
+		#
+		# # .filename contains the name of the file in string format.
+		# filename = mp3.filename
+		#
+		# # .file contains the actual file data that needs to be stored somewhere.
+		# mp3_file = data['png']
+		#
+		# print(mp3_file)
+		#
+		# content = mp3_file.read()
+		#
+		# return web.Response(body=content,
+		#                     headers=MultiDict(
+		# 	                    {'CONTENT-DISPOSITION': mp3_file}))
+		# return a success json response with status code 200 i.e. 'OK'
+		# return web.Response(text=json.dumps(response_obj), status=200)
