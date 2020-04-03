@@ -10,10 +10,10 @@ connect(
 
 
 class Face(Document):
-	face_id = Document.pk
-	face_label = StringField(max_length=50)
-	face_matrix = ListField(required=True)
-	face_blacklisted = BooleanField(default=False)
+	id = Document.pk
+	label = StringField(max_length=50)
+	matrix = ListField(required=True)
+	blacklisted = BooleanField(default=False)
 
 
 class ImageComparator:
@@ -58,27 +58,24 @@ class ImageComparator:
 		saved_blacklist = []
 		
 		for x in Face.objects:
-			saved_matrix.append(list(x.face_matrix))
-			saved_names.append(list(x.face_label))
-			saved_ids.append(list(str(x.face_id)))
-			saved_blacklist.append(list(str(x.face_blacklisted)))
+			saved_matrix.append(list(x.matrix))
+			saved_names.append(list(x.label))
+			saved_ids.append(list(str(x.id)))
+			saved_blacklist.append(list(str(x.blacklisted)))
 		
-		#  saved_matrix[0].face_id will return face_id
+		#  saved_matrix[0].id will return id
 		
 		identity = self._compare(matrix, saved_matrix)
 		if identity == "Error":
 			
-			face_matrix = matrix
-			face_label = "Unknown"
-			face_blacklist = False
-			
-			added_face = Face(face_label=face_label, face_matrix=face_matrix, face_blacklisted=face_blacklist)
+			label = "Unknown"
+			added_face = Face(label=label, matrix=matrix, blacklisted=False)
 			added_face.save()
 			
 			data = {
 				'found': False,
 				'id': str(added_face.id),
-				'name': face_label
+				'name': label
 			}
 		
 		else:

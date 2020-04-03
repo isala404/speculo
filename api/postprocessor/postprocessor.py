@@ -16,13 +16,14 @@ import requests
 import json
 import numpy as np
 from PIL import Image, ImageDraw
-from mongoengine import Document, StringField, ListField, IntField, connect
+from mongoengine import Document, StringField, ListField, BooleanField, connect
 
 
 class Face(Document):
-	face_id = IntField(required=True)
-	face_label = StringField(max_length=50)
-	face_matrix = ListField(required=True)
+	id = Document.pk
+	label = StringField(max_length=50)
+	matrix = ListField(required=True)
+	blacklisted = BooleanField(default=False)
 
 
 class ImagePostprocessor:
@@ -97,10 +98,10 @@ class ImagePostprocessor:
 			)
 			
 			# retrieve the label of the face from the filename
-			face_label = self.filename.split('.')[0]
+			label = self.filename.split('.')[0]
 			
 			# instantiate an object with the face data
-			face_data = Face(face_id='{}'.format(randint(1, 101)), face_label=face_label, face_matrix=fingerprint)
+			face_data = Face(label=label, matrix=fingerprint, blacklist=False)
 			
 			# save the object
 			face_data.save()
