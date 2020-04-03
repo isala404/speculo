@@ -20,3 +20,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8502:8080
+  postprocessor:
+    build:
+      context: api/postprocessor/
+      dockerfile: Dockerfile
+    ports:
+      - 8503:8080
+  listingservice:
+    build:
+      context: api/listing-service/
+      dockerfile: Dockerfile
+    ports:
+      - 8504:8080
