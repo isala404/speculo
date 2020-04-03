@@ -34,7 +34,9 @@ async def save_face_data(request):
 		
 		ImagePostprocessor(filename=filename).save_face_data()
 		
-		response_obj = {'status': 'success', 'message': str('{} successfully saved'''.format(filename))}
+		name = filename.replace('.jpg', '')
+		
+		response_obj = {'status': 'success', 'message': f'{name} successfully saved'}
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	
