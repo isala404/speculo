@@ -417,4 +417,6 @@ fingerprinter/archive
 
 api/image-preprocessor/videos/**
 api/postprocessor/images/**
-/service_endpoint.env
+
+/database_config.env
+
