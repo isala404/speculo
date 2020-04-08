@@ -3,7 +3,7 @@ import Webcam from "react-webcam";
 import "./web-cam.style.scss";
 import ImageCanvas from "../image-canvas/image-canvas.component";
 import Resizer from "react-image-file-resizer";
-
+import { BasicButton } from "../button/button.component";
 
 export default class WebCamComponent extends React.Component {
   //constructor
@@ -61,7 +61,7 @@ export default class WebCamComponent extends React.Component {
   //method used to capture the webcam screenshot
   capture = async () => {
     var imageSrc = this.webcam.getScreenshot();
-
+    console.log(imageSrc);
     //verifying if the image is null and if display component is true
     if (imageSrc != null && this.state.displayComponent) {
       console.log("captured image");
@@ -111,7 +111,7 @@ export default class WebCamComponent extends React.Component {
 
   splitImageValue = imageSrc => {
     var newImageStringArr = imageSrc.split(",");
-    return newImageStringArr;
+    return newImageStringArr[1];
   };
 
   resizeImage = scaledImageSrc => {
@@ -128,6 +128,7 @@ export default class WebCamComponent extends React.Component {
       "base64"
     );
   };
+  
 
   render() {
     const {
@@ -156,19 +157,30 @@ export default class WebCamComponent extends React.Component {
           />
         </div>
 
+        <button
+        
+          onClick={() => {
+            console.log("button clicked");
+            this.capture();
+            // toggling of enabling and disabling the live demonstration
+
+          }}
+          title={"Press me"}
+        />
         {/* <BasicButton
           buttonStyle={captureScreenshotBtnStyle}
           className="grab-webcam-screenshot"
           onClickHandler={() => {
+            console.log("button clicked")
             this.capture();
-            //toggling of enabling and disabling the live demonstration
-            // if (this.state.displayComponent) {
-            //   console.log("display component is false");
-            //   this.setState({ displayComponent: false });
-            // } else {
-            //   console.log("display component is true");
-            //   this.setState({ displayComponent: true });
-            // }
+            // toggling of enabling and disabling the live demonstration
+            if (this.state.displayComponent) {
+              console.log("display component is false");
+              this.setState({ displayComponent: false });
+            } else {
+              console.log("display component is true");
+              this.setState({ displayComponent: true });
+            }
           }}
           buttonTitle="Toggle Live Demo"
         /> */}

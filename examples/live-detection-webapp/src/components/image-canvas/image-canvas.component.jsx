@@ -29,10 +29,10 @@ export default class ImageCanvas extends React.Component {
   //updating canvas on component update
   componentDidUpdate(prevProps) {
     //validation to prevent infinite setState loop
-    if (this.props.analysedFaceData !== prevProps.analysedFaceData) {
+    // if (this.props.analysedFaceData !== prevProps.analysedFaceData) {
       this.clearCanvas();
       this.updateCanvas();
-    }
+    // }
   }
 
   clearCanvas(){
@@ -44,30 +44,30 @@ export default class ImageCanvas extends React.Component {
   updateCanvas() {
     const ctx = this.refs.canvas.getContext("2d");
     //creating a map of all the faces retrieved in the image
-    this.props.analysedFaceData.map((face) => {
+    // this.props.analysedFaceData.map((face) => {
       //creating a new Image object and storing data required
       var image = new Image();
       image.src = `${this.props.imgSrc}`;
       image.onload = () => {
-        var coordinates = this.getCoordinates(face);
-        console.log(coordinates);
+        // var coordinates = this.getCoordinates(face);
+        // console.log(coordinates);
         ctx.drawImage(image, 0, 0); //drawing the captured image on the canvas
         //drawing the rectangle on the canvas given the coordinates
-        ctx.rect(
-          coordinates[0],
-          coordinates[1],
-          coordinates[2] - coordinates[0],
-          coordinates[3] - coordinates[1]
-        );
+        // ctx.rect(
+        //   coordinates[0],
+        //   coordinates[1],
+        //   coordinates[2] - coordinates[0],
+        //   coordinates[3] - coordinates[1]
+        // );
         ctx.stroke(); //stroking the drawn rectangle
       };
-    });
+    // });
   }
 
   render() {
     return (
       <div>
-        <canvas ref="canvas" width={window.innerWidth} height={7000} />
+        <canvas ref="canvas" width={1080} height={7000} />
       </div>
     );
   }
