@@ -16,7 +16,7 @@ export const HomePage = () => {
       <div className="Features">
         <Features />
       </div>
-      <div className="Applications">
+      <div className="Applications" style={{background: "#F8F8F8", paddingTop: "5%", paddingBottom: "5%"}}>
         <Applications />
       </div>
     </>
