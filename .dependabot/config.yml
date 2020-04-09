@@ -37,17 +37,6 @@ update_configs:
       - "dependabot"
       - "security"
 
-  ## image preprocessor
-  - package_manager: "python"
-    directory: "/api/preprocessor/"
-    update_schedule: "live"
-    default_assignees:
-      - "mrsupiri"
-    default_labels:
-      - "dependencies"
-      - "dependabot"
-      - "security"
-
   ## image comparator
   - package_manager: "python"
     directory: "/api/comparator/"
