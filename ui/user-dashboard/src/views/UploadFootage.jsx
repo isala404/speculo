@@ -7,7 +7,7 @@ class UploadFootage extends Component{
     
     render(){
 
-        const MyVideoUploader = () => {
+        const MyVideoUploader = () => {         // react-dropzone-uploader
             // specify upload params and url for files
             const getUploadParams = ({ meta }) => { return { url: 'https://httpbin.org/post' } }
             

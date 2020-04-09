@@ -43,13 +43,18 @@ class UploadFootage extends Component{
                 })
               })
             }
+
+            // called every time a file's `status` changes
+            const handleChangeStatus = ({ meta, file }, status) => { console.log(status, meta, file) }
+
             return (
                 <Dropzone
-                  accept="image/*"
                   getUploadParams={() => ({ url: 'https://httpbin.org/post' })}
                   onSubmit={handleSubmit}
                   InputComponent={Input}
                   getFilesFromEvent={getFilesFromEvent}
+                  onChangeStatus={handleChangeStatus}
+                  accept="image/*"
                 />
               )
             }
@@ -58,7 +63,6 @@ class UploadFootage extends Component{
             <div>
                 <h1>ADD IMAGES BY DROPPING FILE/ Images</h1>
 
-                {/* <MyFaceUploader /> */}
                 <CustomInput />
             </div>
         )
