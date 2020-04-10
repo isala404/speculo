@@ -22,7 +22,7 @@ npm index.js
 ```
 
 
-## Authentication API service
+## API Endpoints for User
 
 ### Registration
 
@@ -32,7 +32,7 @@ curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/register
 
 ##### Response 
 
-```javascript
+```json
 {
     "status": "success",
     "message": "User added successfully!",
@@ -52,10 +52,10 @@ curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authentic
 
 ##### Response
 
-```javascript
+```json
 {
     "status":"success",
-    "message":"user found!!!",
+    "message":"User found!",
     "data": {
         "user":{
             "_id":"5e727788084e51bd64493713",
@@ -66,6 +66,74 @@ curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authentic
         },
         "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlNzI3Nzg4MDg0ZTUxYmQ2NDQ5MzcxMyIsImlhdCI6MTU4NDU2MDA1MCwiZXhwIjoxNTg0NTYzNjUwfQ.3gIK6BUi1fllcOFX29tRPRoH9HNaQpMxNNMISeggeTI"
     }
+}
+```
+
+
+
+## API Endpoints for Admin
+
+### Registration
+
+```bash
+curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/admin/register
+```
+
+##### Response 
+
+```json
+{
+    "status": "success",
+    "message": "Admin added successfully!",
+    "data": {
+        "name": "X",
+        "email": "X",
+        "password": "X"
+    }
+}
+```
+
+If admin already exists
+
+```json
+{
+     "status": "failed",
+     "message": "Admin already exists!"
+}
+```
+
+### Authentication
+
+```bash
+curl -d "email=X&password=X" -X POST http://localhost:3000/admin/authenticate
+```
+
+##### Response
+
+```json
+{
+    "status":"success",
+    "message":"Admin found!",
+    "data": {
+        "user":{
+            "_id":"5e727788084e51bd64493713",
+            "name":"X",
+            "email":"X",
+            "password":"$2b$10$l3tbwiNFc7F35dpzP69RX.ncA7q2T4BqfVxQzQNcDc9T/CHa6KOzm",
+            "__v":0
+        },
+        "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlNzI3Nzg4MDg0ZTUxYmQ2NDQ5MzcxMyIsImlhdCI6MTU4NDU2MDA1MCwiZXhwIjoxNTg0NTYzNjUwfQ.3gIK6BUi1fllcOFX29tRPRoH9HNaQpMxNNMISeggeTI"
+    }
+}
+```
+
+If email or password was invalid
+
+```json
+{
+     "status": "error",
+     "message": "Invalid email/password!",
+     "data": null
 }
 ```
 
