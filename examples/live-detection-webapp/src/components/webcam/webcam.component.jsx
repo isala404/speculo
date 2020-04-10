@@ -1,10 +1,6 @@
 import React from "react";
 import Webcam from "react-webcam";
-import ImageCanvas from "../image-canvas/image-canvas.component";
-import Camvas from "./test-canvas.component";
-import { node } from "prop-types";
-import Resizer from 'react-image-file-resizer';
-
+import Canvas from "../canvas/canvas.component";
 
 export default class WebCam extends React.Component {
   //constructor
@@ -21,67 +17,47 @@ export default class WebCam extends React.Component {
     this.webcam = webcam;
   };
 
+  //method to split the base64 image for processing
   splitImageValue = imageSrc => {
     var newImageStringArr = imageSrc.split(",");
     return newImageStringArr[1];
   };
 
+  //method to send the image as a POST request to get the details of the face(s) in the image
   getFaceData = () => {
     if (this.state.isRunning) {
+      //sending the image every 75microseconds
       setInterval(() => {
-        console.log("sending response");
         var imageSource = this.state.imageSrc;
-        var image = new Image();
-        image.src = `${imageSource}`
-        Resizer.imageFileResizer(
-            image,
-            540,
-            360,
-            "JPEG",
-            100,
-            0, 
-            uri => {
-                console.log(uri)
-                imageSource = uri
-            },
-            "base64"
-             )
         var truncatedImageSource = this.splitImageValue(imageSource);
         fetch("http://speculo.isala.me/", {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify({
-              image: truncatedImageSource
-            })
+          method: "POST",
+          mode: "cors",
+          body: JSON.stringify({
+            image: truncatedImageSource
           })
-        // axios
-        //   .post("http://speculo.isala.me/", {
-        //     image: truncatedImageSource
-        //   })
+        })
           .then(response => response.json())
-          .then(data =>
-            this.setState({ response: data }, () =>
-              console.log(this.state.response)
-            )
-          );
-      }, 2000);
+          .then(data => this.setState({ response: data }));
+      }, 750);
     }
   };
 
   //method used to capture the webcam screenshot
   capture = () => {
-    var src = this.webcam.getScreenshot();
+     var src = this.webcam.getScreenshot();
     this.setState({
       imageSrc: src
     });
   };
 
+  //capturing a frame every 50 milliseconds
   getVideo = () => {
     if (this.state.isRunning) {
       console.log("inside getvideo()");
       setInterval(() => {
         this.capture();
-      }, 100);
+      }, 50);
     }
   };
 
@@ -108,19 +84,21 @@ export default class WebCam extends React.Component {
         <button
           onClick={() => {
             if (this.state.isRunning) {
-              this.setState({ isRunning: false }, () => {});
+              this.setState({ isRunning: false });
             } else {
               this.setState({ isRunning: true }, () => {
                 this.getVideo();
-                this.getFaceData()
+                this.getFaceData();
               });
             }
           }}
           value={"hello"}
-        />
-        //canvas component
+        >START DEMO</button>
         <div className="canvas-component">
-          <Camvas source={this.state.imageSrc} />
+          <Canvas
+            source={this.state.imageSrc}
+            analysedFaceData={this.state.response}
+          />
         </div>
       </>
     );

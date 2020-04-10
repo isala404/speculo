@@ -1,7 +1,6 @@
 import React from "react";
 
 import "./App.css";
-import WebCamComponent from "./components/webcam/web-cam.component";
 import { HomePage } from "./pages/home-page/home-page.page";
 // import { WebcamCapture } from "./components/webcam/webcam.component";
 
