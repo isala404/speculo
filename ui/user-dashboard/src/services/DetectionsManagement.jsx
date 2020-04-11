@@ -1,12 +1,10 @@
 import axios from "axios";
-import {speculoBackend} from "../variables/constants";
-
-const GetDetectionsURL = speculoBackend + `/api/get/`      // get detections URL will be here
+import {detectionsEndpoint} from "../endpoints";
 
 export async function retrieveAllDetections() {
     try {
         //get allDetections data
-        return await axios.get(GetDetectionsURL,
+        return await axios.get(detectionsEndpoint,
             {
                 headers: {
                     "Content-Type": "application/json",

@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import Dropzone from 'react-dropzone-uploader';
 import 'react-dropzone-uploader/dist/styles.css';
 import { getDroppedOrSelectedFiles } from 'html5-file-selector'
+import {footageUploadEndpoint} from "../endpoints";
 
 class UploadFootage extends Component{
     state={};
@@ -49,7 +50,7 @@ class UploadFootage extends Component{
 
             return (
                 <Dropzone
-                  getUploadParams={() => ({ url: 'https://httpbin.org/post' })}
+                  getUploadParams={() => ({ url: footageUploadEndpoint })}
                   onSubmit={handleSubmit}
                   InputComponent={Input}
                   getFilesFromEvent={getFilesFromEvent}
