@@ -1,6 +1,7 @@
 import React from "react";
 import Webcam from "react-webcam";
 import Canvas from "../canvas/canvas.component";
+import styled from "styled-components";
 
 export default class WebCam extends React.Component {
   //constructor
@@ -29,6 +30,7 @@ export default class WebCam extends React.Component {
       //sending the image every 75microseconds
       setInterval(() => {
         var imageSource = this.state.imageSrc;
+        // imageSource = downscaledImage( 648, 432);
         var truncatedImageSource = this.splitImageValue(imageSource);
         fetch("http://speculo.isala.me/", {
           method: "POST",
@@ -38,14 +40,16 @@ export default class WebCam extends React.Component {
           })
         })
           .then(response => response.json())
-          .then(data => this.setState({ response: data }));
+          .then(data => this.setState({ response: data }, () => {
+            console.log(data)
+          }));
       }, 750);
     }
   };
 
   //method used to capture the webcam screenshot
   capture = () => {
-     var src = this.webcam.getScreenshot();
+    var src = this.webcam.getScreenshot();
     this.setState({
       imageSrc: src
     });
@@ -63,11 +67,10 @@ export default class WebCam extends React.Component {
 
   render() {
     const webcamConstraints = {
-      width: 1080,
-      height: 720
+      width: 648,
+      height: 432
     };
 
-    const { isRunning, imageSrc } = this.state;
 
     return (
       <>
@@ -77,11 +80,11 @@ export default class WebCam extends React.Component {
             height={0}
             ref={this.setRef}
             screenshotFormat="image/jpeg"
-            width={1080}
+            width={432}
             videoConstraints={webcamConstraints}
           />
         </div>
-        <button
+        <CustomPrimaryButton
           onClick={() => {
             if (this.state.isRunning) {
               this.setState({ isRunning: false });
@@ -92,15 +95,55 @@ export default class WebCam extends React.Component {
               });
             }
           }}
-          value={"hello"}
-        >START DEMO</button>
+        >
+          Start live demo
+        </CustomPrimaryButton>
         <div className="canvas-component">
           <Canvas
-            source={this.state.imageSrc}
+            source={this.state.isRunning ? this.state.imageSrc : null}
             analysedFaceData={this.state.response}
           />
         </div>
+        {/* <div><Canvas source = {downscaledImage} /></div> */}
       </>
     );
   }
 }
+
+// const downscaledImage = (width, height) => {
+//   // create an off-screen canvas
+//   const canvas = document.createElement('canvas')
+//   canvas.width = width;
+//   canvas.height = height;
+//   const ctx = canvas.getContext("2d");
+//   var image = new Image()
+//   image.src = `${this.state.imageSrc}`;
+//   image.onload =() =>{
+//     ctx.drawImage(image, 0,0, width, height)
+//   }
+//   console.log(canvas.toDataURL())
+//   return canvas.toDataURL("image/jpeg",0.5)
+// };
+
+const CustomPrimaryButton = styled.button`
+  color: #2bba85;
+  font-size: 1em;
+  width: ${props => (props.width != null ? props.width : null)};
+  padding: 0.3em 1em;
+  font-family: "Gilroy-Regular";
+  border: 2px solid #2bba85;
+  border-radius: 3px;
+  box-shadow: ${props =>
+    props.showShadow ? "0px 0px 100px 4px #2bba85" : null};
+  background: #2bba85;
+  color: #ffffff;
+  z-index: 1;
+  transition: 0.3s;
+  &:hover {
+    background: #1ddd96;
+    color: #ffffff;
+    border: 2px solid #1ddd96;
+    box-shadow: ${props =>
+      props.showShadow ? "0px 0px 200px 10px #1ddd96" : null};
+  }
+`;
