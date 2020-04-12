@@ -1,13 +1,32 @@
+# standard package
+import os
+
 # 3rd party packages
 import json
 from aiohttp import web
 
-
 # local package
+from video_downscaler import VideoDownscaler
 
 
-async def save_face_data(request):
+async def downscale(request):
 	try:
+		reader = await request.multipart()
+		
+		# reader.next() will `yield` the fields of the form
+		field = await reader.next()
+		filename = field.filename
+		
+		size = 0
+		with open((os.getcwd() + '/videos/' + filename), 'wb') as f:
+			while True:
+				chunk = await field.read_chunk()  # 8192 bytes by default.
+				if not chunk:
+					break
+				size += len(chunk)
+				f.write(chunk)
+		
+		VideoDownscaler(filename=filename.split('.')[0]).downscale()
 		
 		response_obj = {'status': 'success', 'message': str(request.json())}
 		
@@ -25,7 +44,7 @@ async def save_face_data(request):
 app = web.Application()
 
 routes = [
-	web.post('/api/v1/downscale', save_face_data),
+	web.post('/api/v1/downscale', downscale),
 ]
 
 app.add_routes(routes)
