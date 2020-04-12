@@ -1,4 +1,5 @@
 // imports
+require('dotenv').config();
 const express = require("express");
 const logger = require("morgan");
 const user = require("./app/routes/user");
