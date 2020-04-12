@@ -18,7 +18,7 @@ mongoose.connection.on(
 );
 
 app.use(logger("dev"));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
     res.send("Welcome to Speculo Gateway");
