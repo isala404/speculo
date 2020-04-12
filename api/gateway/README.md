@@ -27,7 +27,12 @@ npm index.js
 ### Registration
 
 ```bash
-curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/register
+curl --location --request POST 'localhost:3000/user/register' \
+--data-raw '{
+  "name": "X",
+  "password": "X",
+  "email": "X"
+}'
 ```
 
 ##### Response 
@@ -47,7 +52,12 @@ curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/register
 ### Authentication
 
 ```bash
-curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authenticate
+curl --location --request POST 'http://localhost:3000/user/authenticate' \
+--data-raw '{
+  "name": "X",
+  "password": "X",
+  "email": "X"
+}'
 ```
 
 ##### Response
@@ -76,7 +86,12 @@ curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/user/authentic
 ### Registration
 
 ```bash
-curl -d "name=X&email=X&password=X" -X POST http://localhost:3000/admin/register
+curl --location --request POST 'localhost:3000/admin/register' \
+--data-raw '{
+  "name": "X",
+  "password": "X",
+  "email": "X"
+}'
 ```
 
 ##### Response 
@@ -105,7 +120,12 @@ If admin already exists
 ### Authentication
 
 ```bash
-curl -d "email=X&password=X" -X POST http://localhost:3000/admin/authenticate
+curl --location --request POST 'http://localhost:3000/admin/authenticate' \
+--data-raw '{
+  "name": "X",
+  "password": "X",
+  "email": "X"
+}'
 ```
 
 ##### Response
