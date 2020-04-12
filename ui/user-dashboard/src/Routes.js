@@ -1,5 +1,5 @@
-import Home from "./views/Home.jsx";
-import Dashboard from "./views/Dashboard.jsx";
+import {Home} from "./views/Home.jsx";
+import Dashboard from "./views/dashboard.jsx";
 import UploadFootage from "./views/UploadFootage.jsx";
 import UploadFaces from "./views/UploadFaces.jsx"
 
