@@ -2,9 +2,9 @@ import React, {Component} from "react";
 import Dropzone from 'react-dropzone-uploader';
 import 'react-dropzone-uploader/dist/styles.css';
 import { getDroppedOrSelectedFiles } from 'html5-file-selector'
-import {footageUploadEndpoint} from "../endpoints";
+import {facesUploadEndpoint} from "../endpoints";
 
-class UploadFootage extends Component{
+class UploadFaces extends Component{
     state={};
     
     render(){
@@ -50,7 +50,7 @@ class UploadFootage extends Component{
 
             return (
                 <Dropzone
-                  getUploadParams={() => ({ url: footageUploadEndpoint })}
+                  getUploadParams={() => ({ url: facesUploadEndpoint })}
                   onSubmit={handleSubmit}
                   InputComponent={Input}
                   getFilesFromEvent={getFilesFromEvent}
@@ -70,4 +70,4 @@ class UploadFootage extends Component{
     }
 }
 
-export default UploadFootage;
+export default UploadFaces;

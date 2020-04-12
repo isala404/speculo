@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Dropzone from 'react-dropzone-uploader';
 import 'react-dropzone-uploader/dist/styles.css';
+import {footageUploadEndpoint} from "../endpoints";
 
 class UploadFootage extends Component{
     state={};
@@ -9,7 +10,7 @@ class UploadFootage extends Component{
 
         const MyVideoUploader = () => {         // react-dropzone-uploader
             // specify upload params and url for files
-            const getUploadParams = ({ meta }) => { return { url: 'https://httpbin.org/post' } }
+            const getUploadParams = ({ meta }) => { return { url: footageUploadEndpoint } }
             
             // called every time a file's `status` changes
             const handleChangeStatus = ({ meta, file }, status) => { console.log(status, meta, file) }
