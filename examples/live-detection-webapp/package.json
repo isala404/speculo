@@ -18,6 +18,8 @@
     "react-bulma-components": "^3.2.0",
     "react-dom": "^16.13.1",
     "react-flexbox-grid": "^2.1.2",
+    "react-image-file-resizer": "^0.2.1",
+    "react-player": "^1.15.3",
     "react-router": "^5.1.2",
     "react-scripts": "3.3.0",
     "react-webcam": "^4.2.0",
