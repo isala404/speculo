@@ -6,7 +6,7 @@ import TimeCard from "../components/TimeCard";
 import Person from "../components/PersonCard";
 import '../styles/commonStyles.scss';
 
-import {retrieveAllDetections} from "../services/DetectionsManagement";
+import {retrieveAllDetections, deleteFaceFromSystem} from "../services/DetectionsManagement";
 
 
 export default class Dashboard extends Component {
@@ -14,12 +14,13 @@ export default class Dashboard extends Component {
         super(props)
 
         this.state = {
-            allDetections: [],           // stores all the detected faces with the timestamps
-            // allDetections: [          // hard coded example
-            //   {id: 1, faceName: "Akassh", timestamps: [60,100,1200]},
-            //   {id: 2, faceName: "Visal", timestamps: [1000]},
-            //   {id: 3, faceName: "Nisal", timestamps: [100,500,1200, 1500]}
-            // ],
+            // allDetections: [],           // stores all the detected faces with the timestamps
+            allDetections: [          // hard coded example
+              {id: 1, name: "Akassh", timestamps: [60,100,1200]},
+              {id: 2, name: "Visal", timestamps: [1000]},
+              {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500]},
+              {id: 4, name: "UnknownPerson", timestamps: [100,500]}
+            ],
             selectedPerson: null,
             seekTime: 0
         };
@@ -60,6 +61,7 @@ export default class Dashboard extends Component {
     }
 
 
+    // get all detected people with detected timestamps in a video
     async getAllDetections() {
         try {
             const res = await retrieveAllDetections()
@@ -68,6 +70,19 @@ export default class Dashboard extends Component {
             console.log(e)
         }
     }
+
+    // delete known people from the system db
+    async deletePerson(personIdToBeDeleted){
+        deleteFaceFromSystem(personIdToBeDeleted);
+
+        //To refresh html page content
+        let  newDetectionsArray = this.state.allDetections.filter(
+            person => person.id !== personIdToBeDeleted
+        );
+        this.setState({allDetections: newDetectionsArray});
+
+    }
+
     render() {
         return (
             <div>
@@ -89,11 +104,14 @@ export default class Dashboard extends Component {
 
                             <Person
                                 key={person.id}
-                                faceName={person.name}
+                                name={person.name}
                                 blackListed = {person.blacklisted}
                                 allTimestamps={person.timestamps}     // taking all the timestamps of the relevant person
                                 
-                                onChoose={() => this.showTimeCards(person)}
+                                onChoose={() => this.showTimeCards(person)}         // display timestamps of the person
+                                // onEdit = {() => this.editName(person.id)}
+
+                                onDelete = {() => this.deletePerson(person.id)}     // delete the person from the db
                             />
 
                         </div>
