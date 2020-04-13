@@ -1,8 +1,9 @@
 import React, { createElement } from "react";
 import Webcam from "react-webcam";
 import "./web-cam.style.scss";
-import { Button } from "../button/button.component";
 import ImageCanvas from "../image-canvas/image-canvas.component";
+import Resizer from "react-image-file-resizer";
+
 
 export default class WebCamComponent extends React.Component {
   //constructor
@@ -37,37 +38,58 @@ export default class WebCamComponent extends React.Component {
     this.webcam = webcam;
   };
 
+  compress(imageSrc) {
+    // const ctx = this.refs.canvasWebcam.getContext("2d");
+    const elem = document.getElementById("canvasWebcam");
+    elem.width = 480;
+    elem.height = 288;
+    const ctx = elem.getContext("2d");
+    console.log("compressed method");
+    const width = 480;
+    const height = 288;
+    const img = new Image();
+    img.src = imageSrc;
+    img.onload = () => {
+      ctx.width = width;
+      ctx.height = height;
+      // img.width and img.height will contain the original dimensions
+      ctx.drawImage(img, 0, 0, width, height);
+    };
+    var url = elem.toDataURL("image/png");
+    console.log(url);
+    return url;
+  }
+
   //method used to capture the webcam screenshot
   capture = async () => {
-    try {
-      const imageSrc = this.webcam.getScreenshot();
-      if (imageSrc != null && this.state.displayComponent) {
-        this.setState(
-          {
-            isCanvasVisible: true
-          },
-          () => {
-            var newImageSource = this.splitImageValue(imageSrc)[1];
-            this.setState({
-              truncatedImgSrc: newImageSource,
-              imageSource: imageSrc
-            });
-            // var newImage = this.downscaledImage(imageSrc, 480, 288);
-            // console.log(newImage);
-            this.fetchFaceData(newImageSource);
-          }
-        );
-      } else {
-        console.log("image == null");
-      }
-    } catch (error) {
-      console.log(error);
+    var imageSrc = this.webcam.getScreenshot();
+
+    //verifying if the image is null and if display component is true
+    if (imageSrc != null && this.state.displayComponent) {
+      console.log("captured image");
+      this.setState(
+        {
+          isCanvasVisible: true
+        },
+        () => {
+          var newImageSource = this.splitImageValue(imageSrc)[1];
+          console.log(newImageSource);
+          this.setState({
+            truncatedImgSrc: newImageSource,
+            imageSource: imageSrc
+          });
+          // this.resizeImage(newImageSource);
+          this.fetchFaceData(newImageSource);
+        }
+      );
     }
   };
 
   //Method used to fetch data from the endpoint
   fetchFaceData = async imageSrc => {
+    //verifying if the image is null
     if (imageSrc != null) {
+      console.log("image sent to backend");
       fetch("http://speculo.isala.me/", {
         method: "POST",
         mode: "cors",
@@ -76,11 +98,16 @@ export default class WebCamComponent extends React.Component {
         })
       })
         .then(response => response.json())
-        .then(data => this.setState({ faceData: data, isDataRecieved: true }))
-        .catch(err => console.log(err));
-      // .then(() => console.log(this.state.faceData));
+        .then(data => this.setState({ faceData: data }))
+        .catch(err => console.log(err))
+        .then(() => {
+          console.log(this.state.faceData);
+          //retrieving the number of faces in the json array
+          var len = Object.keys(this.state.faceData.data).length;
+          this.setState({ numberOfFaces: len, isDataRecieved: true });
+        });
     } else {
-      console.log("null image referenced");
+      console.log("image is null");
     }
   };
 
@@ -89,16 +116,19 @@ export default class WebCamComponent extends React.Component {
     return newImageStringArr;
   };
 
-  downscaledImage = (imgSrc, width, height) => {
-    var canvas = document.getElementById("canvas");
-    const ctx = this.refs.canvasOne.getContext("2d");
-    var image = new Image();
-    image.src = `${imgSrc}`;
-    image.onload = () => {
-      ctx.drawImage(image, 0, 0, width, height);
-      console.log("returned base64 image " + ctx.toDataURL);
-    };
-    return ctx.toDataURL();
+  resizeImage = scaledImageSrc => {
+    Resizer.imageFileResizer(
+      scaledImageSrc,
+      480,
+      288,
+      "JPEG",
+      100,
+      0,
+      uri => {
+        console.log(uri);
+      },
+      "base64"
+    );
   };
 
   render() {
@@ -106,7 +136,8 @@ export default class WebCamComponent extends React.Component {
       isCanvasVisible,
       imageSource,
       faceData,
-      isDataRecieved
+      isDataRecieved,
+      numberOfFaces
     } = this.state;
 
     const webcamConstraints = {
@@ -122,23 +153,30 @@ export default class WebCamComponent extends React.Component {
             height={720}
             ref={this.setRef}
             screenshotFormat="image/jpeg"
-            width={1200}
+            width={1080}
             videoConstraints={webcamConstraints}
           />
         </div>
 
-        <Button
+        {/* <BasicButton
           buttonStyle={captureScreenshotBtnStyle}
           className="grab-webcam-screenshot"
           onClickHandler={() => {
-            if (this.state.displayComponent) {
-              this.setState({displayComponent: false})
-            }else{
-              this.setState({displayComponent: true})
-            }
+            this.capture();
+            //toggling of enabling and disabling the live demonstration
+            // if (this.state.displayComponent) {
+            //   console.log("display component is false");
+            //   this.setState({ displayComponent: false });
+            // } else {
+            //   console.log("display component is true");
+            //   this.setState({ displayComponent: true });
+            // }
           }}
-          buttonTitle="Stop/Start Live demo"
-        />
+          buttonTitle="Toggle Live Demo"
+        /> */}
+
+        {/* canvas for downscaling image */}
+        <canvas id="canvasWebcam" width={108} height={72} />
 
         {/* ternary operator to display the "CanvasComponent" */}
         {isCanvasVisible &&
@@ -146,13 +184,12 @@ export default class WebCamComponent extends React.Component {
         isDataRecieved &&
         this.state.displayComponent ? (
           //canvas component
-          <div>
-            <div className="canvas-component">
-              <ImageCanvas imgSrc={imageSource} analysedFaceData={faceData} />
-            </div>
-            <div>
-              <canvas id="" ref="canvasOne" width={480} height={288} />
-            </div>
+          <div className="canvas-component">
+            <ImageCanvas
+              imgSrc={imageSource}
+              analysedFaceData={faceData.data}
+              numberOfFaces={numberOfFaces}
+            />
           </div>
         ) : null}
       </>
