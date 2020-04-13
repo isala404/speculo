@@ -48,7 +48,24 @@ async def get_all_faces(request):
 
 
 async def add_face(request):
-	pass
+	try:
+		filename = await save_image(request)
+		
+		# ImagePostprocessor(filename=filename).save_face_data()
+		
+		name = filename.replace('.jpg', '')
+		
+		response_obj = {'status': 'success', 'message': f'{name} successfully saved'}
+		
+		return web.Response(text=json.dumps(response_obj), status=200)
+	
+	except Exception as e:
+		print(e)
+		# Failed path where name is not set
+		response_obj = {'status': 'failed', 'reason': str(e)}
+		
+		# return failed with a status code of 500 i.e. 'Server Error'
+		return web.Response(text=json.dumps(response_obj), status=500)
 
 
 async def update_face(request):
@@ -70,12 +87,12 @@ async def whitelist_face(request):
 app = web.Application()
 
 routes = [
-	web.get('/api/v1/faces/all', get_all_faces()),
+	web.get('/api/v1/faces/all', get_all_faces),
 	web.post('/api/v1/faces/add', add_face),
-	web.put('/api/v1/faces/update', update_face()),
-	web.delete('/api/v1/faces/delete', delete_face()),
-	web.put('/api/v1/faces/blacklist', blacklist_face()),
-	web.put('/api/v1/faces/whitelist', whitelist_face()),
+	web.put('/api/v1/faces/update', update_face),
+	web.delete('/api/v1/faces/delete', delete_face),
+	web.put('/api/v1/faces/blacklist', blacklist_face),
+	web.put('/api/v1/faces/whitelist', whitelist_face),
 ]
 
 app.add_routes(routes)
