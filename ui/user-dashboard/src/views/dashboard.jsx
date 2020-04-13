@@ -89,9 +89,11 @@ export default class Dashboard extends Component {
 
                             <Person
                                 key={person.id}
-                                name={person.faceName}
-                                onChoose={() => this.showTimeCards(person)}
+                                faceName={person.name}
+                                blackListed = {person.blacklisted}
                                 allTimestamps={person.timestamps}     // taking all the timestamps of the relevant person
+                                
+                                onChoose={() => this.showTimeCards(person)}
                             />
 
                         </div>

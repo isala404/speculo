@@ -3,8 +3,14 @@ import '../styles/commonStyles.scss';
 
 class Person extends Component{
     state={
-        name: this.props.name
+        name: this.props.name,
+        blackListed: this.props.blackListed             // black-listed status of the person (1 = black-listed, 0 = white-listed)
     };
+
+
+    // use style components to check if blackListed = 1  ->  make background-color of the PersonCard: red or black
+    //          else if  blackListed = 0   ->  background-color of the PersonCard: whitish background color
+
 
     render(){
         return(

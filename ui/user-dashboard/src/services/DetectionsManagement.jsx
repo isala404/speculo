@@ -11,7 +11,8 @@ export async function retrieveAllDetections() {
     return res.data.map(detection => {
         return {
             id: detection._id,
-            faceName: detection.name,
+            name: detection.name,
+            blacklisted: detection.blacklisted,
             timestamps: detection.timestamps
         };
     });
