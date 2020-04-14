@@ -10,6 +10,8 @@ import os
 
 from mongoengine import Document, StringField, ListField, BooleanField, connect
 
+from image_processor import ImageProcessor
+
 
 class Face(Document):
 	id = Document.pk
@@ -39,12 +41,33 @@ class FaceService:
 		faces = Face.objects.only('id').only('label').only('blacklisted')
 		return json.loads(faces.to_json())
 	
-	def add_face(self, label):
-		pass
+	def add_face(self, picture):
+
+		# get the label of the face from the filename
+		label = picture.split('.')[0]
+		
+		fingerprint = ImageProcessor().generate_fingerprint(picture)
+		
+		# instantiate an object with the face data
+		face_data = Face(label=label, matrix=fingerprint, blacklisted=False)
+		
+		# save the object
+		face_data.save()
 	
-	def update_face(self, label):
-		pass
+	def update_face(self, face_id, label):
+		if len(face_id) != 24:
+			raise Exception("Invalid Face ID Provided")
+		
+		face = Face.objects(id=face_id)
+		
+		if face is None:
+			raise Exception("Invalid ID")
 	
+		face.update(label=label)
+		
+		return label
+		
+		
 	def delete_face(self, face_id):
 		pass
 	

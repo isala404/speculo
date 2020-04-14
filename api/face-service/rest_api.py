@@ -1,4 +1,5 @@
 # standard library
+import logging
 import os
 
 # 3rd party packages
@@ -31,15 +32,20 @@ async def save_image(request):
 async def get_all_faces(request):
 	try:
 		response_obj = {'status': 'success'}
+		status_code = 200
 		
 		faces = FaceService().get_all_faces()
 		
+		if not faces:
+			status_code = 204
+		
 		response_obj["data"] = f"{faces}"
 		
-		return web.Response(text=json.dumps(response_obj), status=200)
+		return web.Response(text=json.dumps(response_obj), status=status_code)
 	
 	except Exception as e:
-		print(e)
+		logging.error(e)
+		
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
@@ -51,16 +57,16 @@ async def add_face(request):
 	try:
 		filename = await save_image(request)
 		
-		# ImagePostprocessor(filename=filename).save_face_data()
+		FaceService.add_face(picture=filename)
 		
-		name = filename.replace('.jpg', '')
+		name = filename.split('.')[0]
 		
-		response_obj = {'status': 'success', 'message': f'{name} successfully saved'}
+		response_obj = {'status': 'success', 'message': f'{name} successfully saved!'}
 		
-		return web.Response(text=json.dumps(response_obj), status=200)
+		return web.Response(text=json.dumps(response_obj), status=201)
 	
 	except Exception as e:
-		print(e)
+		logging.error(e)
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
@@ -69,7 +75,26 @@ async def add_face(request):
 
 
 async def update_face(request):
-	pass
+	try:
+		data = await request.json()
+		
+		face_id = data['id']
+		label = data['label']
+		
+		faces = FaceService().update_face(face_id=face_id, label=label)
+		
+		response_obj = {'status': 'success', 'message': f'{label} ({face_id}) successfully updated!'}
+		
+		return web.Response(text=json.dumps(response_obj), status=200)
+	
+	except Exception as e:
+		logging.error(e)
+		
+		# Failed path where name is not set
+		response_obj = {'status': 'failed', 'reason': str(e)}
+		
+		# return failed with a status code of 500 i.e. 'Server Error'
+		return web.Response(text=json.dumps(response_obj), status=500)
 
 
 async def delete_face(request):
