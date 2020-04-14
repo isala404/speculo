@@ -42,7 +42,7 @@ class FaceService:
 		return json.loads(faces.to_json())
 	
 	def add_face(self, picture):
-
+		
 		# get the label of the face from the filename
 		label = picture.split('.')[0]
 		
@@ -61,15 +61,23 @@ class FaceService:
 		face = Face.objects(id=face_id)
 		
 		if face is None:
-			raise Exception("Invalid ID")
-	
+			raise Exception("Face ID doesn't exist in the database")
+		
 		face.update(label=label)
+	
+	def delete_face(self, face_id):
+		if len(face_id) != 24:
+			raise Exception("Invalid Face ID Provided")
+		
+		face = Face.objects(id=face_id)
+		
+		if face is None:
+			raise Exception("Face ID doesn't exist in the database")
+		
+		label = face.label
+		face.delete()
 		
 		return label
-		
-		
-	def delete_face(self, face_id):
-		pass
 	
 	def blacklist_face(self, face_id):
 		pass

@@ -1,8 +1,8 @@
 import json
 import os
 
+import aiohttp
 import numpy as np
-import requests
 from PIL import Image, ImageDraw
 
 
@@ -16,9 +16,11 @@ class ImageProcessor:
 	def _get_faces(self, resized_image):
 		body = json.dumps({'instances': np.array(resized_image).tolist()})
 		
-		response = requests.post(url=self._FACEDETECTOR_ENDPOINT, data=body)
+		session = aiohttp.ClientSession()
 		
-		data = json.loads(response.text)
+		response = await session.post(self._FACEDETECTOR_ENDPOINT, json=body)
+		
+		data = await response.json()
 		
 		if 'error' in data.keys():
 			print("error in detecting faces")
@@ -30,9 +32,11 @@ class ImageProcessor:
 		# using the old model
 		body = json.dumps({'instances': np.reshape(np.array(current_face), [-1, 64, 64, 3]).tolist()})
 		
-		response = requests.post(url=self._FINGERPRINT_ENDPOINT, data=body)
+		session = aiohttp.ClientSession()
 		
-		data = json.loads(response.text)
+		response = await session.post(self._FINGERPRINT_ENDPOINT, json=body)
+		
+		data = await response.json()
 		
 		if 'error' in data.keys():
 			print("error in generating fingerprint")

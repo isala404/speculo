@@ -81,7 +81,7 @@ async def update_face(request):
 		face_id = data['id']
 		label = data['label']
 		
-		faces = FaceService().update_face(face_id=face_id, label=label)
+		FaceService().update_face(face_id=face_id, label=label)
 		
 		response_obj = {'status': 'success', 'message': f'{label} ({face_id}) successfully updated!'}
 		
@@ -98,7 +98,25 @@ async def update_face(request):
 
 
 async def delete_face(request):
-	pass
+	try:
+		data = await request.json()
+		
+		face_id = data['id']
+		
+		label = FaceService().delete_face(face_id=face_id)
+		
+		response_obj = {'status': 'success', 'message': f'{label} ({face_id}) successfully updated!'}
+		
+		return web.Response(text=json.dumps(response_obj), status=200)
+	
+	except Exception as e:
+		logging.error(e)
+		
+		# Failed path where name is not set
+		response_obj = {'status': 'failed', 'reason': str(e)}
+		
+		# return failed with a status code of 500 i.e. 'Server Error'
+		return web.Response(text=json.dumps(response_obj), status=500)
 
 
 async def blacklist_face(request):
