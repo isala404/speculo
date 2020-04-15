@@ -69,7 +69,7 @@ class FaceService:
 		if len(face_id) != 24:
 			raise Exception("Invalid Face ID Provided")
 		
-		face = Face.objects(id=face_id)
+		face = Face.objects(id=face_id).first()
 		
 		if face is None:
 			raise Exception("Face ID doesn't exist in the database")

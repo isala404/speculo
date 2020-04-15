@@ -13,7 +13,7 @@ class ImageProcessor:
 		self._FACEDETECTOR_ENDPOINT = os.getenv("FACEDETECTOR_URL")
 		self._FINGERPRINT_ENDPOINT = os.getenv("FINGERPRINTER_URL")
 	
-	def _get_faces(self, resized_image):
+	async def _get_faces(self, resized_image):
 		body = json.dumps({'instances': np.array(resized_image).tolist()})
 		
 		session = aiohttp.ClientSession()
@@ -28,7 +28,7 @@ class ImageProcessor:
 		
 		return data['predictions']
 	
-	def _get_fingerprint(self, current_face):
+	async def _get_fingerprint(self, current_face):
 		# using the old model
 		body = json.dumps({'instances': np.reshape(np.array(current_face), [-1, 64, 64, 3]).tolist()})
 		
@@ -44,14 +44,14 @@ class ImageProcessor:
 		
 		return data['predictions']
 	
-	def generate_fingerprint(self, filename):
+	async def generate_fingerprint(self, filename):
 		im = Image.open("./images/{}".format(filename))
 		
 		width, height = im.size
 		
 		resized_im = im.resize((self._SIZE, self._SIZE))
 		
-		boxes = self._get_faces(resized_image=resized_im)
+		boxes = await self._get_faces(resized_image=resized_im)
 		
 		for top, left, bottom, right in boxes:
 			# Setting the points for cropped image
@@ -70,7 +70,7 @@ class ImageProcessor:
 			image_drawer = ImageDraw.Draw(face)
 			image_drawer.rectangle(((left, top), (right, bottom)), fill=None, outline="red")
 			
-			fingerprint = self._get_fingerprint(current_face=face)
+			fingerprint = await self._get_fingerprint(current_face=face)
 			
 			# close the image file and remove it from the images directory
 			im.close()
