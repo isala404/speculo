@@ -100,4 +100,14 @@ class FaceService:
 		return face.label
 	
 	def whitelist_face(self, face_id):
-		pass
+		if len(face_id) != 24:
+			raise Exception("Invalid Face ID Provided")
+		
+		face = Face.objects(id=face_id).first()
+		
+		if face is None:
+			raise Exception("Face doesn't exist in the database")
+		
+		face.update(blacklisted=False)
+		
+		return face.label

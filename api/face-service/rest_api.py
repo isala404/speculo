@@ -118,7 +118,7 @@ async def delete_face(request):
 	try:
 		data = await request.json()
 		
-		face_id = data['id']
+		face_id = request.match_info['id']
 		
 		label = FaceService().delete_face(face_id=face_id)
 		
@@ -140,9 +140,7 @@ async def blacklist_face(request):
 	try:
 		response_obj = {'status': 'success'}
 		
-		data = await request.json()
-		
-		face_id = data['id']
+		face_id = request.match_info['id']
 		
 		face_label = FaceService().blacklist_face(face_id=face_id)
 		
@@ -159,7 +157,23 @@ async def blacklist_face(request):
 
 
 async def whitelist_face(request):
-	pass
+	try:
+		response_obj = {'status': 'success'}
+		
+		face_id = request.match_info['id']
+		
+		face_label = FaceService().whitelist_face(face_id=face_id)
+		
+		response_obj["message"] = f" {face_label} ({face_id}) successfully whitelisted!"
+		
+		return web.Response(text=json.dumps(response_obj), status=200)
+	except Exception as e:
+		print(e)
+		# Failed path where name is not set
+		response_obj = {'status': 'failed', 'reason': str(e)}
+		
+		# return failed with a status code of 500 i.e. 'Server Error'
+		return web.Response(text=json.dumps(response_obj), status=500)
 
 
 app = web.Application()
@@ -168,7 +182,7 @@ app = web.Application()
 routes = [
 	web.get('/api/v1/faces', get_all_faces),
 	web.get('/api/v1/faces/{id}', get_all_faces),
-	web.post('/api/v1/faces/add', add_face),
+	web.post('/api/v1/faces', add_face),
 	web.patch('/api/v1/faces/{id}/label', patch_face_label),
 	web.delete('/api/v1/faces', delete_all_faces),
 	web.delete('/api/v1/faces/{id}', delete_face),
