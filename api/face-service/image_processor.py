@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 import aiohttp
@@ -18,12 +19,14 @@ class ImageProcessor:
 		
 		session = aiohttp.ClientSession()
 		
-		response = await session.post(self._FACEDETECTOR_ENDPOINT, json=body)
+		response = await session.post(self._FACEDETECTOR_ENDPOINT, data=body)
 		
 		data = await response.json()
 		
+		await session.close()
+		
 		if 'error' in data.keys():
-			print("error in detecting faces")
+			logging.error("ERROR Detecting Faces")
 			return data['error']
 		
 		return data['predictions']
@@ -34,12 +37,14 @@ class ImageProcessor:
 		
 		session = aiohttp.ClientSession()
 		
-		response = await session.post(self._FINGERPRINT_ENDPOINT, json=body)
+		response = await session.post(self._FINGERPRINT_ENDPOINT, data=body)
 		
 		data = await response.json()
 		
+		await session.close()
+
 		if 'error' in data.keys():
-			print("error in generating fingerprint")
+			logging.error("ERROR Generating Fingerprint")
 			return 0
 		
 		return data['predictions']

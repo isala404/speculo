@@ -7,6 +7,7 @@ __status__ = "Testing"
 
 import json
 import os
+from venv import logger
 
 from mongoengine import Document, StringField, ListField, BooleanField, connect
 
@@ -41,12 +42,14 @@ class FaceService:
 		faces = Face.objects.only('id').only('label').only('blacklisted')
 		return json.loads(faces.to_json())
 	
-	def add_face(self, picture):
+	async def add_face(self, picture):
 		
 		# get the label of the face from the filename
 		label = picture.split('.')[0]
 		
-		fingerprint = ImageProcessor().generate_fingerprint(picture)
+		fingerprint = await ImageProcessor().generate_fingerprint(picture)
+		
+		logger.info(f"Saved {label} successfully!")
 		
 		# instantiate an object with the face data
 		face_data = Face(label=label, matrix=fingerprint, blacklisted=False)
@@ -72,15 +75,28 @@ class FaceService:
 		face = Face.objects(id=face_id).first()
 		
 		if face is None:
-			raise Exception("Face ID doesn't exist in the database")
+			raise Exception("Face doesn't exist in the database")
 		
 		label = face.label
 		face.delete()
 		
 		return label
 	
+	def delete_all_faces(self):
+		Face.objects.remove({})
+	
 	def blacklist_face(self, face_id):
-		pass
+		if len(face_id) != 24:
+			raise Exception("Invalid Face ID Provided")
+		
+		face = Face.objects(id=face_id).first()
+		
+		if face is None:
+			raise Exception("Face doesn't exist in the database")
+		
+		face.update(blacklisted=True)
+		
+		return face.label
 	
 	def whitelist_face(self, face_id):
 		pass
