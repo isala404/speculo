@@ -170,7 +170,7 @@ routes = [
 	web.get('/api/v1/faces/{id}', get_all_faces),
 	web.post('/api/v1/faces/add', add_face),
 	web.patch('/api/v1/faces/{id}/label', patch_face_label),
-	web.delete('/api/v1/faces', delete_face),
+	web.delete('/api/v1/faces', delete_all_faces),
 	web.delete('/api/v1/faces/{id}', delete_face),
 	web.patch('/api/v1/faces/{id}/blacklist', blacklist_face),
 	web.patch('/api/v1/faces/{id}/whitelist', whitelist_face),

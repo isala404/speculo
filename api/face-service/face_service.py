@@ -83,7 +83,8 @@ class FaceService:
 		return label
 	
 	def delete_all_faces(self):
-		Face.objects.remove({})
+		# deletes all faces in the database
+		Face.objects.all().delete()
 	
 	def blacklist_face(self, face_id):
 		if len(face_id) != 24:
