@@ -6,6 +6,7 @@ __email__ = "akassharjun@ieee.org"
 __status__ = "Testing"
 
 import json
+import logging
 import os
 
 from mongoengine import BooleanField, connect, Document, ListField, StringField
@@ -39,6 +40,7 @@ class FaceService:
 		# instantiate an object with the face data
 		face_data = Face(label=label, matrix=fingerprint, blacklisted=False)
 		
+		logging.info(f"Successfully saved {label} to the database!")
 		# save the object
 		face_data.save()
 	
@@ -46,6 +48,8 @@ class FaceService:
 		# gets all the faces from the database,
 		# with only the required fields and returns it
 		faces = Face.objects.only('id').only('label').only('blacklisted').all()
+		
+		logging.info("Successfully retrieved all the faces from the database!")
 		
 		return json.loads(faces.to_json())
 	
@@ -58,6 +62,8 @@ class FaceService:
 		
 		if face is None:
 			raise Exception("Face ID doesn't exist in the database")
+		
+		logging.info("Successfully retrieved the face from the database!")
 		
 		return json.loads(face.to_json())
 	
@@ -75,9 +81,13 @@ class FaceService:
 		
 		if face is None:
 			# if the face doesn't exist, it will create it.
+			logging.info(f"{face_id} did not exist in database, created new entry for {label}.")
+			
 			face_data = Face(label=label, matrix=fingerprint, blacklisted=False)
 			face_data.save()
 		else:
+			logging.info(f"Successfully updated {label} in the database!")
+			
 			face.update(label=label, matrix=fingerprint)
 	
 	def delete_face(self, face_id):
@@ -90,12 +100,15 @@ class FaceService:
 			raise Exception("Face doesn't exist in the database")
 		
 		label = face.label
+		
+		logging.info(f"Deleted {label} from the database.")
 		face.delete()
 		
 		return label
 	
 	def delete_all_faces(self):
 		# deletes all faces in the database
+		logging.info(f"Deleted all the faces from the database.")
 		Face.objects.all().delete()
 	
 	def label_face(self, face_id, label):
@@ -106,6 +119,8 @@ class FaceService:
 		
 		if face is None:
 			raise Exception("Face ID doesn't exist in the database")
+		
+		logging.info(f"Successfully updated {label} (label) in the database.")
 		
 		face.update(label=label)
 	
@@ -120,6 +135,8 @@ class FaceService:
 		
 		face.update(blacklisted=True)
 		
+		logging.info(f"Successfully blacklisted {face.label} in the database.")
+		
 		return face.label
 	
 	def whitelist_face(self, face_id):
@@ -132,5 +149,7 @@ class FaceService:
 			raise Exception("Face doesn't exist in the database")
 		
 		face.update(blacklisted=False)
+		
+		logging.info(f"Successfully whitelisted {face.label} in the database.")
 		
 		return face.label

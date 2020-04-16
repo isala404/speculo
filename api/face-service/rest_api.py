@@ -9,6 +9,7 @@ from aiohttp import web
 # local package
 from face_service import FaceService
 
+
 # method to save image from form-data from a request
 async def save_image(request):
 	reader = await request.multipart()
@@ -37,7 +38,7 @@ async def add_face(request):
 		
 		name = filename.split('.')[0]
 		
-		response_obj = {'status': 'success', 'message': f'{name} successfully saved!'}
+		response_obj = {'status': 'success', 'message': f'{name} successfully added!'}
 		
 		return web.Response(text=json.dumps(response_obj), status=201)
 	
@@ -142,13 +143,13 @@ async def delete_face(request):
 		
 		label = FaceService().delete_face(face_id=face_id)
 		
-		response_obj = {'status': 'success', 'message': f'{label} ({face_id}) successfully deleted!'}
+		response_obj = {'status': 'success', 'message': f'{label} successfully deleted!'}
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	
 	except Exception as e:
 		logging.error(e)
-
+		
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
@@ -165,7 +166,7 @@ async def label_face(request):
 		
 		FaceService().label_face(face_id=face_id, label=label)
 		
-		response_obj = {'status': 'success', 'message': f'{label} ({face_id}) successfully updated!'}
+		response_obj = {'status': 'success', 'message': f'{label} successfully updated!'}
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	
@@ -187,7 +188,7 @@ async def blacklist_face(request):
 		
 		face_label = FaceService().blacklist_face(face_id=face_id)
 		
-		response_obj["message"] = f" {face_label} ({face_id}) successfully blacklisted!"
+		response_obj["message"] = f" {face_label} successfully blacklisted!"
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	except Exception as e:
