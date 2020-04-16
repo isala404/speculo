@@ -148,7 +148,7 @@ async def delete_face(request):
 	
 	except Exception as e:
 		logging.error(e)
-		
+
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
@@ -191,7 +191,7 @@ async def blacklist_face(request):
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	except Exception as e:
-		print(e)
+		logging.error(e)
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
@@ -211,7 +211,7 @@ async def whitelist_face(request):
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	except Exception as e:
-		print(e)
+		logging.error(e)
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
