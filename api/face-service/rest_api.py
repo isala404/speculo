@@ -9,7 +9,7 @@ from aiohttp import web
 # local package
 from face_service import FaceService
 
-
+# method to save image from form-data from a request
 async def save_image(request):
 	reader = await request.multipart()
 	
@@ -27,6 +27,27 @@ async def save_image(request):
 			f.write(chunk)
 	
 	return filename
+
+
+async def add_face(request):
+	try:
+		filename = await save_image(request)
+		
+		await FaceService().add_face(picture=filename)
+		
+		name = filename.split('.')[0]
+		
+		response_obj = {'status': 'success', 'message': f'{name} successfully saved!'}
+		
+		return web.Response(text=json.dumps(response_obj), status=201)
+	
+	except Exception as e:
+		logging.error(e)
+		# Failed path where name is not set
+		response_obj = {'status': 'failed', 'reason': str(e)}
+		
+		# return failed with a status code of 500 i.e. 'Server Error'
+		return web.Response(text=json.dumps(response_obj), status=500)
 
 
 async def get_all_faces(request):
@@ -53,20 +74,20 @@ async def get_all_faces(request):
 		return web.Response(text=json.dumps(response_obj), status=500)
 
 
-async def add_face(request):
+async def get_face_by_id(request):
 	try:
-		filename = await save_image(request)
+		response_obj = {'status': 'success'}
+		face_id = request.match_info['id']
 		
-		await FaceService().add_face(picture=filename)
+		face = FaceService().get_face_by_id(face_id=face_id)
 		
-		name = filename.split('.')[0]
+		response_obj["data"] = f"{face}"
 		
-		response_obj = {'status': 'success', 'message': f'{name} successfully saved!'}
-		
-		return web.Response(text=json.dumps(response_obj), status=201)
+		return web.Response(text=json.dumps(response_obj), status=200)
 	
 	except Exception as e:
 		logging.error(e)
+		
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
@@ -74,16 +95,17 @@ async def add_face(request):
 		return web.Response(text=json.dumps(response_obj), status=500)
 
 
-async def patch_face_label(request):
+async def update_face(request):
 	try:
-		data = await request.json()
+		face_id = request.match_info['id']
 		
-		face_id = data['id']
-		label = data['label']
+		filename = await save_image(request)
 		
-		FaceService().update_face(face_id=face_id, label=label)
+		await FaceService().update_face(face_id=face_id, new_picture=filename)
 		
-		response_obj = {'status': 'success', 'message': f'{label} ({face_id}) successfully updated!'}
+		name = filename.split('.')[0]
+		
+		response_obj = {'status': 'success', 'message': f'{name} successfully updated!'}
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	
@@ -116,13 +138,34 @@ async def delete_all_faces(request):
 
 async def delete_face(request):
 	try:
-		data = await request.json()
-		
 		face_id = request.match_info['id']
 		
 		label = FaceService().delete_face(face_id=face_id)
 		
 		response_obj = {'status': 'success', 'message': f'{label} ({face_id}) successfully deleted!'}
+		
+		return web.Response(text=json.dumps(response_obj), status=200)
+	
+	except Exception as e:
+		logging.error(e)
+		
+		# Failed path where name is not set
+		response_obj = {'status': 'failed', 'reason': str(e)}
+		
+		# return failed with a status code of 500 i.e. 'Server Error'
+		return web.Response(text=json.dumps(response_obj), status=500)
+
+
+async def label_face(request):
+	try:
+		face_id = request.match_info['id']
+		
+		data = await request.json()
+		label = data['label']
+		
+		FaceService().label_face(face_id=face_id, label=label)
+		
+		response_obj = {'status': 'success', 'message': f'{label} ({face_id}) successfully updated!'}
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	
@@ -181,11 +224,12 @@ app = web.Application()
 # the url routes with their respective handlers
 routes = [
 	web.get('/api/v1/faces', get_all_faces),
-	web.get('/api/v1/faces/{id}', get_all_faces),
+	web.get('/api/v1/faces/{id}', get_face_by_id),
 	web.post('/api/v1/faces', add_face),
-	web.patch('/api/v1/faces/{id}/label', patch_face_label),
 	web.delete('/api/v1/faces', delete_all_faces),
 	web.delete('/api/v1/faces/{id}', delete_face),
+	web.put('/api/v1/faces/{id}', update_face),
+	web.patch('/api/v1/faces/{id}/label', label_face),
 	web.patch('/api/v1/faces/{id}/blacklist', blacklist_face),
 	web.patch('/api/v1/faces/{id}/whitelist', whitelist_face),
 ]
