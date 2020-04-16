@@ -4,6 +4,7 @@ import 'video.js/dist/video-js.css';
 import '@videojs/themes/dist/fantasy/index.css';
 import TimeCard from "../components/TimeCard";
 import Person from "../components/PersonCard";
+import EditPopUp from '../components/EditPopUp.jsx';
 import '../styles/commonStyles.scss';
 
 import {retrieveAllDetections, deleteFaceFromSystem} from "../services/DetectionsManagement";
@@ -13,16 +14,20 @@ export default class Dashboard extends Component {
     constructor(props) {
         super(props)
 
+        this.choosenPersonToEdit = this.choosenPersonToEdit.bind(this);
+        this.editPersonSave = this.editPersonSave.bind(this);
+
         this.state = {
             // allDetections: [],           // stores all the detected faces with the timestamps
             allDetections: [          // hard coded example
-              {id: 1, name: "Akassh", timestamps: [60,100,1200]},
-              {id: 2, name: "Visal", timestamps: [1000]},
-              {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500]},
-              {id: 4, name: "UnknownPerson", timestamps: [100,500]}
+              {id: 1, name: "Akassh", timestamps: [60,100,1200], blacklisted: true},
+              {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
+              {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500],  blacklisted: true},
+              {id: 4, name: "UnknownPerson", timestamps: [100,500], blacklisted: true}
             ],
             selectedPerson: null,
-            seekTime: 0
+            seekTime: 0,
+            chosenIndexToEdit: 0
         };
 
         this.videoPlayer = null;     // videojs video player is assigned to this variable. Used to access controls of videojs
@@ -61,7 +66,7 @@ export default class Dashboard extends Component {
     }
 
 
-    // get all detected people with detected timestamps in a video
+    // Get all detected people with detected timestamps in a video
     async getAllDetections() {
         try {
             const res = await retrieveAllDetections()
@@ -71,7 +76,19 @@ export default class Dashboard extends Component {
         }
     }
 
-    // delete known people from the system db
+
+    // Edit name/ black-list status of a person in the system db & display in UI
+    async editPersonSave(requiredPerson){
+        const chosenIndexToEdit = this.state.chosenIndexToEdit;
+        let newDetectionsArray = this.state.allDetections;
+        newDetectionsArray[chosenIndexToEdit] = requiredPerson;     // replacing the chosen index with the person details obtained from the pop-up component
+
+        this.setState({ allDetections: newDetectionsArray });
+
+    }
+
+
+    // Delete known people from the system db
     async deletePerson(personIdToBeDeleted){
         deleteFaceFromSystem(personIdToBeDeleted);
 
@@ -83,7 +100,20 @@ export default class Dashboard extends Component {
 
     }
 
+    
+    // choosen person to be edited
+    choosenPersonToEdit(index){
+        this.setState({
+            chosenIndexToEdit: index
+          });
+    }
+
+
     render() {
+
+        const chosenIndexToEdit = this.state.chosenIndexToEdit;
+        let chosenPersonData = this.state.allDetections[chosenIndexToEdit];
+
         return (
             <div>
                 <div data-vjs-player>
@@ -99,17 +129,18 @@ export default class Dashboard extends Component {
 
                 <div className="allDetectedFaces">
                     {/* display all the names of the people recognized */}
-                    {this.state.allDetections.map(person => (
-                        <div key={person.id}>
+                    {this.state.allDetections.map((person,index) => (
+                        <div key={index}>
 
                             <Person
-                                key={person.id}
+                                key={index}
                                 name={person.name}
-                                blackListed = {person.blacklisted}
+                                blacklisted = {person.blacklisted}
                                 allTimestamps={person.timestamps}     // taking all the timestamps of the relevant person
                                 
                                 onChoose={() => this.showTimeCards(person)}         // display timestamps of the person
-                                // onEdit = {() => this.editName(person.id)}
+
+                                onRequestEdit = {() => this.choosenPersonToEdit(index)}    //Choose the name & black-list status of a person to be edited
 
                                 onDelete = {() => this.deletePerson(person.id)}     // delete the person from the db
                             />
@@ -130,8 +161,18 @@ export default class Dashboard extends Component {
                         )
                     })}
                 </div>
+
+                <EditPopUp
+                    id= {chosenPersonData.id}
+                    name={chosenPersonData.name}
+                    timestamps={chosenPersonData.timestamps}
+                    blacklisted={chosenPersonData.blacklisted}
+                    editPersonSave={this.editPersonSave}
+                />
             </div>
         )
+
+
     }
 
 }

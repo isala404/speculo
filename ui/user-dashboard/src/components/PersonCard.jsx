@@ -4,12 +4,12 @@ import '../styles/commonStyles.scss';
 class Person extends Component{
     state={
         name: this.props.name,
-        blackListed: this.props.blackListed             // black-listed status of the person (1 = black-listed, 0 = white-listed)
+        blacklisted: this.props.blacklisted             // black-listed status of the person (1 = black-listed, 0 = white-listed)
     };
 
 
-    // use style components to check if blackListed = 1  ->  make background-color of the PersonCard: red or black
-    //          else if  blackListed = 0   ->  background-color of the PersonCard: whitish background color
+    // use style components to check if blacklisted = 1  ->  make background-color of the PersonCard: red or black
+    //          else if  blacklisted = 0   ->  background-color of the PersonCard: whitish background color
 
 
     render(){
@@ -23,25 +23,24 @@ class Person extends Component{
                 <div onClick = {this.props.onChoose} style={{cursor: "pointer"}}>
                     <div>~Image of the Person~</div>
                     <p>{this.props.name}</p>
-
-{/* 
-                    <button onClick= {this.props.onEdit}>
-                        Edit Name
-                    </button> */}
-
-
-                    {/* if(nameOfPerson.startsWith("Unknown"){ */}
-                    {isUnknown
-                    ? <div></div>   // delete should be shown only if name doesn't contain unknown
-                    : <div>
-                        {/* Have a cross mark instead of Delete text */}
-                        <button className="btn btn-danger" onClick = { this.props.onDelete }>
-                            Delete
-                        </button>
-                    </div>
-                    }
-
                 </div>
+
+                <button  className="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                    onClick= {this.props.onRequestEdit}>
+                    Edit Name/ Blacklist status
+                </button>
+
+
+                {/* if(nameOfPerson.startsWith("Unknown"){ */}
+                {isUnknown
+                ? <div></div>   // delete should be shown only if name doesn't contain unknown
+                : <div>
+                    {/* Have a cross mark instead of Delete text */}
+                    <button className="btn btn-danger" onClick = { this.props.onDelete }>
+                        Delete
+                    </button>
+                </div>
+                }
             </div>
             )
     }
