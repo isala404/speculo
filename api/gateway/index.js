@@ -2,6 +2,7 @@
 require('dotenv').config();
 const express = require("express");
 const logger = require("morgan");
+const gateway = require('./app/routes/gateway');
 const user = require("./app/routes/user");
 const admin = require("./app/routes/admin");
 const bodyParser = require("body-parser");
@@ -27,6 +28,7 @@ app.get("/", function (req, res) {
 // public route
 app.use("/user", user);
 app.use("/admin", admin);
+app.use(gateway);
 
 
 function validateUser(req, res, next) {
