@@ -20,7 +20,6 @@
     "video.js": "^7.6.6",
     "react-flexbox-grid": "^2.1.2",
     "react-player": "^1.15.3",
-	"axios": "^0.19.2",
     "styled-components": "^5.0.1"
   },
   "scripts": {
@@ -45,6 +44,6 @@
     ]
   },
   "devDependencies": {
-	"node-sass": "^4.13.1"
+    "node-sass": "^4.13.1"
   }
 }

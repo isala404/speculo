@@ -12,7 +12,7 @@
 //             blacklisted:''
 //         }
 //     }
-    
+
 //     // getting the chosen person's details in the parent component to set the pop-up's input text fields with existing data
 //     componentWillReceiveProps(nextProps) {
 //         this.setState({             // receiving all data, to make sure that the dashboard will be able to show all data after editing
@@ -35,7 +35,6 @@
 //         const personDetails = this.state;
 //         this.props.editPersonSave(personDetails)          // sends the new person details to the parent component
 //     }
-
 
 //     render(){                   // change the ids!!>>>>>>>>>>>>>>>>>>>>
 //         // Display UI element (pop-up) for the user to edit the name & black-list status of the chosen person
@@ -66,3 +65,49 @@
 // }
 
 // export default EditPopUp;
+import React, { useState } from "react";
+import { Button, Modal } from "react-bootstrap";
+
+const EditPopUp = (props) => {
+  // better to have this as a separate component as it's needed for the records table as well
+  const [show, setShow] = useState(false);
+  return (
+    <>
+      <Button variant="primary" onClick={() => setShow(true)}>
+        Edit Name/ Blacklist status
+      </Button>
+
+      <Modal show={show} onHide={() => setShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Person Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            <span className="modal-lable">Name: </span>
+            <input value={props.name} onChange={props.nameHandler} />
+          </p>
+
+          {/* change true false to a checkbox toggle */}
+          <p>
+            <span className="modal-lable">Black-listed status: </span>
+            <input
+              value={props.blacklisted}
+              onChange={(e) => props.blacklistedHandler(e)}
+            />
+          </p>
+          {/* Woohoo, you're reading this text in a modal! */}
+        </Modal.Body>
+        <Modal.Footer>
+          {/* <Button variant="secondary" onClick={this.handleClose}>
+                Close
+            </Button> */}
+          <Button variant="primary" onClick={props.handleSave}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+};
+
+export default EditPopUp;
