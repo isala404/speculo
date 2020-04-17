@@ -13,7 +13,7 @@ import {
   retrieveAllDetections,
   deleteFaceFromSystem
 } from "../services/DetectionsManagement";
-
+import Video from "../components/video-player/video.component";
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -56,10 +56,10 @@ export default class Dashboard extends Component {
 
   componentDidMount() {
     // instantiate Video.js
-    this.videoPlayer = videojs("videoPlayer");
-    this.player = videojs(this.videoNode, this.props, function onPlayerReady() {
-      console.log("onPlayerReady", this);
-    });
+    // this.videoPlayer = videojs("videoPlayer");
+    // this.player = videojs(this.videoNode, this.props, function onPlayerReady() {
+    //   console.log("onPlayerReady", this);
+    // });
 
     // get detected faces with timestamps from the backend
     this.getAllDetections();
@@ -129,7 +129,9 @@ export default class Dashboard extends Component {
       <div>
         <div data-vjs-player>
           <div id="videoContainer">
-            <video
+            <Video />
+            {/* video that needs to be added to check for faces will be opened here*/}
+            {/* <video
               ref={node => (this.videoNode = node)}
               id="videoPlayer"
               className="vjs-footage video-js vjs-theme-fantasy"
@@ -139,8 +141,7 @@ export default class Dashboard extends Component {
                 src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
                 type="video/mp4"
               />
-              {/* video that needs to be added to check for faces will be opened here*/}
-            </video>
+            </video> */}
           </div>
         </div>
 
