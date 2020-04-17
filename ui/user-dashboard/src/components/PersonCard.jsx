@@ -12,33 +12,39 @@ class Person extends Component {
       timestamps: this.props.timestamps,
       blacklisted: this.props.blacklisted, // black-listed status of the person (1 = black-listed, 0 = white-listed)
 
-      show: false,
+      show: false        // display status of the Edit pop-up
     };
-
-    // this.newName = this.state.name;
-    // this.newBlacklistedSatus = blacklisted;
   }
 
   // use style components to check if blacklisted = 1  ->  make background-color of the PersonCard: red or black
   //          else if  blacklisted = 0   ->  background-color of the PersonCard: whitish background color
 
+
+
   nameHandler = (e) => {
-    this.setState({ name: e.target.value }); // accessing inserted input and setting it's value to the name
-    console.log(this.state.name);
+    this.setState({ name: e.target.value });    // accessing inserted input and setting it's value to the name
   };
 
   blacklistedHandler = (e) => {
-    // this.setState({newBlacklistedSatus: e.target.value})     // accessing inserted input and setting it's value to blacklisted status
+    this.setState({blacklisted: e.target.value})     // accessing inserted input and setting it's value to blacklisted status
   };
 
   handleSave = () => {
     const personDetails = {
-      // this.state;
-    };
-    console.log(personDetails);
-    // this.props.editPersonSave(personDetails)          // sends the new person details to the parent component
+      id: this.state.id,
+      name: this.state.name,
+      timestamps: this.state.timestamps,
+      blacklisted: this.state.blacklisted,
+    };      // new details of person
+
+    this.props.onSaveEdit(personDetails)          // sends the new person details to the parent component
   };
 
+  handleChoose = () =>{
+    this.props.onChooseIndex()      // getting the index of the chosen person in the parent component's array
+  };
+
+  
   render() {
     const nameOfPerson = this.props.name;
     const isUnknown = nameOfPerson.startsWith("Unknown"); // checking if the person is unknown
@@ -51,10 +57,6 @@ class Person extends Component {
           <p>{this.props.name}</p>
         </div>
 
-        {/* <button  className="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
-                    onClick= {this.props.onRequestEdit}>
-                    Edit Name/ Blacklist status
-                </button> */}
 
         <EditPopUp
           name={this.state.name}
@@ -62,6 +64,8 @@ class Person extends Component {
           blacklisted={this.state.blacklisted}
           blacklistedHandler={this.blacklistedHandler}
           handleSave={this.handleSave}
+
+          handleChoose={this.handleChoose}
         />
 
         {/* if(nameOfPerson.startsWith("Unknown"){ */}

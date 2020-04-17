@@ -10,6 +10,7 @@ class UploadFaces extends Component{
     render(){
 
 
+      // Used to extract all image files from a dropped folder
         const Input = ({ accept, onFiles, files, getFilesFromEvent }) => {
             const text = files.length > 0 ? 'Add more files' : 'Choose files'
           
@@ -31,7 +32,7 @@ class UploadFaces extends Component{
             )
           }
           
-          const CustomInput = () => {
+          const MyImageUploader = () => {
             const handleSubmit = (files, allFiles) => {
               console.log(files.map(f => f.meta))
               allFiles.forEach(f => f.remove())
@@ -64,7 +65,8 @@ class UploadFaces extends Component{
             <div>
                 <h1>ADD IMAGES BY DROPPING FILE/ Images</h1>
 
-                <CustomInput />
+                {/* Dropzone to upload extracte image files from dropped folders */}
+                <MyImageUploader />
             </div>
         )
     }

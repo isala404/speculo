@@ -4,7 +4,6 @@ import 'video.js/dist/video-js.css';
 import '@videojs/themes/dist/fantasy/index.css';
 import TimeCard from "../components/TimeCard";
 import Person from "../components/PersonCard";
-// import EditPopUp from '../components/EditPopUp.jsx';
 import '../styles/commonStyles.scss';
 
 import {retrieveAllDetections, deleteFaceFromSystem} from "../services/DetectionsManagement";
@@ -14,8 +13,8 @@ export default class Dashboard extends Component {
     constructor(props) {
         super(props)
 
-        // this.choosenPersonToEdit = this.choosenPersonToEdit.bind(this);
-        // this.editPersonSave = this.editPersonSave.bind(this);
+        this.choosenPersonToEdit = this.choosenPersonToEdit.bind(this);
+        this.editPersonSave = this.editPersonSave.bind(this);
 
         this.state = {
             // allDetections: [],           // stores all the detected faces with the timestamps
@@ -26,8 +25,8 @@ export default class Dashboard extends Component {
               {id: 4, name: "UnknownPerson", timestamps: [100,500], blacklisted: true}
             ],
             selectedPerson: null,
-            seekTime: 0
-            // chosenIndexToEdit: 0
+            seekTime: 0,
+            chosenIndexToEdit: 0
         };
 
         this.videoPlayer = null;     // videojs video player is assigned to this variable. Used to access controls of videojs
@@ -55,13 +54,10 @@ export default class Dashboard extends Component {
 
     // this method seeks the video to the specified timestamp
     seekToTime(time) {
-        // console.log("I was clicked")    // to test whether function gets called on button click
         this.videoPlayer.currentTime(time)   // jump to time stamp of current time-card
     }
 
     showTimeCards(person) {
-        // console.log(person)     // used to check whether the correct information of the chosen person was given
-
         this.setState({selectedPerson: person})    // updating state of selectedPerson
     }
 
@@ -80,12 +76,13 @@ export default class Dashboard extends Component {
     // Edit name/ black-list status of a person in the system db & display in UI
     async editPersonSave(newPersonDetails){
         console.log(newPersonDetails);
-        // const chosenIndexToEdit = this.state.chosenIndexToEdit;
-        // let newDetectionsArray = this.state.allDetections;
-        // newDetectionsArray[chosenIndexToEdit] = newPersonDetails;     // replacing the chosen index with the person details obtained from the pop-up component
+        const chosenIndexToEdit = this.state.chosenIndexToEdit;
+        let newDetectionsArray = this.state.allDetections;
+        newDetectionsArray[chosenIndexToEdit] = newPersonDetails;     // replacing the chosen index with the person details obtained from the pop-up component
 
-        // this.setState({ allDetections: newDetectionsArray });
+        this.setState({ allDetections: newDetectionsArray });
 
+        // send patch request to db
     }
 
 
@@ -102,18 +99,16 @@ export default class Dashboard extends Component {
     }
 
     
-    // choosen person to be edited
-    // choosenPersonToEdit(index){
-    //     this.setState({
-    //         chosenIndexToEdit: index
-    //       });
-    // }
+    // choosen index of the person to be edited
+    choosenPersonToEdit(index){
+        this.setState({
+            chosenIndexToEdit: index
+          });
+    }
 
 
     render() {
 
-        const chosenIndexToEdit = this.state.chosenIndexToEdit;
-        let chosenPersonData = this.state.allDetections[chosenIndexToEdit];
 
         return (
             <div>
@@ -142,9 +137,8 @@ export default class Dashboard extends Component {
                                 
                                 onChoose={() => this.showTimeCards(person)}         // display timestamps of the person
 
-
-                                // check this ----->>>>>>>>>>> this needs to save
-                                // onSaveEdit = {() => this.choosenPersonToEdit(index)}    //Choose the name & black-list status of a person to be edited
+                                onChooseIndex = {() => this.choosenPersonToEdit(index)}    //Choose the index of a person to be edited
+                                onSaveEdit = {(personDetails) => this.editPersonSave(personDetails)}        // save the new details pf the person
 
                                 onDelete = {() => this.deletePerson(person.id)}     // delete the person from the db
                             />
