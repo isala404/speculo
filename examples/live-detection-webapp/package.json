@@ -23,12 +23,8 @@
     "react-router": "^5.1.2",
     "react-scripts": "3.3.0",
     "react-webcam": "^4.2.0",
-<<<<<<< HEAD
-    "resize-base64": "^1.0.12"
-=======
     "reactstrap": "^8.4.1",
     "styled-components": "^5.0.1"
->>>>>>> e662a762a45b64b51fc551b0db311a5d17ce2662
   },
   "scripts": {
     "start": "react-scripts start",
