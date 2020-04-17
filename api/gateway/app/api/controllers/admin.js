@@ -47,6 +47,14 @@ module.exports = {
         adminModel.findOne({email: req.body.email}, function (err, adminInfo) {
             if (err) {
                 next(err);
+            }else if(!adminInfo){
+
+                res.json({
+                    status: "error",
+                    message: "Invalid email/password!",
+                    data: null
+                });
+                
             } else {
                 // checks if the hash value in the db and the hashed value of the password in the request body match
                 if (bcrypt.compareSync(req.body.password, adminInfo.password)) {

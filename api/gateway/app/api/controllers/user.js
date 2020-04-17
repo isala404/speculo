@@ -45,6 +45,14 @@ module.exports = {
         userModel.findOne({email: req.body.email}, function (err, userInfo) {
             if (err) {
                 next(err);
+            }else if(!userInfo){
+
+                res.json({
+                    status: "error",
+                    message: "Invalid email/password!",
+                    data: null
+                });
+                
             } else {
                 if (bcrypt.compareSync(req.body.password, userInfo.password)) {
                     const token = jwt.sign(
