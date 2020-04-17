@@ -1,3 +1,5 @@
+import pickle
+
 from PIL import Image
 import os
 import numpy as np
@@ -6,13 +8,13 @@ from tensorflow.keras.layers import Input, Dense, Conv2D, Conv2DTranspose, \
     MaxPooling2D, BatchNormalization, Flatten, Reshape, Activation, Dropout
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model, load_model
-from sklearn.utils import shuffle
+import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras.utils import plot_model
 
 
 class Speculo:
-    def __init__(self, image_size=(128, 128, 1), model_path="models/v5-adam-mae.h5", visualize=True):
+    def __init__(self, image_size=(128, 128, 1), model_path="models/v5-adam-mae.h5", visualize=True, batch_size=32):
         self.optimizer = 'adam'
         self.loss_function = 'mse'
         self.LR = 1e-3
@@ -23,6 +25,8 @@ class Speculo:
         self.image_size = image_size
         self.model_path = model_path
         self.visualize = visualize
+
+        self.batch_size = batch_size
 
         model_number = 1
         if os.path.isdir("logs"):
@@ -74,41 +78,13 @@ class Speculo:
             im = im.convert('L')
         return np.array(im)
 
-    def _load_image_set(self, directory, noise_factors=None):
-        x, y = [], []
-        fronts = sorted(os.listdir(f"dataset/{directory}/Front/"))
-        for i, person_dir in enumerate(sorted(os.listdir(f"dataset/{directory}"))):
-            if person_dir == "Front":
-                continue
-            else:
-                y_image = self.read_image(f"dataset/{directory}/Front/{fronts[i - 1]}")
-                for image in os.listdir(f"dataset/{directory}/{person_dir}"):
-                    x_image = self.read_image(f"dataset/{directory}/{person_dir}/{image}")
-                    x.append(np.array(x_image))
-                    y.append(np.array(y_image))
-
-        x = np.array(x).astype("float32") / 255.0
-        y = np.array(y).astype("float32") / 255.0
-        if self.image_size[2] == 1:
-            x = x.reshape([-1, self.image_size[0], self.image_size[1]])
-            y = y.reshape([-1, self.image_size[0], self.image_size[1]])
-
-        else:
-            x = x.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
-            y = y.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
-
-        if noise_factors:
-            noisy_x, noisy_y = [], []
-            for noise_factor in noise_factors:
-                noisy_x.append(x + (noise_factor / 10) * np.random.normal(loc=0.0, scale=1.0, size=x.shape))
-                noisy_y.append(y)
-
-            noisy_x = np.reshape(noisy_x, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
-            noisy_y = np.reshape(noisy_y, [-1, self.image_size[0], self.image_size[1], self.image_size[2]])
-
-            return shuffle(np.clip(noisy_x, 0., 1.), noisy_y)
-
-        return shuffle(x, y)
+    def _image_set_generator(self):
+        if not os.path.isfile("../dataset/youtube_data_map.pkl"):
+            raise FileNotFoundError("youtube_data_map.pkl was not found")
+        file = open('dataset/youtube_data_map.pkl', 'rb')
+        data = pickle.load(file)
+        for X, Y in data:
+            yield self.read_image(X), self.read_image(Y)
 
     def display_image_array(self, n, *image_sets, figsize=(8, 4), title=None, labels=None, save_dir=None):
         plt.figure(figsize=figsize)
@@ -137,21 +113,29 @@ class Speculo:
         plt.show()
 
     def _create_dataset(self):
-        x_train, y_train = self._load_image_set("train", noise_factors=(0.3, 0.6, 0.9, 1))
-        x_test, y_test = self._load_image_set("test", noise_factors=(0.3, 0.6))
+        data_set = tf.data.Dataset.from_generator(self._image_set_generator, output_types=tf.int32,
+                                                  output_shapes=self.image_size)
+        samples_x = []
+        samples_y = []
+        for sample in data_set.batch(1).take(10):
+            samples_x.append(sample[0][0])
+            samples_y.append(sample[0][1])
+
+        data_set = data_set.batch(self.batch_size)
+        data_set_size = 1752204
         if self.visualize:
-            self.display_image_array(10, x_train, y_train, x_test, y_test,
-                                     title=f"Dataset ({len(x_train) + len(x_test)})",
+            self.display_image_array(10, samples_x, samples_y,
+                                     title=f"Dataset ({data_set_size})",
                                      labels=["x_train", "y_train", "x_test", "y_test"],
                                      save_dir=f'models/{self.model_number}/img/dataset.png')
-        return x_train, y_train, x_test, y_test
+        return data_set
 
     def train(self):
         if os.path.exists(f"models/{self.model_number}"):
             raise FileExistsError(f"models/{self.model_number} already existing")
         os.makedirs(f"models/{self.model_number}/img")
 
-        x_train, y_train, x_test, y_test = self._create_dataset()
+        data_set = self._create_dataset()
         self.model = self.autoencoder()
 
         plot_model(self.model, to_file=f'models/{self.model_number}/img/model.png')
@@ -179,11 +163,9 @@ class Speculo:
         early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=2, verbose=1, mode='auto')
         history = None
         try:
-            history = self.model.fit(x_train, y_train,
-                                     epochs=10,
-                                     batch_size=16,
-                                     shuffle=True,
-                                     validation_data=(x_test, y_test),
+            history = self.model.fit(data_set,
+                                     epochs=2,
+                                     batch_size=self.batch_size,
                                      callbacks=[checkpoint, tensorboard, early_stopping])
 
             self.model.save(f"models/{self.model_number}/Model-v{self.model_number}-Final.h5")
