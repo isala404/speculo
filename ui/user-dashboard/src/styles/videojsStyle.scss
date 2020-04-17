@@ -1,0 +1,19 @@
+//SASS styling to skin the video-js element
+.vjs-footage.video-js{
+    color: #1ddd96
+}
+
+.vjs-footage .vjs-big-play-button {
+    color: #1ddd96;
+  }
+
+  .vjs-footage .vjs-volume-level,
+  .vjs-footage .vjs-play-progress,
+  .vjs-footage .vjs-slider-bar {
+  background: #1ddd96;
+  }
+
+  .vjs-theme-fantasy{
+    --vjs-theme-fantasy--secondary: #1ddd96;
+    --vjs-theme-fantasy--primary: #1ddd96;
+  }
