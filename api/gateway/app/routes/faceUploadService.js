@@ -9,7 +9,7 @@ const BASE_URL = 'http://localhost:8080';
 const api = apiAdapter(BASE_URL);
 
 
-router.post('/api/faceUpload', (userController.validateUser), multer.any(), (req, res) => {
+router.post('/api/v1/faces', (userController.validateUser), multer.any(), (req, res) => {
 
     const file = req.files;
   
