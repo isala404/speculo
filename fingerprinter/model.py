@@ -27,7 +27,7 @@ class AutoEncoderProgress(keras.callbacks.Callback):
 
 
 class Speculo:
-    def __init__(self, image_size=(64, 64, 1), model_path=None, visualize=True, batch_size=32):
+    def __init__(self, image_size=(64, 64, 1), model_path=None, visualize=True, batch_size=64):
         self.optimizer = 'adam'
         self.loss_function = 'mse'
         self.LR = 1e-3
@@ -40,9 +40,7 @@ class Speculo:
         self.visualize = visualize
         self.dataset_size = 0
         self.batch_size = batch_size
-        self.batches_per_step = 1
-
-        self.batch_size = batch_size
+        self.batches_per_step = 4
 
         model_number = 1
         if os.path.isdir("models"):
@@ -187,7 +185,6 @@ class Speculo:
             raise FileExistsError(f"models/{self.model_number} already existing")
         os.makedirs(f"models/{self.model_number}/img")
 
-
         data_set, x_test, y_test = self._create_dataset()
         self.model = self.autoencoder()
 
@@ -202,7 +199,7 @@ class Speculo:
             f.write(f"Latent Size - {self.latent_size} <br>\n\n")
             if self.visualize:
                 f.write("### Dataset Sample\n")
-                f.write("![DataSet](img/dataset.png)\n\n")
+                f.write('![DataSet](img/dataset.png)\n\n')
             f.write(f"## Model Summary\n```shell script\n")
             self.model.summary(print_fn=lambda x: f.write(x + '\n'))
             f.write("```\n")
@@ -223,7 +220,9 @@ class Speculo:
                                                validation_data=(x_test, y_test),
                                                validation_steps=self.batch_size,
                                                use_multiprocessing=True,
-                                               callbacks=[checkpoint, tensorboard, auto_encoder_progress, early_stopping])
+                                               callbacks=[checkpoint, tensorboard, auto_encoder_progress,
+                                                          early_stopping])
+
             self.model.save(f"models/{self.model_number}/Model-v{self.model_number}-Final.h5")
         except KeyboardInterrupt:
             pass
