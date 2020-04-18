@@ -4,6 +4,7 @@ import 'video.js/dist/video-js.css';
 import '@videojs/themes/dist/fantasy/index.css';
 import TimeCard from "../components/TimeCard";
 import Person from "../components/PersonCard";
+import {NavigationMenu} from '../components/navigation-bar/navigation-bar.component';
 import '../styles/commonStyles.scss';
 
 import {retrieveAllDetections, deleteFaceFromSystem} from "../services/DetectionsManagement";
@@ -64,7 +65,7 @@ export default class Dashboard extends Component {
 
     // Get all detected people with detected timestamps in a video
     async getAllDetections() {
-        try {
+        try { 
             const res = await retrieveAllDetections()
             this.setState({allDetections: res});
         } catch (e) {
@@ -76,26 +77,44 @@ export default class Dashboard extends Component {
     // Edit name/ black-list status of a person in the system db & display in UI
     async editPersonSave(newPersonDetails){
         console.log(newPersonDetails);
+
+        // console.log(this.state.allDetections);
+
+
         const chosenIndexToEdit = this.state.chosenIndexToEdit;
-        let newDetectionsArray = this.state.allDetections;
+
+        // console.log(chosenIndexToEdit)
+
+        let newDetectionsArray = [...this.state.allDetections];
+
+        console.log(newDetectionsArray)
+
         newDetectionsArray[chosenIndexToEdit] = newPersonDetails;     // replacing the chosen index with the person details obtained from the pop-up component
 
         this.setState({ allDetections: newDetectionsArray });
 
+
+        console.log(this.state.allDetections);
+
+
         // send patch request to db
+
     }
 
 
     // Delete known people from the system db
     async deletePerson(personIdToBeDeleted){
+
         deleteFaceFromSystem(personIdToBeDeleted);
 
         //To refresh html page content
         let  newDetectionsArray = this.state.allDetections.filter(
-            person => person.id !== personIdToBeDeleted
+            person => person.id != personIdToBeDeleted
         );
         this.setState({allDetections: newDetectionsArray});
 
+        // console.log(newDetectionsArray);
+        // console.log(this.state.allDetections);
     }
 
     
@@ -104,6 +123,8 @@ export default class Dashboard extends Component {
         this.setState({
             chosenIndexToEdit: index
           });
+          console.log(this.state.chosenIndexToEdit);
+          console.log(this.state.allDetections);
     }
 
 
@@ -112,6 +133,8 @@ export default class Dashboard extends Component {
 
         return (
             <div>
+                {/* <NavigationMenu /> */}
+
                 <div data-vjs-player>
                     <div id="videoContainer">
                         <video ref={node => this.videoNode = node} id="videoPlayer"

@@ -1,11 +1,11 @@
-*{
-    margin: 0;
-    padding: 0;
-}
+// *{
+//     margin: 0;
+//     padding: 0;
+// }
 
-html{
-    scroll-behavior: smooth;
-}
+// html{
+//     scroll-behavior: smooth;
+// }
 
 .allDetectedFaces {
     position: relative;
@@ -28,8 +28,4 @@ html{
 #timeCard{
     display: inline-block;
     border: 3px solid blue;
-}
-
-#personCard{
-    border: 3px solid red;
 }

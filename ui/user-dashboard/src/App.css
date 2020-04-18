@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
 }
 
 .App-header {
