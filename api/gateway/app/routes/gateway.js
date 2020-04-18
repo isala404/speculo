@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var faceUploadService = require('./faceUploadService');
-var footageUploadService = require('./footageUploadService');
+var footageUploadService = require('./preProcessor');
 var faceService = require('./faceServices');
 
 router.use((req, res, next) => {
