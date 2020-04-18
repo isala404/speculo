@@ -411,6 +411,7 @@ fingerprinter/dataset*
 
 facedetector/model-weights
 fingerprinter/archive
+fingerprinter/models/**/img/predictions-epoch-*
 
 **/variables
 **/assets
