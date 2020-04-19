@@ -20,6 +20,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8502:8080
+    environment:
+      - FACE_SERVICE_URL=http://faceservice:8080/api/v1/faces
     env_file:
       - database_config.env
   faceservice:

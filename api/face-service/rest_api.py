@@ -51,6 +51,27 @@ async def add_face(request):
 		return web.Response(text=json.dumps(response_obj), status=500)
 
 
+async def add_face_with_fingerprint(request):
+	try:
+		data = await request.post()
+		
+		fingerprint = data['fingerprint']
+		
+		face_id = await FaceService().add_face_with_fingerprint(fingerprint=fingerprint)
+		
+		response_obj = {'status': 'success', 'message': f'Unknown successfully added!', 'id': face_id}
+		
+		return web.Response(text=json.dumps(response_obj), status=201)
+	
+	except Exception as e:
+		logging.error(e)
+		# Failed path where name is not set
+		response_obj = {'status': 'failed', 'reason': str(e)}
+		
+		# return failed with a status code of 500 i.e. 'Server Error'
+		return web.Response(text=json.dumps(response_obj), status=500)
+
+
 async def get_all_faces(request):
 	try:
 		response_obj = {'status': 'success'}
@@ -227,6 +248,7 @@ routes = [
 	web.get('/api/v1/faces', get_all_faces),
 	web.get('/api/v1/faces/{id}', get_face_by_id),
 	web.post('/api/v1/faces', add_face),
+	web.post('/api/v1/faces/fingerprint', add_face_with_fingerprint),
 	web.delete('/api/v1/faces', delete_all_faces),
 	web.delete('/api/v1/faces/{id}', delete_face),
 	web.put('/api/v1/faces/{id}', update_face),

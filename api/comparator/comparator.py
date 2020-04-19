@@ -1,24 +1,46 @@
+import json
+import logging
 import os
 
+import aiohttp
 import numpy as np
 from mongoengine import BooleanField, connect, Document, ListField, StringField
 
-connect(
-	db=os.getenv('DB_NAME'),
-	username=os.getenv('DB_USERNAME'),
-	password=os.getenv('DB_PASSWORD'),
-	host=os.getenv('DB_HOST')
-)
-
-
-class Face(Document):
-	id = Document.pk
-	label = StringField(max_length=50)
-	matrix = ListField(required=True)
-	blacklisted = BooleanField(default=False)
-
 
 class ImageComparator:
+	def __init__(self):
+		self._FACE_SERVICE_ENDPOINT = os.getenv('FACE_SERVICE_URL')
+	
+	async def _get_all_faces(self):
+		session = aiohttp.ClientSession()
+		
+		response = await session.post(self._FACE_SERVICE_ENDPOINT)
+		
+		data = await response.json()
+		
+		await session.close()
+		
+		if 'error' not in data.keys():
+			raise Exception("There was an getting all the faces.")
+		
+		return data
+	
+	async def _save_unknown_face(self, fingerprint):
+		session = aiohttp.ClientSession()
+		
+		body = json.dumps({'fingerprint': fingerprint})
+		
+		response = await session.post(self._FACE_SERVICE_ENDPOINT + "/fingerprint", data=body)
+		
+		data = await response.json()
+		
+		await session.close()
+		
+		if 'error' not in data.keys():
+			raise Exception("There was an error in saving the unknown face.")
+		
+		return data['id']
+		
 	
 	@staticmethod
 	def _distance01(matrix_one, matrix_two):
@@ -50,32 +72,31 @@ class ImageComparator:
 		else:
 			return "Error"
 	
-	def matrix_matcher(self, matrix):
+	async def matrix_matcher(self, matrix):
 		matrix = np.array(matrix)
 		saved_matrix = []
 		saved_names = []
 		saved_ids = []
 		saved_blacklist = []
 		
-		for x in Face.objects:
-			saved_matrix.append(list(x.matrix))
-			saved_names.append(list(x.label))
-			saved_ids.append(list(str(x.id)))
-			saved_blacklist.append(list(str(x.blacklisted)))
+		faces = await self._get_all_faces()
 		
-		#  saved_matrix[0].id will return id
+		for face in faces:
+			saved_matrix.append(list(face['matrix']))
+			saved_names.append(list(face['label']))
+			saved_ids.append(list(str(face['_id']['$_oid'])))
+			saved_blacklist.append(list(str(face['blacklisted'])))
 		
 		identity = self._compare(matrix, saved_matrix)
+		
 		if identity == "Error":
 			
-			label = "Unknown"
-			added_face = Face(label=label, matrix=matrix, blacklisted=False)
-			added_face.save()
+			face_id = await self._save_unknown_face(fingerprint=matrix)
 			
 			data = {
 				'found': False,
-				'id': str(added_face.id),
-				'name': label
+				'id': str(face_id),
+				'name': 'Unknown'
 			}
 		
 		else:

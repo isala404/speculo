@@ -8,8 +8,9 @@ __status__ = "Testing"
 import json
 import logging
 import os
+from datetime import datetime
 
-from mongoengine import BooleanField, connect, Document, ListField, StringField
+from mongoengine import BooleanField, connect, Document, ListField, StringField, DateTimeField
 
 from image_processor import ImageProcessor
 
@@ -19,6 +20,8 @@ class Face(Document):
 	label = StringField(max_length=50)
 	matrix = ListField(required=True)
 	blacklisted = BooleanField(default=False)
+	created_at = DateTimeField(default=datetime.now)
+	updated_at = DateTimeField(default=datetime.now)
 
 
 class FaceService:
@@ -44,6 +47,13 @@ class FaceService:
 		# save the object
 		face_data.save()
 	
+	def add_face_with_fingerprint(self, fingerprint):
+		face = Face(label="Unknown", matrix=fingerprint)
+		
+		logging.info(f"Successfully saved Unknown face to the database!")
+		face.save()
+		return face.id
+	
 	def get_all_faces(self):
 		# gets all the faces from the database,
 		# with only the required fields and returns it
@@ -58,7 +68,8 @@ class FaceService:
 			raise Exception("Invalid Face ID Provided")
 		
 		# gets first face record from the database matching the id
-		face = Face.objects(id=face_id).only('id').only('label').only('blacklisted').first()
+		face = Face.objects(id=face_id).only('id').only('label').only('blacklisted').only('created_at').only(
+			'updated_at').first()
 		
 		if face is None:
 			raise Exception("Face ID doesn't exist in the database")
@@ -88,7 +99,7 @@ class FaceService:
 		else:
 			logging.info(f"Successfully updated {label} in the database!")
 			
-			face.update(label=label, matrix=fingerprint)
+			face.update(label=label, matrix=fingerprint, updated_at=datetime.now())
 	
 	def delete_face(self, face_id):
 		if len(face_id) != 24:
