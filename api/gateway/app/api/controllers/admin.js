@@ -9,7 +9,7 @@ module.exports = {
             if (err) next(err);
 
             if (admin != null) {
-                res.json({
+                res.status(409).json({
                     status: "failed",
                     message: "Admin already exists!"
                 });
@@ -49,7 +49,7 @@ module.exports = {
                 next(err);
             }else if(!adminInfo){
 
-                res.json({
+                res.status(401).json({
                     status: "error",
                     message: "Invalid email/password!",
                     data: null
@@ -70,7 +70,7 @@ module.exports = {
                         data: {admin: adminInfo, token: token}
                     });
                 } else {
-                    res.json({
+                    res.status(401).json({
                         status: "error",
                         message: "Invalid email/password!",
                         data: null

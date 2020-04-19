@@ -9,7 +9,7 @@ module.exports = {
             if (err) next(err);
 
             if (user != null) {
-                res.json({
+                res.status(409).json({
                     status: "failed",
                     message: "User already exists!"
                 });
@@ -47,7 +47,7 @@ module.exports = {
                 next(err);
             }else if(!userInfo){
 
-                res.json({
+                res.status(401).json({
                     status: "error",
                     message: "Invalid email/password!",
                     data: null
@@ -66,7 +66,7 @@ module.exports = {
                         data: {user: userInfo, token: token}
                     });
                 } else {
-                    res.json({
+                    res.status(401).json({
                         status: "error",
                         message: "Invalid email/password!",
                         data: null
