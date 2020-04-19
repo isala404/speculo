@@ -228,7 +228,7 @@ async def whitelist_face(request):
 		
 		face_label = FaceService().whitelist_face(face_id=face_id)
 		
-		response_obj["message"] = f" {face_label} ({face_id}) successfully whitelisted!"
+		response_obj["message"] = f" {face_label} successfully whitelisted!"
 		
 		return web.json_response(response_obj, status=200)
 	except Exception as e:

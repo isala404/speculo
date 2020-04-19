@@ -93,7 +93,7 @@ class FaceService:
 		
 		logging.info("Successfully retrieved the face from the database!")
 		
-		return face.to_dict()
+		return face.to_dict(fingerprint='false')
 	
 	async def update_face(self, face_id, new_picture):
 		if len(face_id) != 24:
