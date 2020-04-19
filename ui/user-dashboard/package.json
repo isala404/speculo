@@ -5,7 +5,7 @@
   "dependencies": {
     "@testing-library/jest-dom": "^5.5.0",
     "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
+    "@testing-library/user-event": "^10.0.2",
     "@videojs/themes": "^1.0.0",
     "axios": "^0.19.2",
     "html5-file-selector": "^2.1.0",
