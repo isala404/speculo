@@ -82,7 +82,7 @@ async def get_all_faces(request):
 		if not faces:
 			status_code = 204
 		
-		response_obj["data"] = f"{faces}"
+		response_obj["data"] = faces
 		
 		return web.Response(text=json.dumps(response_obj), status=status_code)
 	
@@ -103,7 +103,7 @@ async def get_face_by_id(request):
 		
 		face = FaceService().get_face_by_id(face_id=face_id)
 		
-		response_obj["data"] = f"{face}"
+		response_obj["data"] = face
 		
 		return web.Response(text=json.dumps(response_obj), status=200)
 	

@@ -22,6 +22,15 @@ class Face(Document):
 	blacklisted = BooleanField(default=False)
 	created_at = DateTimeField(default=datetime.now)
 	updated_at = DateTimeField(default=datetime.now)
+	
+	def to_dict(self):
+		return {
+			'id': str(self.id),
+			'label': self.label,
+			'blacklisted': self.blacklisted,
+			'created_at': self.created_at.timestamp(),
+			'updated_at': self.updated_at.timestamp()
+		}
 
 
 class FaceService:
@@ -32,6 +41,7 @@ class FaceService:
 			password=os.getenv('DB_PASSWORD'),
 			host=os.getenv('DB_HOST')
 		)
+		logging.basicConfig(level=logging.NOTSET)
 	
 	async def add_face(self, picture):
 		
@@ -41,9 +51,10 @@ class FaceService:
 		fingerprint = await ImageProcessor().generate_fingerprint(picture)
 		
 		# instantiate an object with the face data
-		face_data = Face(label=label, matrix=fingerprint, blacklisted=False)
+		face_data = Face(label=label, matrix=fingerprint)
 		
 		logging.info(f"Successfully saved {label} to the database!")
+		
 		# save the object
 		face_data.save()
 	
@@ -57,26 +68,27 @@ class FaceService:
 	def get_all_faces(self):
 		# gets all the faces from the database,
 		# with only the required fields and returns it
-		faces = Face.objects.only('id').only('label').only('blacklisted').all()
+		faces = Face.objects.all()
 		
 		logging.info("Successfully retrieved all the faces from the database!")
 		
-		return json.loads(faces.to_json())
+		faces = [face.to_dict() for face in faces]
+		
+		return faces
 	
 	def get_face_by_id(self, face_id):
 		if len(face_id) != 24:
 			raise Exception("Invalid Face ID Provided")
 		
 		# gets first face record from the database matching the id
-		face = Face.objects(id=face_id).only('id').only('label').only('blacklisted').only('created_at').only(
-			'updated_at').first()
+		face = Face.objects(id=face_id).first()
 		
 		if face is None:
 			raise Exception("Face ID doesn't exist in the database")
 		
 		logging.info("Successfully retrieved the face from the database!")
 		
-		return json.loads(face.to_json())
+		return face.to_dict()
 	
 	async def update_face(self, face_id, new_picture):
 		if len(face_id) != 24:

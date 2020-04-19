@@ -42,7 +42,7 @@ class ImageProcessor:
 		data = await response.json()
 		
 		await session.close()
-
+		
 		if 'error' in data.keys():
 			logging.error("ERROR Generating Fingerprint")
 			return 0
@@ -77,8 +77,7 @@ class ImageProcessor:
 			
 			fingerprint = await self._get_fingerprint(current_face=face)
 			
-			# close the image file and remove it from the images directory
-			im.close()
+			# remove image from the directory
 			os.remove("./images/{}".format(filename))
 			
 			return fingerprint
