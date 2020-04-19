@@ -13,34 +13,37 @@ class ImageComparator:
 	
 	async def _get_all_faces(self):
 		session = aiohttp.ClientSession()
+		headers = {'content-type': 'application/json'}
 		
-		response = await session.post(self._FACE_SERVICE_ENDPOINT)
+		response = await session.get(self._FACE_SERVICE_ENDPOINT + "?fingerprint=true", headers=headers)
 		
 		data = await response.json()
 		
 		await session.close()
 		
-		if 'error' not in data.keys():
+		if 'reason' in data.keys():
+			logging.error(data['reason'])
 			raise Exception("There was an getting all the faces.")
 		
-		return data
+		return data['data']
 	
 	async def _save_unknown_face(self, fingerprint):
 		session = aiohttp.ClientSession()
+		headers = {'content-type': 'application/json'}
 		
-		body = json.dumps({'fingerprint': fingerprint})
+		body = json.dumps({'fingerprint': np.reshape(fingerprint, [-1, 64, 64, 3]).tolist()})
 		
-		response = await session.post(self._FACE_SERVICE_ENDPOINT + "/fingerprint", data=body)
+		response = await session.post(self._FACE_SERVICE_ENDPOINT + "/unknown", json=body, headers=headers)
 		
 		data = await response.json()
-		
+
 		await session.close()
 		
-		if 'error' not in data.keys():
+		if 'reason' in data.keys():
+			logging.error(data['reason'])
 			raise Exception("There was an error in saving the unknown face.")
 		
 		return data['id']
-		
 	
 	@staticmethod
 	def _distance01(matrix_one, matrix_two):
@@ -82,10 +85,12 @@ class ImageComparator:
 		faces = await self._get_all_faces()
 		
 		for face in faces:
-			saved_matrix.append(list(face['matrix']))
+			saved_matrix.append(np.reshape(list(face['matrix']), [-1]).tolist())
 			saved_names.append(list(face['label']))
-			saved_ids.append(list(str(face['_id']['$_oid'])))
+			saved_ids.append(list(str(face['id'])))
 			saved_blacklist.append(list(str(face['blacklisted'])))
+			saved_blacklist.append(list(str(face['created_at'])))
+			saved_blacklist.append(list(str(face['updated_at'])))
 		
 		identity = self._compare(matrix, saved_matrix)
 		
@@ -98,6 +103,8 @@ class ImageComparator:
 				'id': str(face_id),
 				'name': 'Unknown'
 			}
+			
+			return data
 		
 		else:
 			name_label = "".join(saved_names[identity - 1])

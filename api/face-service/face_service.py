@@ -23,14 +23,18 @@ class Face(Document):
 	created_at = DateTimeField(default=datetime.now)
 	updated_at = DateTimeField(default=datetime.now)
 	
-	def to_dict(self):
-		return {
+	def to_dict(self, fingerprint):
+		face = {
 			'id': str(self.id),
 			'label': self.label,
 			'blacklisted': self.blacklisted,
 			'created_at': self.created_at.timestamp(),
 			'updated_at': self.updated_at.timestamp()
 		}
+		if fingerprint == 'true':
+			face['matrix'] = self.matrix
+		
+		return face
 
 
 class FaceService:
@@ -63,16 +67,17 @@ class FaceService:
 		
 		logging.info(f"Successfully saved Unknown face to the database!")
 		face.save()
-		return face.id
+		
+		return str(face.id)
 	
-	def get_all_faces(self):
+	def get_all_faces(self, include_fingerprint):
 		# gets all the faces from the database,
 		# with only the required fields and returns it
 		faces = Face.objects.all()
 		
 		logging.info("Successfully retrieved all the faces from the database!")
 		
-		faces = [face.to_dict() for face in faces]
+		faces = [face.to_dict(fingerprint=include_fingerprint) for face in faces]
 		
 		return faces
 	
