@@ -36,13 +36,6 @@ class UploadFootage extends Component{
         return(
             <div>
                 <h1>SELECT VIDEO FOOTAGE FILE TO ANALYSE</h1>
-                 
-                {/* <form action="/file-upload" class="dropzone">       // standard dropzone
-                    <div class="fallback">
-                        <input name="file" type="file" accept="video/*" multiple />
-                        upload any video file
-                    </div>
-                </form> */}
 
                 <MyVideoUploader />
 

@@ -6,14 +6,18 @@ import TimeCard from "../components/TimeCard";
 import Person from "../components/PersonCard";
 import EditPopUp from "../components/EditPopUp.jsx";
 import styled from "styled-components";
-import "../styles/commonStyles.scss";
+import {PersonTable} from "../components/person-table/table.component"
 import "../styles/videojsStyle.scss";
+import "../styles/commonStyles.scss";
 
 import {
   retrieveAllDetections,
   deleteFaceFromSystem
 } from "../services/DetectionsManagement";
 
+import Video from "../components/video-player/video.component";
+import { TimeStampCarousel } from "../components/carousel/carousel/carousel.component";
+import { Carousel } from "react-bootstrap";
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -65,6 +69,10 @@ export default class Dashboard extends Component {
     this.getAllDetections();
   }
 
+  grabScreenShot() {
+    this.videoPlayer.addEventListener("loadedmetadata", function() {}, false);
+  }
+
   // destroy player on unmount
   componentWillUnmount() {
     if (this.player) {
@@ -74,13 +82,10 @@ export default class Dashboard extends Component {
 
   // this method seeks the video to the specified timestamp
   seekToTime(time) {
-    // console.log("I was clicked")    // to test whether function gets called on button click
     this.videoPlayer.currentTime(time); // jump to time stamp of current time-card
   }
 
   showTimeCards(person) {
-    // console.log(person)     // used to check whether the correct information of the chosen person was given
-
     this.setState({ selectedPerson: person }); // updating state of selectedPerson
   }
 
@@ -95,12 +100,15 @@ export default class Dashboard extends Component {
   }
 
   // Edit name/ black-list status of a person in the system db & display in UI
-  async editPersonSave(requiredPerson) {
+  async editPersonSave(newPersonDetails) {
+    console.log(newPersonDetails);
     const chosenIndexToEdit = this.state.chosenIndexToEdit;
     let newDetectionsArray = this.state.allDetections;
-    newDetectionsArray[chosenIndexToEdit] = requiredPerson; // replacing the chosen index with the person details obtained from the pop-up component
+    newDetectionsArray[chosenIndexToEdit] = newPersonDetails; // replacing the chosen index with the person details obtained from the pop-up component
 
     this.setState({ allDetections: newDetectionsArray });
+
+    // send patch request to db
   }
 
   // Delete known people from the system db
@@ -114,7 +122,7 @@ export default class Dashboard extends Component {
     this.setState({ allDetections: newDetectionsArray });
   }
 
-  // choosen person to be edited
+  // choosen index of the person to be edited
   choosenPersonToEdit(index) {
     this.setState({
       chosenIndexToEdit: index
@@ -122,66 +130,60 @@ export default class Dashboard extends Component {
   }
 
   render() {
-    const chosenIndexToEdit = this.state.chosenIndexToEdit;
-    let chosenPersonData = this.state.allDetections[chosenIndexToEdit];
-
     return (
       <div>
-        <div data-vjs-player>
-          <div id="videoContainer">
-            <video
-              ref={node => (this.videoNode = node)}
-              id="videoPlayer"
-              className="vjs-footage video-js vjs-theme-fantasy"
-              data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
-            >
-              <source
-                src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
-                type="video/mp4"
-              />
-              {/* video that needs to be added to check for faces will be opened here*/}
-            </video>
+        <div>
+          <div data-vjs-player>
+            <div id="videoContainer">
+              <video
+                ref={node => (this.videoNode = node)}
+                id="videoPlayer"
+                className="video-js vjs-theme-fantasy"
+                data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
+              >
+                <source
+                  src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+                  type="video/mp4"
+                />
+                {/* video that needs to be added to check for faces will be opened here */}
+              </video>
+            </div>
+          </div>
+
+          <div className="allDetectedFaces">
+            {/* display all the names of the people recognized */}
+            {this.state.allDetections.map((person, index) => (
+              <div key={index}>
+                <Person
+                  key={index}
+                  id={person.id}
+                  name={person.name}
+                  blacklisted={person.blacklisted}
+                  timestamps={person.timestamps} // taking all the timestamps of the relevant person
+                  onChoose={() => this.showTimeCards(person)} // display timestamps of the person
+                  onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
+                  onSaveEdit={personDetails =>
+                    this.editPersonSave(personDetails)
+                  } // save the new details pf the person
+                  onDelete={() => this.deletePerson(person.id)} // delete the person from the db
+                />
+              </div>
+            ))}
           </div>
         </div>
-
-        <div className="allDetectedFaces">
-          {/* display all the names of the people recognized */}
-          {this.state.allDetections.map((person, index) => (
-            <div key={index}>
-              <Person
-                key={index}
-                name={person.name}
-                blacklisted={person.blacklisted}
-                allTimestamps={person.timestamps} // taking all the timestamps of the relevant person
-                onChoose={() => this.showTimeCards(person)} // display timestamps of the person
-                onRequestEdit={() => this.choosenPersonToEdit(index)} //Choose the name & black-list status of a person to be edited
-                onDelete={() => this.deletePerson(person.id)} // delete the person from the db
-              />
-            </div>
-          ))}
-        </div>
-
         <div className="allTimeCards">
-          {this.state.selectedPerson &&
-            this.state.selectedPerson.timestamps.map((timestamp, index) => {
-              // if a selectedPerson exists, display all Time Cards of that person
-              return (
-                <TimeCard
-                  key={index}
-                  timestamp={timestamp}
-                  onSeek={() => this.seekToTime(timestamp)} // when button is pressed, go to seek time
-                />
-              );
-            })}
+          {/* carousel to show the user the time stamps which onclick will change to the seeked time of that person*/}
+          {this.state.selectedPerson != null ? (
+            <TimeStampCarousel
+              users={this.state.selectedPerson}
+              togglecarousel={true}
+              videoPlayer={this.videoPlayer}
+            />
+          ) : null}
         </div>
-
-        <EditPopUp
-          id={chosenPersonData.id}
-          name={chosenPersonData.name}
-          timestamps={chosenPersonData.timestamps}
-          blacklisted={chosenPersonData.blacklisted}
-          editPersonSave={this.editPersonSave}
-        />
+        <div>
+          <PersonTable personData ={this.state.allDetections} />
+        </div>
       </div>
     );
   }

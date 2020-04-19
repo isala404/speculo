@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-export const BasicButton = ({buttonTitle, toggleShadow, buttonWidth}) => {
+export const BasicButton = ({buttonTitle, toggleShadow, buttonWidth, onClick}) => {
   return(
-    <CustomPrimaryButton showShadow = {toggleShadow} width={buttonWidth} >{buttonTitle}</CustomPrimaryButton>
+    <CustomPrimaryButton showShadow = {toggleShadow} width={buttonWidth} onClick={onClick}>{buttonTitle}</CustomPrimaryButton>
   );
 }
 
