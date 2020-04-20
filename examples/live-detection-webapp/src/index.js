@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import "./fonts/Gilroy-Regular.ttf"
+import "./fonts/Gilroy-Bold.ttf"
+import "./fonts/Gilroy-SemiBold.ttf"
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

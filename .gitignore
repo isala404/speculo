@@ -399,7 +399,7 @@ yarn-error.log*
 
 **/faces
 *.avi
-fingerprinter/dataset
+fingerprinter/dataset*
 
 **/logs
 *.h5
@@ -418,3 +418,5 @@ fingerprinter/archive
 api/image-preprocessor/videos/**
 api/image-preprocessor/videos/**
 api/postprocessor/images/**
+
+database_config.env
