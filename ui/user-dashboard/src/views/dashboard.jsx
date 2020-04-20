@@ -76,25 +76,10 @@ export default class Dashboard extends Component {
 
     // Edit name/ black-list status of a person in the system db & display in UI
     async editPersonSave(newPersonDetails){
-        console.log(newPersonDetails);
-
-        // console.log(this.state.allDetections);
-
-
         const chosenIndexToEdit = this.state.chosenIndexToEdit;
-
-        // console.log(chosenIndexToEdit)
-
         let newDetectionsArray = [...this.state.allDetections];
-
-        console.log(newDetectionsArray)
-
         newDetectionsArray[chosenIndexToEdit] = newPersonDetails;     // replacing the chosen index with the person details obtained from the pop-up component
-
         this.setState({ allDetections: newDetectionsArray });
-
-
-        console.log(this.state.allDetections);
 
 
         // send patch request to db
@@ -109,12 +94,9 @@ export default class Dashboard extends Component {
 
         //To refresh html page content
         let  newDetectionsArray = this.state.allDetections.filter(
-            person => person.id != personIdToBeDeleted
+            person => person.id !== personIdToBeDeleted
         );
         this.setState({allDetections: newDetectionsArray});
-
-        // console.log(newDetectionsArray);
-        // console.log(this.state.allDetections);
     }
 
     
@@ -123,8 +105,6 @@ export default class Dashboard extends Component {
         this.setState({
             chosenIndexToEdit: index
           });
-          console.log(this.state.chosenIndexToEdit);
-          console.log(this.state.allDetections);
     }
 
 

@@ -5,6 +5,53 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
+
+const PersonCard = styled.div`
+  background-color: ${prop => prop.blacklisted ? '#FF5A5A' : '#a0ffdc'};
+// background-color: #a0ffdc;
+  font-size: 1em;
+  // color: #0b162b;
+  color: ${prop => prop.blacklisted ? 'white' : '#0b162b'};;
+  font-family: "Gilroy-Bold";
+  text-align: left;
+  padding: 1em 1em 1em 1em;
+  height: 80px;
+  width: 250px;
+  border: 1px solid white;
+  border-radius: 3px;
+  transition: 0.15s;
+ 
+  &:hover {
+    cursor: pointer;
+    background-color: ${prop => prop.blacklisted ? '#BF2525' : '#44DEA5'};
+    // background-color: #44DEA5;
+  }
+`;
+
+const unKnownStyle = {
+  backgroundColor: 'grey',
+  color: 'white',
+  fontFamily: 'Gilroy-SemiBold',
+  fontStyle: 'italic'
+};
+// if blacklisted = 1  ->  make background-color of the PersonCard: red
+//  else if  blacklisted = 0   ->  background-color of the PersonCard: green background color
+//   unknown person -> grey background and white italic text
+
+const DeleteButton = styled.button`
+  color: #c21807;
+  background-color: white;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  outline: none;
+  transition: 0.3s;
+
+  &:hover {
+    color: white;
+    background-color: #c21807;
+  }
+`;
+
 class Person extends Component {
   constructor(props) {
     super(props);
@@ -19,9 +66,8 @@ class Person extends Component {
     };
   }
 
-  // use style components to check if blacklisted = 1  ->  make background-color of the PersonCard: grey and text white italics
-  //          else if  blacklisted = 0   ->  background-color of the PersonCard: whitish background color
 
+  // reset state to new props after deleting a person.
   static getDerivedStateFromProps(props, state) {
     if (props.id !== state.id) {
       return {
@@ -62,8 +108,10 @@ class Person extends Component {
     const isUnknown = nameOfPerson.startsWith("Unknown"); // checking if the person is unknown
 
     return (
-      <PersonCard onClick={this.props.onChoose}>
+      <PersonCard blacklisted={this.state.blacklisted} style={ isUnknown ? unKnownStyle : {}}
+          onClick={this.props.onChoose}>
         {/* show Time cards when clicked */}
+
         <div style={{ float: "left" }}>
           {/* <div>~Image of the Person~</div> */}
           <p>{this.props.name}</p>
@@ -96,36 +144,5 @@ class Person extends Component {
     );
   }
 }
-
-const PersonCard = styled.div`
-  // background-color: #A0FFDC;
-  background-color: #a0ffdc;
-  font-size: 1em;
-  color: #0b162b;
-  font-family: "Gilroy-Bold";
-  text-align: left;
-  padding: 1em 1em 1em 1em;
-  height: 80px;
-  width: 250px;
-  border: 1px solid white;
-  border-radius: 3px;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const DeleteButton = styled.button`
-  color: #c21807;
-  background-color: white;
-  border: 2px solid #a0ffdc;
-  border-radius: 6px;
-  outline: none;
-  transition: 0.3s;
-
-  &:hover {
-    color: white;
-    background-color: #c21807;
-  }
-`;
 
 export default Person;

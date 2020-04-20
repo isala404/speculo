@@ -4,6 +4,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import styled from "styled-components";
 
+
+const EditButton = styled.button`
+color: #2BBA85;
+background-color: inherit;
+border: 2px solid transparent;
+border-radius: 6px;
+outline: none;
+transition: 0.3s;
+
+&:hover{
+  color: white;
+  background-color: #2BBA85;
+  border: 2px solid transparent;
+
+  border-radius: 6px;
+}
+`;
+
+
 const EditPopUp = (props) => {
 
   const [show, setShow] = useState(false);
@@ -54,18 +73,3 @@ const EditPopUp = (props) => {
 };
 
 export default EditPopUp;
-
-const EditButton = styled.button`
-color: #2BBA85;
-background-color: inherit;
-border: 2px solid #A0FFDC;
-border-radius: 6px;
-outline: none;
-transition: 0.3s;
-
-&:hover{
-  color: white;
-  background-color: #2BBA85;
-  border-radius: 6px;
-}
-`;
