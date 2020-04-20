@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faEdit} from '@fortawesome/free-solid-svg-icons';
+import styled from "styled-components";
 
 const EditPopUp = (props) => {
 
@@ -13,9 +16,9 @@ const EditPopUp = (props) => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Edit Name/ Blacklist status
-      </Button>
+      <EditButton onClick={handleShow}>
+        <FontAwesomeIcon icon={faEdit} />
+      </EditButton>
 
       {/* Display UI element (pop-up) for the user to edit the name & black-list status of the chosen person */}
       <Modal show={show} onHide={handleClose}>
@@ -51,3 +54,18 @@ const EditPopUp = (props) => {
 };
 
 export default EditPopUp;
+
+const EditButton = styled.button`
+color: #2BBA85;
+background-color: inherit;
+border: 2px solid #A0FFDC;
+border-radius: 6px;
+outline: none;
+transition: 0.3s;
+
+&:hover{
+  color: white;
+  background-color: #2BBA85;
+  border-radius: 6px;
+}
+`;

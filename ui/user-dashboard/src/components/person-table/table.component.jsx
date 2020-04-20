@@ -9,37 +9,38 @@ import {
   useExpanded,
   usePagination
 } from "react-table";
+import { BasicButton } from "../button/button.component";
 
-export const PersonTable = ({ personData }) => {
+export const PersonTable = ({ personData, videoPlayer }) => {
   const [searchValue, setSearchValue] = useState("");
   const [persons, setPersons] = useState(personData);
+  const [selectedPerson, setSelectedPerson] = useState(null);
   const [data, setData] = useState(
     persons.map(person => {
-        return {
-          col1: person.id,
-          col2: person.name,
-          col3: person.timestamps,
-          col4: person.blacklisted.toString(),
-          col5: "actions"
-        };
-      }),
-  )
+      return {
+        col1: person.id,
+        col2: person.name,
+        col3: person.timestamps,
+        col4: person.blacklisted.toString(),
+        col5: "actions"
+      };
+    })
+  );
 
   useEffect(() => {
     var result = search(personData, searchValue);
     setPersons(result);
     var data = result.map(person => {
-        return {
-          col1: person.id,
-          col2: person.name,
-          col3: person.timestamps,
-          col4: person.blacklisted.toString(),
-          col5: "actions"
-        };
-      })
-    setData(data)
+      return {
+        col1: person.id,
+        col2: person.name,
+        col3: person.timestamps,
+        col4: person.blacklisted.toString(),
+        col5: "actions"
+      };
+    });
+    setData(data);
   }, [searchValue]);
-
 
   const search = (persons, searchVal) => {
     var results = [];
@@ -52,38 +53,6 @@ export const PersonTable = ({ personData }) => {
     return results;
   };
 
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "ID",
-        accessor: "col1" // accessor is the "key" in the data
-      },
-      {
-        Header: "NAME",
-        accessor: "col2"
-      },
-      {
-        Header: "TIMESTAMPS",
-        accessor: "col3"
-      },
-      {
-        Header: "BLACKLISTED",
-        accessor: "col4"
-      },
-      {
-        Header: "ACTIONS",
-        accessor: "col5"
-      }
-    ],
-    []
-  );
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({ columns, data });
   return (
     <>
       <Input
@@ -93,78 +62,62 @@ export const PersonTable = ({ personData }) => {
           setSearchValue(e.target.value);
         }}
       />
-      <div style={{ overflowX: "auto" }}>
-        <table
-          {...getTableProps()}
-          style={{
-            margin: "auto",
-            width: 1000,
-            tableLayout: "fixed",
-            borderCollapse: "collapse"
-          }}
-        >
-          <thead>
-            {headerGroups.map(headerGroup => (
-              <tr
-                {...headerGroup.getHeaderGroupProps()}
-                style={{ display: "block" }}
-              >
-                {headerGroup.headers.map(column => (
-                  <th
-                    {...column.getHeaderProps()}
-                    style={{
-                      borderBottom: "solid 3px red",
-                      background: "#000",
-                      color: "#fff",
-                      padding: "1em",
-                      textAlign: "left",
-                      width: 200
+      <div style={{ overflowX: "auto", margin: "10%" }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              {headings.map(heading => {
+                return <TableHeading>{heading.heading}</TableHeading>;
+              })}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {persons.map(person => {
+              return (
+                <Row>
+                  <TableData>{person.id}</TableData>
+                  <TableData
+                    onClick={() => {
+                      setSelectedPerson(person);
+                      console.log(selectedPerson);
                     }}
                   >
-                    {column.render("Header")}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody
-            {...getTableBodyProps()}
-            style={{
-              display: "block",
-              width: "100%",
-              overflow: "auto",
-              height: 1000
-            }}
-          >
-            {rows.map(row => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => {
-                    return (
-                      <td
-                        {...cell.getCellProps()}
-                        style={{
-                          padding: "1em",
-                          border: "solid 1px #ffffff",
-                          background: "papayawhip",
-                          textAlign: "left",
-                          width: 200
-                        }}
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
+                    {person.name}
+                  </TableData>
+                  <TableData>
+                    <ul>
+                      {selectedPerson && person.timestamps.map(timestamp => {
+                        return (
+                          <BasicButton
+                            buttonTitle={timestamp}
+                            onClick={
+                              videoPlayer!=null?
+                              seekToTime(timestamp, videoPlayer):console.log("whooooooooppps")
+                            }
+                          />
+                        );
+                      })}
+                    </ul>
+                  </TableData>
+                  <TableData>{person.blacklisted.toString()}</TableData>
+                  <TableData>{"actions"}</TableData>
+                </Row>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </>
   );
 };
+
+const headings = [
+  { id: 1, heading: "ID" },
+  { id: 2, heading: "NAME" },
+  { id: 3, heading: "TIME STAMPS" },
+  { id: 4, heading: "BLACKLISTED" },
+  { id: 5, heading: "ACTIONS" }
+];
 
 const Input = styled.input`
   background: white;
@@ -177,3 +130,47 @@ const Input = styled.input`
   transition: 0.3s;
   font-family: "Lexend Deca", sans-serif;
 `;
+
+const Table = styled.table`
+  min-width: 600px;
+  width: 1000;
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: left;
+`;
+
+const TableBody = styled.tbody`
+  display: block;
+  width: 100%;
+  overflow: auto;
+  height: 500px;
+`;
+
+const TableHead = styled.thead`
+  background: black;
+  color: #fff;
+`;
+const TableRow = styled.tr`
+  display: block;
+  background: #333;
+`;
+const Row = styled.tr`
+  background: #ededed;
+  border-bottom: 1px solid #333;
+`;
+const TableHeading = styled.th`
+  padding: 1em;
+  text-align: left;
+  width: 200px;
+`;
+const TableData = styled.td`
+  padding: 1em;
+  text-align: left;
+  width: 200px;
+`;
+
+//method that takes the videoPlayer object and sets the playing time
+const seekToTime = (time, video) => {
+  console.log(video);
+  video.currentTime(time);
+};
