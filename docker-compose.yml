@@ -35,3 +35,9 @@ services:
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
     env_file:
       - database_config.env
+  videodownscaler:
+    build:
+      context: api/video-downscaler/
+      dockerfile: Dockerfile
+    ports:
+      - 8504:8080
