@@ -419,6 +419,6 @@ fingerprinter/models/**/img/predictions-epoch-*
 api/image-preprocessor/videos/**
 api/postprocessor/images/**
 
-/database_config.env
+database_config.env
 *tar.gz
 *ipynb_checkpoints/
