@@ -55,18 +55,6 @@ router.delete('/api/v1/faces/:id', (userController.validateUser), (req,res)=>{
     })
 })
 
-
-router.put('/api/v1/faces/:id', (userController.validateUser), (req,res)=>{
-
-    api
-    .put(req.path).then(resp=>{
-        res.send(resp.data)
-    })
-    .catch(error =>{
-        res.status(400).send({'status':'Bad Request'})
-    })
-})
-
 router.patch('/api/v1/faces/:id/label', (userController.validateUser), (req,res)=>{
 
     api
