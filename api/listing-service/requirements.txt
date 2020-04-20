@@ -1,3 +1,0 @@
-mongoengine==0.19.1
-aiohttp==3.6.2
-dnspython==1.16.0

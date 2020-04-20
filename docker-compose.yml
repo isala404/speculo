@@ -20,24 +20,18 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8502:8080
+    environment:
+      - FACE_SERVICE_URL=http://faceservice:8080/api/v1/faces
     env_file:
       - database_config.env
-  postprocessor:
+  faceservice:
     build:
-      context: api/postprocessor/
+      context: api/face-service/
       dockerfile: Dockerfile
     ports:
       - 8503:8080
     environment:
       - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
-    env_file:
-      - database_config.env
-  listingservice:
-    build:
-      context: api/listing-service/
-      dockerfile: Dockerfile
-    ports:
-      - 8504:8080
     env_file:
       - database_config.env
