@@ -4,7 +4,7 @@ const apiAdapter = require('../utils/apiAdapter');
 const userController = require('../api/controllers/user');
 
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'http://localhost:8503';
 const api = apiAdapter(BASE_URL);
 
 
@@ -48,6 +48,18 @@ router.delete('/api/v1/faces/:id', (userController.validateUser), (req,res)=>{
 
     api
     .delete(req.path).then(resp=>{
+        res.send(resp.data)
+    })
+    .catch(error =>{
+        res.status(400).send({'status':'Bad Request'})
+    })
+})
+
+
+router.put('/api/v1/faces/:id', (userController.validateUser), (req,res)=>{
+
+    api
+    .put(req.path).then(resp=>{
         res.send(resp.data)
     })
     .catch(error =>{
