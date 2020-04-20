@@ -28,9 +28,9 @@ async def downscale(request):
 		
 		VideoDownscaler(filename=filename.split('.')[0]).downscale()
 		
-		response_obj = {'status': 'success', 'message': str(request.json())}
-		
-		return web.Response(text=json.dumps(response_obj), status=200)
+		file_path = os.getcwd() + '/videos/' + filename
+	
+		return web.FileResponse(path=file_path, status=200)
 	
 	except Exception as e:
 		print(e)

@@ -27,4 +27,3 @@ class VideoDownscaler:
 				os.remove(f'./videos/{self.filename}_out.mp4')
 		
 		os.rename(f'./videos/{self.filename}_out.mp4', f'./videos/{self.filename}.mp4')
-		
