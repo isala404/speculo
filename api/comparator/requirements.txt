@@ -1,4 +1,4 @@
 aiohttp==3.6.2
 mongoengine==0.19.1
-numpy==1.18.2
+numpy==1.18.3
 dnspython==1.16.0

@@ -10,14 +10,23 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "base64-img": "^1.0.4",
+    "bootstrap": "^4.4.1",
+    "mdbreact": "^4.25.4",
     "node-sass": "^4.13.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.0.0",
+    "react-bulma-components": "^3.2.0",
+    "react-dom": "^16.13.1",
+    "react-flexbox-grid": "^2.1.2",
+    "react-image-file-resizer": "^0.2.1",
+    "react-player": "^1.15.3",
     "react-router": "^5.1.2",
     "react-scripts": "3.3.0",
-    "react-webcam": "^4.2.0"
+    "react-webcam": "^4.2.0",
+    "reactstrap": "^8.4.1",
+    "styled-components": "^5.0.1"
   },
-  "scripts": { 
+  "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts ../../fingerprinter/test.png",
