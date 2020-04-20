@@ -82,3 +82,8 @@ _________________________________________________________________
 ![loss](img/predictions.png)
 
 ## Notes
+- Trained the model on GCP with Nvidia k80
+- Model couldn't convergence and loss got stuck around 0.35
+    - Check Tensorboard logs for more info
+    - Mostly likely gradient descent algorithm found a local minimum and LR rate was too small to get over it
+    - Resetting the graph fixed the issue
