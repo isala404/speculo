@@ -67,7 +67,7 @@ export default class Dashboard extends Component {
     // Get all detected people with detected timestamps in a video
     async getAllDetections() {
         try { 
-            const res = retrieveAllDetections()
+            const res = await retrieveAllDetections();
             this.setState({allDetections: res});
         } catch (e) {
             console.log(e)
@@ -88,7 +88,7 @@ export default class Dashboard extends Component {
         // send patch requests to db ---
 
         // check if the name has changed
-        if (oldDetailsOfPerson.name != newPersonDetails.name){
+        if (oldDetailsOfPerson.name !== newPersonDetails.name){
             try{
                 const res = editNameInSystem(newPersonDetails.id, newPersonDetails.name);
                 console.log(res);
@@ -98,13 +98,13 @@ export default class Dashboard extends Component {
         }
 
         // check if the blacklist status has changed
-        if (oldDetailsOfPerson.blacklisted != newPersonDetails.blacklisted){
+        if (oldDetailsOfPerson.blacklisted !== newPersonDetails.blacklisted){
             try{
-                const res = null;
-                if(newPersonDetails.blacklisted == true){           // blacklist a person
-                    res = blacklistPersonInSystem(newPersonDetails.id);
-                } else if (newPersonDetails.blacklisted == false){      // whitelist a person
-                    res = whitelistPersonInSystem(newPersonDetails.id);
+                let res = null;
+                if(newPersonDetails.blacklisted === true){           // blacklist a person
+                    res = await blacklistPersonInSystem(newPersonDetails.id);
+                } else if (newPersonDetails.blacklisted === false){      // whitelist a person
+                    res = await whitelistPersonInSystem(newPersonDetails.id);
                 }
                 console.log(res);
             } catch (e) {
@@ -119,10 +119,10 @@ export default class Dashboard extends Component {
     async deletePerson(personIdToBeDeleted){
 
         try { 
-            const res = deleteFaceFromSystem(personIdToBeDeleted);
+            const res = await deleteFaceFromSystem(personIdToBeDeleted);
             console.log(res);
         } catch (e) {
-            console.log(e)
+            console.log(e);
         }
         //To refresh html page content
         let  newDetectionsArray = this.state.allDetections.filter(
