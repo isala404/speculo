@@ -53,6 +53,7 @@ export const Admin = ({ peopleData }) => {
   const [newPersonName, setNewPersonName] = useState(null);
   const [blackListValue, setBlackListValue] = useState(null);
   const [isSwitchToggled, setSwitchToggle] = useState(false);
+  const [searchResult, setSearchResult] = useState(people)
   //updating the state on searchval change
   useEffect(() => {
     var result = search(people, searchVal);
@@ -67,12 +68,11 @@ export const Admin = ({ peopleData }) => {
       person => person.id != personIdToDelete
     );
     setPeople(newDetectionsArray);
-    setResults(newDetectionsArray);
+    setResults(search(newDetectionsArray, searchVal));
   };
 
   //function to update a row
   const updatePerson = async (personIdToUpdate, name, isBlacklisted) => {
-    console.log(isBlacklisted);
     //TODO: add the axios request to update
     var person;
     if (name != null && personIdToUpdate != null) {
@@ -175,6 +175,7 @@ export const Admin = ({ peopleData }) => {
                   <DeleteButton onClick={() => deletePerson(person.id)}>
                     <FontAwesomeIcon icon={faTrashAlt} />
                   </DeleteButton>
+                  {/* onpress of edit button */}
                   <EditButton
                     onClick={() => {
                       setPersonToEdit(person.id);
@@ -184,10 +185,10 @@ export const Admin = ({ peopleData }) => {
                           newPersonName,
                           blackListValue
                         );
-                        setEditToggled(false);
                         setBlackListValue(getBlacklistValue(person));
+                        setEditToggled(false);
                       } else {
-                        updatePerson(personToEdit, null, null);
+                        updatePerson(personToEdit, null, getBlacklistValue(person));
                         setEditToggled(true);
                         sortByProperty();
                       }
