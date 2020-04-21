@@ -20,7 +20,7 @@
     "video.js": "^7.6.6",
     "react-flexbox-grid": "^2.1.2",
     "react-player": "^1.15.3",
-    "styled-components": "^5.0.1"
+    "styled-components": "^5.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
