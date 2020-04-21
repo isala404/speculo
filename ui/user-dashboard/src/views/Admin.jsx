@@ -15,7 +15,6 @@ import {
 import Select from "react-select";
 import Switch from "react-switch";
 
-
 export const Admin = ({ peopleData }) => {
   const [people, setPeople] = useState([
     // hard coded example
@@ -37,7 +36,13 @@ export const Admin = ({ peopleData }) => {
       name: "UnknownPerson",
       timestamps: [100, 500],
       blacklisted: true
-    }
+    },
+    {
+        id: 5,
+        name: "Kushan",
+        timestamps: [100, 500, 1200, 1500],
+        blacklisted: false
+      }
   ]);
   //react hooks to access state
   const [searchVal, setSearchVal] = useState("");
@@ -70,40 +75,45 @@ export const Admin = ({ peopleData }) => {
     console.log(isBlacklisted);
     //TODO: add the axios request to update
     var person;
-    if ((name != "" && name != null)) {
+    if (name != null && personIdToUpdate != null) {
       person = people.find(x => x.id == personIdToUpdate);
       if (person) {
         person.name = name;
         person.blacklisted = isBlacklisted;
       }
-      console.log(people)
-    }else{
-        person = people.find(x => x.id == personIdToUpdate);
-        if(person){
-            person.blacklisted = isBlacklisted
-        }
+      console.log(people);
+    } else if (isBlacklisted != null) {
+      console.log("inside isblacklisted != null");
+      person = people.find(x => x.id == personIdToUpdate);
+      if (person) {
+        person.blacklisted = isBlacklisted;
+      }
+    } else {
+      
     }
   };
 
   //function that handles and retrieves the value of the select menu
   const handleSelectorChange = selectedOption => {
-    setBlackListValue(selectedOption.value)
+    setBlackListValue(selectedOption.value);
   };
 
   //function that handles and retrieve the value of the switch
-  const handleSwitchChange = checked =>{
-    sortPeople()
-    setSwitchToggle(checked)
-  }
+  const handleSwitchChange = checked => {
+    sortPeople();
+    setSwitchToggle(checked);
+  };
 
-  //sorting people by id and blacklist 
-  const sortPeople = () =>{
-     isSwitchToggled? setResults(people.sort(sortByProperty("blacklisted"))): setResults(people.sort(sortByProperty("id")))
-  }
+  //sorting people by id and blacklist
+  const sortPeople = () => {
+    isSwitchToggled
+      ? setResults(people.sort(sortByProperty("blacklisted")))
+      : setResults(people.sort(sortByProperty("id")));
+  };
 
   return (
-    <div>
-    <Switch onChange={handleSwitchChange} checked={isSwitchToggled}/>
+    <div style={{overflowX: "auto"}}>
+      <Switch onChange={handleSwitchChange} checked={isSwitchToggled} />
       <Input
         type={"text"}
         placeholder={"Select a person to Search for"}
@@ -135,7 +145,9 @@ export const Admin = ({ peopleData }) => {
                   {person.id == personToEdit && editToggled == true ? (
                     <input
                       type="text"
-                      onChange={x => setNewPersonName(x.target.value)}
+                      placeHolder={person.name}
+                      onChange={x => setNewPersonName
+                      (x.target.value)}
                     />
                   ) : (
                     person.name
@@ -143,15 +155,9 @@ export const Admin = ({ peopleData }) => {
                 </TableData>
                 <TableData>
                   <ul>
-                    {selectedPerson &&
-                      person.timestamps.map(timestamp => {
-                        return selectedPerson.id == person.id ? (
-                          <BasicButton
-                            buttonTitle={timestamp}
-                            onClick={() => this.seekToTime(timestamp)}
-                          />
-                        ) : null;
-                      })}
+                    {person.timestamps.map(timestamp => {
+                      return <li>{timestamp}</li>;
+                    })}
                   </ul>
                 </TableData>
                 <TableData>
@@ -172,13 +178,19 @@ export const Admin = ({ peopleData }) => {
                   <EditButton
                     onClick={() => {
                       setPersonToEdit(person.id);
-                      editToggled
-                        ? updatePerson(personToEdit, newPersonName, blackListValue)
-                        : updatePerson(personToEdit, null, null);
-                      editToggled
-                        ? setEditToggled(false)
-                        : setEditToggled(true);
-                      setBlackListValue(null);
+                      if (editToggled) {
+                        updatePerson(
+                          personToEdit,
+                          newPersonName,
+                          blackListValue
+                        );
+                        setEditToggled(false);
+                        setBlackListValue(getBlacklistValue(person));
+                      } else {
+                        updatePerson(personToEdit, null, null);
+                        setEditToggled(true);
+                        sortByProperty();
+                      }
                     }}
                   >
                     <FontAwesomeIcon
@@ -194,7 +206,6 @@ export const Admin = ({ peopleData }) => {
                       onClick={() => {
                         setPersonToEdit(-1);
                         setEditToggled(false);
-                        setBlackListValue(null);
                       }}
                     >
                       <FontAwesomeIcon icon={faTimes} />
@@ -212,6 +223,7 @@ export const Admin = ({ peopleData }) => {
 //getting the blacklisted values to display in the select menu
 const getBlacklistValue = person => {
   var value = blacklistValues.find(x => x.value == person.blacklisted);
+
   return value;
 };
 
@@ -227,18 +239,14 @@ const search = (persons, searchVal) => {
 };
 
 //function to sort
-const sortByProperty = (property) =>{  
-    return (a,b) => {  
-       if(a[property] > b[property])  
-          return 1;  
-       else if(a[property] < b[property])  
-          return -1;  
-   
-       return 0;  
-    }  
- }
+const sortByProperty = property => {
+  return (a, b) => {
+    if (a[property] > b[property]) return 1;
+    else if (a[property] < b[property]) return -1;
 
-
+    return 0;
+  };
+};
 
 const headings = [
   { id: 1, heading: "ID" },
