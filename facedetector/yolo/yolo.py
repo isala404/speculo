@@ -17,7 +17,7 @@ import numpy as np
 # noinspection PyUnresolvedReferences
 import cv2
 
-from yolo.model import eval
+from .model import eval
 
 import tensorflow.keras.backend as K
 from tensorflow.keras.models import load_model
