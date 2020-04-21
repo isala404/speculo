@@ -30,12 +30,12 @@ class AutoEncoderProgress(keras.callbacks.Callback):
 
 
 class Speculo:
-    def __init__(self, image_size=(64, 64, 1), model_path=None, visualize=True, batch_size=64):
+    def __init__(self, image_size=(32, 32, 1), model_path=None, visualize=True, batch_size=64):
         self.optimizer = 'adam'
         self.loss_function = 'binary_crossentropy'
         self.LR = 1e-3
 
-        self.filters = (512, 512, 256, 256, 128, 128)
+        self.filters = (64, 128, 256, 512, 1024)[::-1]
         self.latent_size = 4096
 
         self.image_size = image_size
@@ -290,5 +290,5 @@ def test_nn(nn):
 
 if __name__ == "__main__":
     speculo = Speculo()
-    # print(speculo.autoencoder().summary())
-    speculo.train()
+    print(speculo.autoencoder().summary())
+    # speculo.train()

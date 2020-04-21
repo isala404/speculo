@@ -109,3 +109,7 @@ _________________________________________________________________
 ![loss](img/predictions.png)
 
 ## Notes
+- Fixed the bug in the data ingestion pipeline
+- Scaled up the model size by increasing filter values
+- Changed to loss function binary cross entropy because it may give better results due to that fact we are compressing image pixels to a value between 0-1
+- A Loss exploration happened in last step which rendered the model useless
