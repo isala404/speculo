@@ -26,7 +26,7 @@ async def preprocess_video(request):
 				f.write(chunk)
 		
 		data = ImagePreprocessor().preprocess(filename=filename)
-		
+
 		response_obj['data'] = data
 		
 		# return a success json response with status code 200 i.e. 'OK'
@@ -34,6 +34,7 @@ async def preprocess_video(request):
 	
 	except Exception as e:
 		logging.error(e)
+		print(e)
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		

@@ -11,9 +11,9 @@ class ImagePreprocessor:
 	def __init__(self):
 		self._SIZE = 192
 		self._FINGERPRINT_SIZE = (128, 128, 1)
-		self._FACEDETECTOR_ENDPOINT = 'http://localhost:8500/v1/models/facedetector:predict'
-		self._FINGERPRINT_ENDPOINT = 'http://localhost:8501/v1/models/fingerprinter:predict'
-		self._COMPARATOR_ENDPOINT = 'http://localhost:8502/api/v1/compare'
+		self._FACEDETECTOR_ENDPOINT = os.getenv('FACEDETECTOR_URL')
+		self._FINGERPRINT_ENDPOINT = os.getenv('FINGERPRINTER_URL')
+		self._COMPARATOR_ENDPOINT = os.getenv('COMPARATOR_URL')
 	
 	def _get_faces(self, current_frame):
 		body = json.dumps({'instances': current_frame.tolist()})
@@ -76,7 +76,6 @@ class ImagePreprocessor:
 		# return the total number of frames in the video file
 		return total
 	
-	@staticmethod
 	def count_frames(self, path, override=False):
 		# grab a pointer to the video file and initialize the total
 		# number of frames read
@@ -97,7 +96,7 @@ class ImagePreprocessor:
 		all_detections = []
 		
 		video_capture = cv2.VideoCapture(f"./videos/{filename}")
-		total_frames = self.count_frames(f"./videos/{filename}", override=False)
+		total_frames = self.count_frames(path=f"./videos/{filename}", override=False)
 		
 		skip_amount = total_frames * 10 / 100
 		next_frame_index = 0
@@ -132,7 +131,9 @@ class ImagePreprocessor:
 				cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 				
 				fingerprint = self._get_fingerprint(current_face=face)
-				
+				if fingerprint is True:
+					print('true')
+					
 				face_data = self._get_comparison(fingerprint=fingerprint)
 				
 				index, entry = self._find_face_by_id(all_detections, face_data['id'])
