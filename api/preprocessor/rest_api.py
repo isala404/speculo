@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from aiohttp import web
 
@@ -6,9 +7,6 @@ from image_preprocessor import ImagePreprocessor
 
 
 async def preprocess_video(request):
-	if not os.path.isdir("../videos"):
-		os.makedirs("../videos")
-	
 	try:
 		# Success path where name is set
 		response_obj = {'status': 'success'}
@@ -27,19 +25,20 @@ async def preprocess_video(request):
 				size += len(chunk)
 				f.write(chunk)
 		
-		image_preprocessor = ImagePreprocessor(filename=filename)
+		data = ImagePreprocessor().preprocess(filename=filename)
 		
-		response_obj['data'] = image_preprocessor.preprocess()
+		response_obj['data'] = data
 		
 		# return a success json response with status code 200 i.e. 'OK'
-		return web.Response(text=json.dumps(response_obj), status=200)
+		return web.json_response(body=json.dumps(response_obj), status=200)
 	
 	except Exception as e:
+		logging.error(e)
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
 		# return failed with a status code of 500 i.e. 'Server Error'
-		return web.Response(text=json.dumps(response_obj), status=500)
+		return web.json_response(body=json.dumps(response_obj), status=500)
 
 
 app = web.Application()
