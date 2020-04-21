@@ -88,7 +88,7 @@ export async function editNameInSystem(personId, newName){
 // ------------
 
 // blacklist a person in the system
-export async function blacklistNameInSystem(personId){
+export async function blacklistPersonInSystem(personId){
     let token = jwt;
     // if (localStorage.getItem("token") != null) {
     //     token = localStorage.getItem("token")
@@ -110,7 +110,7 @@ export async function blacklistNameInSystem(personId){
 // ------------
 
 // whitelist a person in the system
-export async function blacklistNameInSystem(personId){
+export async function whitelistPersonInSystem(personId){
     let token = jwt;
     // if (localStorage.getItem("token") != null) {
     //     token = localStorage.getItem("token")

@@ -36,7 +36,7 @@ const unKnownStyle = {
 };
 // if blacklisted = 1  ->  make background-color of the PersonCard: red
 //  else if  blacklisted = 0   ->  background-color of the PersonCard: green background color
-//   unknown person -> grey background and white italic text
+// unknown person -> background of the PersonCard: grey and white italic text
 
 const DeleteButton = styled.button`
   color: #c21807;

@@ -7,7 +7,8 @@ import Person from "../components/PersonCard";
 import {NavigationMenu} from '../components/navigation-bar/navigation-bar.component';
 import '../styles/commonStyles.scss';
 
-import {retrieveAllDetections, deleteFaceFromSystem} from "../services/DetectionsManagement";
+import {retrieveAllDetections, deleteFaceFromSystem, editNameInSystem,
+     blacklistPersonInSystem, whitelistPersonInSystem} from "../services/DetectionsManagement";
 
 
 export default class Dashboard extends Component {
@@ -66,7 +67,7 @@ export default class Dashboard extends Component {
     // Get all detected people with detected timestamps in a video
     async getAllDetections() {
         try { 
-            const res = await retrieveAllDetections()
+            const res = retrieveAllDetections()
             this.setState({allDetections: res});
         } catch (e) {
             console.log(e)
@@ -77,12 +78,39 @@ export default class Dashboard extends Component {
     // Edit name/ black-list status of a person in the system db & display in UI
     async editPersonSave(newPersonDetails){
         const chosenIndexToEdit = this.state.chosenIndexToEdit;
+        let oldDetailsOfPerson = this.state.allDetections[chosenIndexToEdit];
+
         let newDetectionsArray = [...this.state.allDetections];
         newDetectionsArray[chosenIndexToEdit] = newPersonDetails;     // replacing the chosen index with the person details obtained from the pop-up component
         this.setState({ allDetections: newDetectionsArray });
 
 
-        // send patch request to db
+        // send patch requests to db ---
+
+        // check if the name has changed
+        if (oldDetailsOfPerson.name != newPersonDetails.name){
+            try{
+                const res = editNameInSystem(newPersonDetails.id, newPersonDetails.name);
+                console.log(res);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        // check if the blacklist status has changed
+        if (oldDetailsOfPerson.blacklisted != newPersonDetails.blacklisted){
+            try{
+                const res = null;
+                if(newPersonDetails.blacklisted == true){           // blacklist a person
+                    res = blacklistPersonInSystem(newPersonDetails.id);
+                } else if (newPersonDetails.blacklisted == false){      // whitelist a person
+                    res = whitelistPersonInSystem(newPersonDetails.id);
+                }
+                console.log(res);
+            } catch (e) {
+                console.log(e);
+            }
+        }
 
     }
 
@@ -90,8 +118,12 @@ export default class Dashboard extends Component {
     // Delete known people from the system db
     async deletePerson(personIdToBeDeleted){
 
-        deleteFaceFromSystem(personIdToBeDeleted);
-
+        try { 
+            const res = deleteFaceFromSystem(personIdToBeDeleted);
+            console.log(res);
+        } catch (e) {
+            console.log(e)
+        }
         //To refresh html page content
         let  newDetectionsArray = this.state.allDetections.filter(
             person => person.id !== personIdToBeDeleted
