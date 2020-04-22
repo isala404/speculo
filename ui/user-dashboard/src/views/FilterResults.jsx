@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Select from "react-select";
 
 
 const Input = styled.input`
@@ -81,8 +82,16 @@ const FilterResults = ({allDetections}) => {
         { id: 3, headingName: "TIME STAMPS" },
         { id: 4, headingName: "TOTAL TIME" },
         { id: 5, headingName: "BLACKLISTED" }
-      ];
-      
+    ];
+
+    const conditions = [
+        { value: "less_than_equal", label: "Less than or Equal to" },
+        { value: "less_than", label: "Less than" },
+        { value: "equal", label: "Equal to" },
+        { value: "more_than", label: "More than" },
+        { value: "more_than_equal", label: "More than or Equal to" }
+    ];
+    
 
     return (
         <div style={{overflowX: "auto"}}>
@@ -96,7 +105,15 @@ const FilterResults = ({allDetections}) => {
                 setResults(result);
                 }}
             /> */}
+
             <label for="minutesInput">Time Gap Sensitivity</label>
+            
+            <Select
+                options={conditions}
+                // onChange={handleSelectorChange}
+                defaultValue = {conditions[0]}
+            />
+
             <Input
                 type = "number"
                 placeholder = "Minutes"
