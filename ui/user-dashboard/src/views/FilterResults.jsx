@@ -143,7 +143,7 @@ const FilterResults = ({allDetections}) => {
                                 <TableData style={{width:'50px'}}>{person.id}</TableData>
                                 <TableData>{person.name}</TableData>
                                 <TableData>{person.timestamps.toString()}</TableData>
-                                <TableData>{person.id}</TableData>
+                                <TableData>{/*person.id*/}</TableData>
                                 <TableData>{person.blacklisted.toString()}</TableData>
 
 
