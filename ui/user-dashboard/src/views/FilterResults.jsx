@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Select from "react-select";
-
+import {TimeFilterer} from '../services/TimeFilterer.jsx';
 
 const Input = styled.input`
   background: white;
@@ -63,7 +63,7 @@ const FilterResults = ({allDetections}) => {
         {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
         {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500],  blacklisted: true},
         {id: 4, name: "UnknownPerson", timestamps: [100,500], blacklisted: true}
-    ])
+    ]);
 
 
     // react hooks to access state

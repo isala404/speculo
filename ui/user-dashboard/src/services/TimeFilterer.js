@@ -1,72 +1,74 @@
-import React from 'react';
-
-
-function timeDetect(allDetections,timeGapSensitivity, totalExpectedTime, filterOperation){ //timePeriod <- user filter time gap in seconds
+export function TimeFilterer(allDetections, timeGapSensitivity, filterOperation, totalExpectedTime) {
 
   // timeGapSensitivity = 50;                 //Decide suitable time gap <- 
-  allDetectionTime = []
-  allChosenPeople = []      // holds id & total detected time per person
+  allChosenPeople =[];     // holds ids of chosen people
+  allDetectionTimes = [];    // holds total detected time per person
 
-  allDetections.forEach(element => {
+  allDetections.forEach ( person => {
 
     totalTime = 0;
     
-    timestamps = element.timestamps;
+    timestamps = person.timestamps;
     noOfTimestamps = timestamps.length;
 
-    for (i = 0; i < noOfTimestamps; i++){
+    // calculating total time of a person
+    for (i = 0; i < (noOfTimestamps-2); i++){
 
-      if (timestamps[i+1] - timestamps[i] <= timeGapSensitivity){
+      if ((timestamps[i+1] - timestamps[i]) <= timeGapSensitivity){
+        totalTime = totalTime + (timestamps[i+1] - timestamps[i]);
+        // console.log(totalTime);
 
-        totalTime = totalTime + timestamps[i+1] - timestamps[i];
-        console.log(totalTime);
+      } else{
+        totalTime ++;          // add chosen second to the total time
       }
-      // else{
-      //   totalTime ++;          // add chosen second to the total time
-      // }
-
-
-      // have a switch case instead  >>>??????
-      if (filterOperation == "more_than_equal"){ 
-  
-        if (totalTime >= totalExpectedTime){
-          allDetectionTime.push(element);
-          break;                          // is a break needed?
-        }
-      } else if(filterOperation == "more_than"){
-        if (totalTime > totalExpectedTime){
-          allDetectionTime.push(element);
-          break;
-        }
-        
-      } else if(filterOperation == "equal"){
-        if (totalTime == totalExpectedTime){
-          allDetectionTime.push(element);
-          break;
-        }
-
-      } else if(filterOperation == "lower_than"){
-        if (totalTime < totalExpectedTime){
-          allDetectionTime.push(element);
-          break;
-        }
-
-      } else if(filterOperation == "lower_than_equal"){
-        if (totalTime <= totalExpectedTime){
-          allDetectionTime.push(element);
-          break;
-        }
-      }
-    
-      if (i == noOfTimestamps - 2) { break; }
     }
+
+    // checking if filter condition is satisfied by each person
+    switch(filterOperation) {
+      case "more_than_equal":
+        if (totalTime >= totalExpectedTime){
+          allChosenPeople.push(person.id);
+          allDetectionTimes.push(totalTime);
+        }
+        break;
+      case "more_than":
+        if (totalTime > totalExpectedTime){
+          allChosenPeople.push(person.id);
+          allDetectionTimes.push(totalTime);
+        }
+        break;
+      case "equal":
+        if (totalTime == totalExpectedTime){
+          allChosenPeople.push(person.id);
+          allDetectionTimes.push(totalTime);
+        }
+        break;
+      case "lower_than":
+        if (totalTime < totalExpectedTime){
+          allChosenPeople.push(person.id);
+          allDetectionTimes.push(totalTime);
+        }
+        break;
+      case "lower_than_equal":
+        if (totalTime <= totalExpectedTime){
+          allChosenPeople.push(person.id);
+          allDetectionTimes.push(totalTime);
+        }
+        break;
+      default:
+        console.log("Filter operation not found");
+    }
+  
   });
 
-  return allDetectionTime; // <-Return identified ditections 
+  return {       // Return identified people (ids & total detected times)
+    allChosenPeople: allChosenPeople,
+    allDetectionTimes: allDetectionTimes
+  };
 }
 
 //------------------
-
+// example
 // allDetections = [
 //   {id:1, name:"Akash", timestamps:[60, 100, 1200]},
 //   {id:1, name:"Visal", timestamps:[60, 100, 1200]},
@@ -76,4 +78,4 @@ function timeDetect(allDetections,timeGapSensitivity, totalExpectedTime, filterO
 //   {id:1, name:"Kushan", timestamps:[60, 100, 1200]},
 // ]
 
-console.log(timeDetect(allDetections,50, 100, "lower_than"))
+// console.log(timeDetect(allDetections, 50, "lower_than", 100))
