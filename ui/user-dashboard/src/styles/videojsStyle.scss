@@ -17,3 +17,18 @@
   --vjs-theme-fantasy--secondary: #1ddd96;
   --vjs-theme-fantasy--primary: #1ddd96;
 }
+
+.video-js .vjs-tech{
+  border-radius: 10px;
+}
+
+.vjs-has-started .vjs-control-bar{
+  margin: 1em;
+  width: auto;
+  border-radius: 5px;
+}
+
+.video-js .vjs-control-bar{
+  background-color:rgba(0, 0, 0, 0.7);
+
+}

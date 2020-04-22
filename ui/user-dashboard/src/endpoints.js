@@ -1,7 +1,16 @@
 export const speculoBackend = process.env.REACT_APP_API_ENDPOINT;
-export const detectionsEndpoint = `${speculoBackend}/api/get/`;
+
+// get endpoints
+export const detectionsEndpoint = `${speculoBackend}/api/get/`;         // get all detections post processing
+export const getAllFacesEndpoint = `${speculoBackend}/api/v1/faces?`;        // get all saved faces with blacklist info from backend
+
+// post (uploading) endpoints
 export const footageUploadEndpoint = `${speculoBackend}/api/post/footage/`;
-export const facesUploadEndpoint = `${speculoBackend}/api/post/faces/`;
+export const facesUploadEndpoint = `${speculoBackend}/api/v1/faces/`;
 
+// delete endpoints
+export const deleteAllFacesEndpoint = `${speculoBackend}/api/v1/faces`;             // delete all faces
+export let deleteFacesEndpoint = `${speculoBackend}/api/v1/faces/`;          // delete one face
 
-export const deleteFacesEndpoint = `${speculoBackend}/api/delete/faces/`;
+// patch endpoints
+export const editDetailsEndpoint = `${speculoBackend}/api/v1/faces/`              // edit details of a person

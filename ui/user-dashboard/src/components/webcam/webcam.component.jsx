@@ -12,6 +12,27 @@ export default class WebCam extends React.Component {
       isRunning: false,
       response: []
     };
+
+    this.canvas = null;
+  }
+
+  componentDidMount(){
+    //initialization of the canvas for downscaling
+    this.canvas = document.createElement("canvas");
+    this.canvas.width = 400;
+    this.canvas.height = 300;
+    this.ctx = this.canvas.getContext("2d");
+  }
+
+  //asynchronous function to get the image from the state and downscale it using the canvas
+  // returns the downscalled bas64 image
+  downscaledImage = async() =>{
+    var image = await this.state.imageSrc
+    var img = new Image();
+    img.src = image;
+    this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
+    var dataURI = this.canvas.toDataURL("image/jpeg");
+    return dataURI;
   }
 
   setRef = webcam => {
@@ -29,7 +50,8 @@ export default class WebCam extends React.Component {
     if (this.state.isRunning) {
       //sending the image every 75microseconds
       setInterval(() => {
-        var imageSource = this.state.imageSrc;
+        //getting the downscaled image and POSTing to get the coordinates of the faces
+        var imageSource = this.downscaledImage();;
         // imageSource = downscaledImage( 648, 432);
         var truncatedImageSource = this.splitImageValue(imageSource);
         fetch("http://speculo.isala.me/", {
@@ -67,8 +89,8 @@ export default class WebCam extends React.Component {
 
   render() {
     const webcamConstraints = {
-      width: 648,
-      height: 432
+      width: 3600,
+      height: 720
     };
 
 
@@ -80,7 +102,7 @@ export default class WebCam extends React.Component {
             height={0}
             ref={this.setRef}
             screenshotFormat="image/jpeg"
-            width={432}
+            width={1080}
             videoConstraints={webcamConstraints}
           />
         </div>
