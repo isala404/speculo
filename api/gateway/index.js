@@ -34,38 +34,7 @@ app.get("/", function (req, res) {
 // public route
 app.use("/user", user);
 app.use("/admin", admin);
-app.use(gateway);
-
-
-function validateUser(req, res, next) {
-    jwt.verify(req.headers["x-access-token"], req.app.get("secretKey"), function (
-        err,
-        decoded
-    ) {
-        if (err) {
-            res.json({status: "error", message: err.message, data: null});
-        } else {
-            // add user id to request
-            req.body.userId = decoded.id;
-            next();
-        }
-    });
-}
-
-function validateAdmin(req, res, next) {
-    jwt.verify(req.headers["x-access-token"], req.app.get("secretKey"), function (
-        err,
-        decoded
-    ) {
-        if (err) {
-            res.json({status: "error", message: err.message, data: null});
-        } else {
-            // add admin id to request
-            req.body.adminId = decoded.id;
-            next();
-        }
-    });
-}
+app.use("/api", gateway);
 
 // handle 404 error
 app.use(function (req, res, next) {
@@ -75,7 +44,7 @@ app.use(function (req, res, next) {
 });
 // handle errors
 app.use(function (err, req, res, next) {
-    //console.log(err);
+    console.log(err);
 
     if (err.status === 404) res.status(404).json({status: "Not found"});
     else res.status(500).json({status: "Something looks wrong"});

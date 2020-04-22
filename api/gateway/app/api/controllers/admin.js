@@ -78,5 +78,20 @@ module.exports = {
                 }
             }
         });
+    },
+
+    validateAdmin:function(req, res, next){
+        jwt.verify(req.headers["x-access-token"], req.app.get("secretKey"), function (
+            err,
+            decoded
+        ) {
+            if (err) {
+                res.json({status: "error", message: err.message, data: null});
+            } else {
+                // add admin id to request
+                req.body.adminId = decoded.id;
+                next();
+            }
+        });
     }
 };
