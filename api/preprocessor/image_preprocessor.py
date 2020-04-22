@@ -1,8 +1,8 @@
+import logging
 import os
 
+import aiohttp
 import cv2
-import requests
-import json
 import numpy as np
 
 
@@ -15,46 +15,56 @@ class ImagePreprocessor:
 		self._FINGERPRINT_ENDPOINT = os.getenv('FINGERPRINTER_URL')
 		self._COMPARATOR_ENDPOINT = os.getenv('COMPARATOR_URL')
 	
-	def _get_faces(self, current_frame):
-		body = json.dumps({'instances': current_frame.tolist()})
+	async def _get_faces(self, current_frame):
+		body = {'instances': current_frame.tolist()}
 		
-		response = requests.post(url=self._FACEDETECTOR_ENDPOINT, data=body)
+		client = aiohttp.ClientSession()
 		
-		data = json.loads(response.text)
+		response = await client.post(url=self._FACEDETECTOR_ENDPOINT, json=body)
+		
+		data = await response.json()
+		
+		await client.close()
 		
 		if 'error' in data.keys():
-			print(data['error'])
+			logging.error("Error in detecting faces")
 			return data['error']
 		
 		return data['predictions']
 	
-	def _get_fingerprint(self, current_face):
+	async def _get_fingerprint(self, current_face):
 		# using old model
-		body = json.dumps({'instances': np.reshape(current_face, [-1, 64, 64, 3]).tolist()})
+		body = {'instances': np.reshape(current_face, [-1, 64, 64, 3]).tolist()}
 		
-		response = requests.post(url=self._FINGERPRINT_ENDPOINT, data=body)
+		client = aiohttp.ClientSession()
 		
-		data = json.loads(response.text)
+		response = await client.post(url=self._FINGERPRINT_ENDPOINT, json=body)
+		
+		data = await response.json()
+		
+		await client.close()
 		
 		if 'error' in data.keys():
-			print("error in retrieving fingerprint")
-			print(data['error'])
-			return 0
+			logging.error("Error in generating fingerprint")
+			return data['error']
 		
 		return data['predictions']
 	
-	def _get_comparison(self, fingerprint):
-		body = json.dumps({'instances': np.reshape(fingerprint, [-1]).tolist()})
+	async def _get_comparison(self, fingerprint):
+		body = {'instances': np.reshape(fingerprint, [-1]).tolist()}
 		
-		response = requests.post(url=self._COMPARATOR_ENDPOINT, data=body)
+		client = aiohttp.ClientSession()
+		headers = {'content-type': 'application/json'}
 		
-		data = json.loads(response.text)
-		print(data)
+		response = await client.post(url=self._COMPARATOR_ENDPOINT, json=body, headers=headers)
 		
-		if 'error' in data.keys():
-			print("error in retrieving fingerprint")
-			print(data['error'])
-			return 0
+		data = await response.json(content_type=None)
+		
+		await client.close()
+		
+		if data['status'] == 'failed':
+			logging.error("Error in compares faces")
+			return data['reason']
 		
 		return data
 	
@@ -92,7 +102,7 @@ class ImagePreprocessor:
 				total = self.count_frames_manual(video)
 		return total
 	
-	def preprocess(self, filename):
+	async def preprocess(self, filename):
 		all_detections = []
 		
 		video_capture = cv2.VideoCapture(f"./videos/{filename}")
@@ -111,9 +121,7 @@ class ImagePreprocessor:
 			
 			timestamp = round(next_frame_index / fps, 2)
 			
-			boxes = self._get_faces(current_frame=resized_frame)
-			
-			print("faces", boxes)
+			boxes = await self._get_faces(current_frame=resized_frame)
 			
 			for top, left, bottom, right in boxes:
 				top = int(top * height / self._SIZE)
@@ -130,11 +138,9 @@ class ImagePreprocessor:
 				
 				cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 				
-				fingerprint = self._get_fingerprint(current_face=face)
-				if fingerprint is True:
-					print('true')
-					
-				face_data = self._get_comparison(fingerprint=fingerprint)
+				fingerprint = await self._get_fingerprint(current_face=face)
+				
+				face_data = await self._get_comparison(fingerprint=fingerprint)
 				
 				index, entry = self._find_face_by_id(all_detections, face_data['id'])
 				
@@ -150,8 +156,6 @@ class ImagePreprocessor:
 					entry['timestamps'] = timestamps
 					all_detections[index] = entry
 			
-			print(all_detections)
-			
 			video_capture.set(cv2.CAP_PROP_POS_FRAMES, next_frame_index)
 			ret, frame = video_capture.read()
 			
@@ -166,5 +170,3 @@ class ImagePreprocessor:
 			if dic["id"] == value:
 				return i, dic
 		return -1, None
-
-

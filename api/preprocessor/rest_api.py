@@ -25,7 +25,7 @@ async def preprocess_video(request):
 				size += len(chunk)
 				f.write(chunk)
 		
-		data = ImagePreprocessor().preprocess(filename=filename)
+		data = await ImagePreprocessor().preprocess(filename=filename)
 
 		response_obj['data'] = data
 		

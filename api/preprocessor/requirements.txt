@@ -1,0 +1,4 @@
+requests==2.23.0
+numpy==1.18.1
+opencv-python-headless==4.2.0.34
+aiohttp==3.6.2
