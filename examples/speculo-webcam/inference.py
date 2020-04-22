@@ -56,6 +56,7 @@ while True:
     ret, frame = video_capture.read()
     height, width, _ = frame.shape
     small_frame = cv2.resize(frame, (SIZE, SIZE))
+    # api this
     boxes = yolo.detect_image_fast(small_frame)
     for top, left, bottom, right in boxes:
         top = int(top * height / SIZE)
@@ -70,6 +71,8 @@ while True:
 
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
         font = cv2.FONT_HERSHEY_DUPLEX
+        # speculo.predict(face) --> Fingerprinter API
+        # Best_Match API, send the above response to it. (returns the name)
         cv2.putText(frame, best_match(speculo.predict(face)), (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
     cv2.imshow('Video', frame)
