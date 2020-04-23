@@ -1,0 +1,15 @@
+#navbar-login-button {
+  color: #36ad81;
+  transition: 0.3s;
+}
+#navbar-login-button:hover {
+  color: #87f1ca;
+}
+
+.navbar-toggler .navbar-toggler-icon {
+  background-image: url("../../assets/navigation-icons/hamburger.svg");
+}
+
+.navbar-dark .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0);
+}

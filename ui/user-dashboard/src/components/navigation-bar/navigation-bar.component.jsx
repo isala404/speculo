@@ -1,15 +1,15 @@
 import React from "react";
 import { Nav, Navbar} from "react-bootstrap";
 import { Logo } from "../../assets/speculo-logo";
-import "./navigation-bar.style.scss";
-import { CustomButton } from "../button/button.component";
+import { CustomButton, BasicButton } from "../button/button.component";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./navigation-bar.style.scss";
 
 export const NavigationMenu = () => {
   return (
     <div>
       <div>
-        <Navbar
+        <Navbar 
           className="NavigationMenu"
           collapseOnSelect
           expand="lg"
@@ -17,17 +17,17 @@ export const NavigationMenu = () => {
           style={navStyle}
           fixed="top" 
         >
-          <Navbar.Brand href="#home">
+          <Navbar.Brand href="/">
             <Logo/>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto"></Nav>
             <Nav>
-              <Nav.Link href="#features" style={{justifyContent: "center"}}>Features</Nav.Link>
-              <Nav.Link href="#pricing">Pricing</Nav.Link>
-              <Nav.Link href="#pricing"><span style ={textButtonStyle} >Log In</span></Nav.Link>
-              {/* <Nav.Link href="#pricing" ><CustomButton buttonTitle="Sign Up"/></Nav.Link> */}
+              <Nav.Link href="features" style={linkStyle}>Features</Nav.Link>
+              <Nav.Link href="dashboard" style={linkStyle}>Dashboard</Nav.Link>
+              <Nav.Link href="login" style={linkStyle}><span id="navbar-login-button">Log In</span></Nav.Link>
+              <Nav.Link href="sign-up" style={linkStyle}><BasicButton buttonTitle="Sign Up"/></Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -37,9 +37,8 @@ export const NavigationMenu = () => {
 };
 
 const navStyle = {
-  background: "#0B162B",
+  background: "rgba(15,30,61,1)",
 };
 
-const textButtonStyle = {
-  fontWeight: "bold",
-}
+const linkStyle = {margin: "auto"}
+

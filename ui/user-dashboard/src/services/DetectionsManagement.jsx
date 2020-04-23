@@ -2,22 +2,22 @@ import axios from "axios";
 import {detectionsEndpoint, getAllFacesEndpoint, deleteFacesEndpoint, editDetailsEndpoint} from "../endpoints";
 
 // Get all detections of people in a video
-export async function retrieveAllDetections() {
-    const res = await axios.get(detectionsEndpoint, {
-        headers: {
-            "Content-Type": "application/json",
-            'Access-Control-Allow-Origin': '*',
-        }
-    });
-    return res.data.map(detection => {
-        return {
-            id: detection._id,
-            name: detection.name,
-            blacklisted: detection.blacklisted,
-            timestamps: detection.timestamps
-        };
-    });
-}
+// export async function retrieveAllDetections() {
+//     const res = await axios.get(detectionsEndpoint, {
+//         headers: {
+//             "Content-Type": "application/json",
+//             'Access-Control-Allow-Origin': '*',
+//         }
+//     });
+//     return res.data.map(detection => {
+//         return {
+//             id: detection._id,
+//             name: detection.name,
+//             blacklisted: detection.blacklisted,
+//             timestamps: detection.timestamps
+//         };
+//     });
+// }
 
 // ------------
 
@@ -55,7 +55,7 @@ export async function deleteFaceFromSystem(personId){
             'Access-Control-Allow-Origin': '*',
         }
     });
-
+    
     return res;
 }
 
