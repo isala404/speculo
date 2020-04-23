@@ -151,7 +151,7 @@ If email or password was invalid
 ```json
 {
      "status": "error",
-     "message": "Invalid email/password!",
+     "message": "Invalid email/password!"
 }
 ```
 

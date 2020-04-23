@@ -40,6 +40,7 @@ app.use(function (req, res, next) {
     err.status = 404;
     next(err);
 });
+
 // handle errors
 app.use(function (err, req, res, next) {
     console.log(err);
