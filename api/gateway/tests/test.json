@@ -1,0 +1,598 @@
+{
+	"info": {
+		"_postman_id": "60c68d01-582d-414a-ae69-2275d3d15c49",
+		"name": "Speculo Gateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "#1 User Authenticate - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "af1d08ee-fb2a-4dbc-807d-0ef24f3a3e03",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"    pm.test(\"Status code 200\", function () {",
+									"    pm.expect(jsonData.status).to.eql(\"success\");",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"user\",\n  \"password\": \"123\",\n  \"email\": \"mail@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/user/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#1 User Authenticate - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "af1d08ee-fb2a-4dbc-807d-0ef24f3a3e03",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"    pm.test(\"Status code 200\", function () {",
+									"    pm.expect(jsonData.status).to.eql(\"error\");",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"user\",\n  \"password\": \"123\",\n  \"email\": \"wrongmail@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/user/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#2 Admin Authenticate - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ee25f898-7e29-4be5-8b42-0d83f8ae1bee",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"    pm.test(\"Status code 200\", function () {",
+									"    pm.expect(jsonData.status).to.eql(\"success\");",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"user\",\n  \"password\": \"123\",\n  \"email\": \"mail@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/admin/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"admin",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#2 Admin Authenticate - 401",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ee25f898-7e29-4be5-8b42-0d83f8ae1bee",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"    pm.test(\"Status code 200\", function () {",
+									"    pm.expect(jsonData.status).to.eql(\"error\");",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"user\",\n  \"password\": \"123\",\n  \"email\": \"samplemail@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/admin/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"admin",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Reg",
+			"item": [
+				{
+					"name": "#3 User Registration - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e969dda6-3bce-4a69-8de6-bdbb6cec1a97",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code 200\", function () {",
+									"        pm.expect(jsonData.status).to.eql(\"success\");",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dbf0a087-b054-418c-bdc4-5c16f5460394",
+								"exec": [
+									"pm.environment.set(\"userId\", parseInt(Math.random()*10000));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{userId}} User\",\n  \"password\": \"test-password\",\n  \"email\": \"{{userId}}@speculo.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/user/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#3 User Registration - 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e969dda6-3bce-4a69-8de6-bdbb6cec1a97",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code 409\", function () {",
+									"        pm.expect(jsonData.status).to.eql(\"failed\");",
+									"        pm.response.to.have.status(409);",
+									"    });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dbf0a087-b054-418c-bdc4-5c16f5460394",
+								"exec": [
+									"pm.environment.set(\"userId\", parseInt(Math.random()*10000));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"nisal\",\n  \"password\": \"123\",\n  \"email\": \"nisal1@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/user/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#3 User Registration - 500",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e969dda6-3bce-4a69-8de6-bdbb6cec1a97",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code 500\", function () {",
+									"        pm.expect(jsonData.status).to.eql(\"Something looks wrong\");",
+									"        pm.response.to.have.status(500);",
+									"    });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dbf0a087-b054-418c-bdc4-5c16f5460394",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"password\": \"\",\n  \"email\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/user/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#4 Admin Registration - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e969dda6-3bce-4a69-8de6-bdbb6cec1a97",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code 200\", function () {",
+									"        pm.expect(jsonData.status).to.eql(\"success\");",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dbf0a087-b054-418c-bdc4-5c16f5460394",
+								"exec": [
+									"pm.environment.set(\"userId\", parseInt(Math.random()*10000));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{userId}} User\",\n  \"password\": \"test-password\",\n  \"email\": \"{{userId}}@speculo.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/admin/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#4 Admin Registration - 409",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e969dda6-3bce-4a69-8de6-bdbb6cec1a97",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code 409\", function () {",
+									"        pm.expect(jsonData.status).to.eql(\"failed\");",
+									"        pm.response.to.have.status(409);",
+									"    });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dbf0a087-b054-418c-bdc4-5c16f5460394",
+								"exec": [
+									"pm.environment.set(\"userId\", parseInt(Math.random()*10000));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"nisal\",\n  \"password\": \"123\",\n  \"email\": \"nisal1@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/admin/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#4 Admin Registration - 500",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e969dda6-3bce-4a69-8de6-bdbb6cec1a97",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code 500\", function () {",
+									"        pm.expect(jsonData.status).to.eql(\"Something looks wrong\");",
+									"        pm.response.to.have.status(500);",
+									"    });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dbf0a087-b054-418c-bdc4-5c16f5460394",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"password\": \"\",\n  \"email\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/admin/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "#4 Admin Registration - 500",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e969dda6-3bce-4a69-8de6-bdbb6cec1a97",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code 500\", function () {",
+									"        pm.expect(jsonData.status).to.eql(\"Something looks wrong\");",
+									"        pm.response.to.have.status(500);",
+									"    });",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dbf0a087-b054-418c-bdc4-5c16f5460394",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"password\": \"\",\n  \"email\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/admin/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
