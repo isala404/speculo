@@ -22,7 +22,7 @@ import {detectionsEndpoint, getAllFacesEndpoint, deleteFacesEndpoint, editDetail
 // ------------
 
 // Get all details of people stored in the system (without the fingerprint)
-export async function retrieveAllDetections() {
+export async function retrieveAllRecords() {
     const res = await axios.get(getAllFacesEndpoint+'false', {
         headers: {
             "Content-Type": "application/json",

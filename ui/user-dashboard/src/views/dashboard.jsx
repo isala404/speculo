@@ -133,13 +133,15 @@ export default class Dashboard extends Component {
     this.setState({ selectedPerson: person }); // updating state of selectedPerson
   }
 
+
   // Get all detected people with detected timestamps in a video
   async getAllDetections() {
-    try {
-      const res = await retrieveAllDetections();
-      this.setState({ allDetections: res });
-    } catch (e) {
-      console.log(e);
+      try { 
+          const res = await retrieveAllDetections();
+          this.setState({allDetections: res});
+      } catch (e) {
+          console.log(e)
+      }
     }
   }
 
@@ -151,37 +153,33 @@ export default class Dashboard extends Component {
     let newDetectionsArray = [...this.state.allDetections];
     newDetectionsArray[chosenIndexToEdit] = newPersonDetails; // replacing the chosen index with the person details obtained from the pop-up component
     this.setState({ allDetections: newDetectionsArray });
+    
 
     // send patch requests to db ---
 
     // check if the name has changed
-    if (oldDetailsOfPerson.name !== newPersonDetails.name) {
-      try {
-        const res = editNameInSystem(
-          newPersonDetails.id,
-          newPersonDetails.name
-        );
-        console.log(res);
-      } catch (e) {
-        console.log(e);
-      }
+    if (oldDetailsOfPerson.name !== newPersonDetails.name){
+        try{
+            const res = editNameInSystem(newPersonDetails.id, newPersonDetails.name);
+            console.log(res);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     // check if the blacklist status has changed
-    if (oldDetailsOfPerson.blacklisted !== newPersonDetails.blacklisted) {
-      try {
-        let res = null;
-        if (newPersonDetails.blacklisted === true) {
-          // blacklist a person
-          res = await blacklistPersonInSystem(newPersonDetails.id);
-        } else if (newPersonDetails.blacklisted === false) {
-          // whitelist a person
-          res = await whitelistPersonInSystem(newPersonDetails.id);
+    if (oldDetailsOfPerson.blacklisted !== newPersonDetails.blacklisted){
+        try{
+            let res = null;
+            if(newPersonDetails.blacklisted === true){           // blacklist a person
+                res = await blacklistPersonInSystem(newPersonDetails.id);
+            } else if (newPersonDetails.blacklisted === false){      // whitelist a person
+                res = await whitelistPersonInSystem(newPersonDetails.id);
+            }
+            console.log(res);
+        } catch (e) {
+            console.log(e);
         }
-        console.log(res);
-      } catch (e) {
-        console.log(e);
-      }
     }
   }
 
