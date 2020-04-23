@@ -4,7 +4,9 @@ import "react-dropzone-uploader/dist/styles.css";
 import { footageUploadEndpoint } from "../../../endpoints";
 import "../upload.scss";
 
-class UploadFootage extends Component {    state={};
+class UploadFootage extends Component {    state={
+  video: null
+};
     
 render(){
 
@@ -38,7 +40,18 @@ render(){
         
         // receives array of files that are done uploading when submit button is clicked
         const handleSubmit = (files, allFiles) => {
-          console.log(files.map(f => f.meta))
+          const file = files[0].file;
+          // console.log(files[0]);
+
+          // const objURL = URL.createObjectURL(files[0].file);
+
+          // console.log(objURL);
+          
+          // Save data to sessionStorage
+          sessionStorage.setItem('videoURL', JSON.stringify({src: URL.createObjectURL(file), type: file.type}));
+
+          this.setState( {video: URL.createObjectURL(file)});
+          
           allFiles.forEach(f => f.remove())
         }
         
@@ -64,8 +77,13 @@ render(){
                 </div>
             </form> */}
 
-            <MyVideoUploader />
+{!this.state.video &&
+            <MyVideoUploader />}
 
+
+            {this.state.video && <video width="320" height="240" controls>
+              <source src={this.state.video} type="video/mp4"/>
+            </video>}
         </div>
     )
 }

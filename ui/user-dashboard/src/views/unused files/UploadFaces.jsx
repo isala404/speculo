@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import Dropzone from 'react-dropzone-uploader';
 import 'react-dropzone-uploader/dist/styles.css';
 import { getDroppedOrSelectedFiles } from 'html5-file-selector'
-import {facesUploadEndpoint} from "../endpoints";
+import {facesUploadEndpoint} from "../../endpoints";
 
 class UploadFaces extends Component{
     state={};

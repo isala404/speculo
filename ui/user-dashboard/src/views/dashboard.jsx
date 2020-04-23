@@ -34,7 +34,9 @@ export default class Dashboard extends Component {
       seekTime: 0,
       chosenIndexToEdit: 0,
       videoWidth: null,
-      videoHeight: 100
+      videoHeight: 100,
+
+      videoSRC: null
     };
 
     this.videoPlayer = null;
@@ -71,19 +73,40 @@ export default class Dashboard extends Component {
   };
 
   componentDidMount() {
+    console.log(this.videoNode);
+    
     // instantiate Video.js
     this.videoPlayer = videojs("videoPlayer", { responsive: true });
     this.videoPlayer.responsive(true);
+
     //for grabbing a screencapture
     this.container = document.getElementById("videoPlayer");
     this.video = document.createElement("video");
     this.video.width = 600;
     this.canCapture = true;
     if (!this.video.canPlayType("video/mp4")) {
-      this.canCapture = false;
-      return;
+        this.canCapture = false;
+        return;
     }
-    this.video.src = "../../demo.mp4";
+
+    if (sessionStorage.getItem('videoURL') != null){
+        // Get saved data from sessionStorage
+        let data = JSON.parse(sessionStorage.getItem('videoURL'));
+        console.log(data);
+        this.videoNode.src = data.src;
+        this.videoNode.type = data.type;
+        this.videoNode.load();
+        this.videoNode.onloadeddata = function() {
+        this.videoNode.play();
+    }
+        this.setState({videoSRC: data});
+
+    } else{
+        // redirect back to uploading footage? / show message that video isn't available
+    }
+
+    
+    this.video.src ="../../demo.mp4";
     this.container.appendChild(this.video);
     this.video.pause();
     // this.video.play();
@@ -111,6 +134,9 @@ export default class Dashboard extends Component {
     if (this.player) {
       this.player.dispose();
     }
+
+    // Remove saved data from sessionStorage
+    sessionStorage.removeItem('videoURL');
   }
 
   //function to get the width and height of the viewport dynamically
@@ -237,18 +263,21 @@ async editPersonSave(newPersonDetails) {
           <Row>
             <Col xs={12} sm={12} md={12} lg={9}>
               <div id="video-js-responsive-container vjs-hd videoContainer">
-                <video
+                {<video
                   ref={node => (this.videoNode = node)}
                   id="videoPlayer"
                   className="video-js vjs-fluid vjs-theme-fantasy"
                   data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
+                  type= "video/mp4"
                 >
                   <source
-                    src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    src = {this.state.videoSRC}
+
                     type="video/mp4"
                   />
                   {/* video that needs to be added to check for faces will be opened here */}
-                </video>
+                </video>}
               </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={3}>
