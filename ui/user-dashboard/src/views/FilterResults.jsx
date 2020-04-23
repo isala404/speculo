@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Select from "react-select";
-import {TimeFilterer} from '../services/TimeFilterer.jsx';
+import {TimeFilterer} from '../services/TimeFilterer.js';
 
 const Input = styled.input`
   background: white;
@@ -95,6 +95,10 @@ const FilterResults = ({allDetections}) => {
 
     return (
         <div style={{overflowX: "auto"}}>
+
+            {/* test filter function */}
+            {console.log(TimeFilterer(detections, 400, "more_than", 400))}
+
             {/* <Switch onChange={handleSwitchChange} checked={isSwitchToggled} /> */}
             {/* <Input
                 type={"text"}
