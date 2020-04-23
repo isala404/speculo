@@ -477,62 +477,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "#4 Admin Registration - 500",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "e969dda6-3bce-4a69-8de6-bdbb6cec1a97",
-								"exec": [
-									"const jsonData = pm.response.json();",
-									"    ",
-									"    pm.test(\"Status code 500\", function () {",
-									"        pm.expect(jsonData.status).to.eql(\"Something looks wrong\");",
-									"        pm.response.to.have.status(500);",
-									"    });",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "dbf0a087-b054-418c-bdc4-5c16f5460394",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"\",\n  \"password\": \"\",\n  \"email\": \"\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:3000/admin/register",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"admin",
-								"register"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}

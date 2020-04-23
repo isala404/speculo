@@ -4,7 +4,6 @@ const express = require("express");
 const logger = require("morgan");
 const gateway = require('./app/routes/gateway');
 const user = require("./app/routes/user");
-const admin = require("./app/routes/admin");
 const bodyParser = require("body-parser");
 const mongoose = require("./config/database"); //database configuration
 var jwt = require("jsonwebtoken");
@@ -32,8 +31,7 @@ app.get("/", function (req, res) {
 });
 
 // public route
-app.use("/user", user);
-app.use("/admin", admin);
+app.use("/api/v1", user);
 app.use("/api", gateway);
 
 // handle 404 error

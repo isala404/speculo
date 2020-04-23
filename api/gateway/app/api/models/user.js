@@ -19,6 +19,10 @@ const UserSchema = new Schema({
     type: String,
     trim: true,
     required: true
+  },
+  type : {
+    type: String,
+    required: true
   }
 });
 

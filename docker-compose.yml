@@ -35,3 +35,13 @@ services:
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
     env_file:
       - database_config.env
+  gateway:
+    build:
+      context: api/gateway/
+      dockerfile: Dockerfile
+    ports:
+      - 8504:3000
+    environment:
+      - FACE_SERVICE_URL=http://faceservice:8080/
+    env_file:
+      - database_config.env

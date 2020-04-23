@@ -1,123 +1,121 @@
 const apiAdapter = require('../../utils/apiAdapter');
 var FormData = require('form-data');
 
-const BASE_URL = process.env.face_service;
+const BASE_URL = process.env.FACE_SERVICE_URL;
 const api = apiAdapter(BASE_URL);
-
 
 module.exports = {
 
-    add_face: function(req, res, next){
-       
-        const file = req.files;
-  
-        let form = new FormData();
-        file.forEach(element => {
-          form.append('image', element.buffer, element.originalname);
-        });
-      
-      
-        api
-        .post('api'+req.path, form, {headers:{'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp=>{
-          res.send(resp.data)
-        })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
-        })
-    },
-
-    update_face: function(req, res, next){
+    add_face: function (req, res, next) {
 
         const file = req.files;
-  
+
         let form = new FormData();
         file.forEach(element => {
-          form.append('image', element.buffer, element.originalname);
+            form.append('image', element.buffer, element.originalname);
         });
 
         api
-        .put('api'+req.path, form, {headers:{'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp=>{
+            .post('api' + req.path, form, {headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
             res.send(resp.data)
         })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
-        })
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
     },
 
-    get_all_faces: function(req, res, next){
+    update_face: function (req, res, next) {
+
+        const file = req.files;
+
+        let form = new FormData();
+        file.forEach(element => {
+            form.append('image', element.buffer, element.originalname);
+        });
 
         api
-        .get('api'+req.path).then(resp=>{
+            .put('api' + req.path, form, {headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
             res.send(resp.data)
         })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
-        })
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
     },
 
-    get_face_by_id: function(req, res, next){
+    get_all_faces: function (req, res, next) {
 
         api
-        .get('api'+req.path).then(resp=>{
+            .get(BASE_URL + 'api' + req.path + '?fingerprint=false').then(resp => {
             res.send(resp.data)
         })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
-        })
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
     },
 
-    delete_all_faces: function(req, res, next){
+    get_face_by_id: function (req, res, next) {
 
         api
-        .delete('api'+req.path).then(resp=>{
+            .get('api' + req.path).then(resp => {
             res.send(resp.data)
         })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
-        })
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
     },
 
-    delete_face: function(req, res, next){
+    delete_all_faces: function (req, res, next) {
 
         api
-        .delete('api'+req.path).then(resp=>{
+            .delete('api' + req.path).then(resp => {
             res.send(resp.data)
         })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
-        })
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
     },
 
-    label_face: function(req, res, next){
+    delete_face: function (req, res, next) {
 
         api
-        .patch('api'+req.path).then(resp=>{
+            .delete('api' + req.path).then(resp => {
             res.send(resp.data)
         })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
-        })
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
     },
 
-    blacklist_face: function(req, res, next){
+    label_face: function (req, res, next) {
 
         api
-        .patch('api'+req.path).then(resp=>{
+            .patch('api' + req.path).then(resp => {
             res.send(resp.data)
         })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
-        })
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
     },
 
-    whitelist_face: function(req, res, next){
+    blacklist_face: function (req, res, next) {
 
         api
-        .patch('api'+req.path).then(resp=>{
+            .patch('api' + req.path).then(resp => {
             res.send(resp.data)
         })
-        .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
+    },
+
+    whitelist_face: function (req, res, next) {
+
+        api
+            .patch('api' + req.path).then(resp => {
+            res.send(resp.data)
         })
+            .catch(error => {
+                res.status(400).send({'status': 'Bad Request', 'error': error.message})
+            })
     }
 }
