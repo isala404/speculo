@@ -1,7 +1,7 @@
 const apiAdapter = require('../../utils/apiAdapter');
 var FormData = require('form-data');
 
-const BASE_URL = process.env.face_service;
+const BASE_URL = process.env.IMAGE_PROCESSOR_URL;
 const api = apiAdapter(BASE_URL);
 
 
@@ -22,7 +22,7 @@ module.exports = {
           res.send(resp.data)
         })
         .catch(error =>{
-            res.status(400).send({'status':'Bad Request'})
+            res.status(400).send({'status':'Bad Request', 'error' : error.meessage})
         })
     }
 }

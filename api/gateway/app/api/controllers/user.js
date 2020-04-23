@@ -89,7 +89,6 @@ module.exports = {
                 res.status(401).json({
                     status: "error",
                     message: "Invalid email/password!",
-                    data: null
                 });
                 
             } else {
@@ -108,7 +107,6 @@ module.exports = {
                     res.status(401).json({
                         status: "error",
                         message: "Invalid email/password!",
-                        data: null
                     });
                 }
             }
@@ -124,7 +122,6 @@ module.exports = {
                 res.status(401).json({
                     status: "error",
                     message: "Invalid email/password!",
-                    data: null
                 });
                 
             } else {
@@ -143,7 +140,6 @@ module.exports = {
                     res.status(401).json({
                         status: "error",
                         message: "Invalid email/password!",
-                        data: null
                     });
                 }
             }
