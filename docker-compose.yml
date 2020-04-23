@@ -46,3 +46,19 @@ services:
       - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/
     env_file:
       - database_config.env
+  videodownscaler:
+    build:
+      context: api/video-downscaler/
+      dockerfile: Dockerfile
+    ports:
+      - 8504:8080
+  preprocessor:
+    build:
+      context: api/preprocessor/
+      dockerfile: Dockerfile
+    ports:
+      - 8505:8080
+    environment:
+      - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
+      - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
+      - COMPARATOR_URL=http://comparator:8080/api/v1/compare
