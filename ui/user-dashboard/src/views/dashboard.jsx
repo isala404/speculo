@@ -136,17 +136,17 @@ export default class Dashboard extends Component {
 
   // Get all detected people with detected timestamps in a video
   async getAllDetections() {
-      try { 
-          const res = await retrieveAllDetections();
-          this.setState({allDetections: res});
-      } catch (e) {
-          console.log(e)
-      }
+    try { 
+        const res = await retrieveAllDetections();
+        this.setState({allDetections: res});
+    } catch (e) {
+        console.log(e);
     }
-  }
+}
+
 
   // Edit name/ black-list status of a person in the system db & display in UI
-  async editPersonSave(newPersonDetails) {
+async editPersonSave(newPersonDetails) {
     const chosenIndexToEdit = this.state.chosenIndexToEdit;
     let oldDetailsOfPerson = this.state.allDetections[chosenIndexToEdit];
 
