@@ -7,6 +7,7 @@ __status__ = "Testing"
 
 import logging
 import os
+from typing import Tuple
 
 import aiohttp
 import cv2
@@ -15,6 +16,22 @@ from PIL import Image
 
 
 class ImageProcessor:
+	"""
+	A class used to represent an Image Processor
+
+	Methods
+	-------
+	preprocess()
+		Loops through a video footage frame by frame and processes it find the faces in it.
+
+	fetch_coordinates()
+		Finds the coordinates and the name of a frame sent from the Live Detection module.
+
+	generate_fingerprint()
+		Generates and returns the fingerprint for a face (image)
+
+	"""
+	
 	def __init__(self):
 		self._SIZE = 192
 		self._FINGERPRINT_SIZE = (128, 128, 1)
@@ -23,7 +40,15 @@ class ImageProcessor:
 		self._COMPARATOR_ENDPOINT = os.getenv('COMPARATOR_URL')
 		logging.basicConfig(level=logging.NOTSET)
 	
-	async def _get_faces(self, resized_image):
+	async def _get_faces(self, resized_image) -> list:
+		"""Consumes the facedetector service and gets faces in the given frame
+
+		:param resized_image: The numpy representation of the frame.
+		:type resized_image: list
+		:returns: a list of coordinates of the faces found
+		:rtype: list
+		"""
+		
 		body = {'instances': np.array(resized_image).tolist()}
 		
 		client = aiohttp.ClientSession()
@@ -40,8 +65,15 @@ class ImageProcessor:
 		
 		return data['predictions']
 	
-	async def _get_fingerprint(self, face):
-		# using old model
+	async def _get_fingerprint(self, face) -> list:
+		"""Consumes the fingerprinter service and generates a fingerprint for the face
+
+		:param face: The numpy list representation of the face cropped from the frame.
+		:type face: list
+		:returns: the fingerprint generated for the face
+		:rtype: list
+		"""
+		
 		body = {'instances': np.reshape(face, [-1, 64, 64, 3]).tolist()}
 		
 		client = aiohttp.ClientSession()
@@ -58,7 +90,15 @@ class ImageProcessor:
 		
 		return data['predictions']
 	
-	async def _get_comparison(self, fingerprint):
+	async def _get_comparison(self, fingerprint) -> dict:
+		"""Consumes the comparator service and receives the closes matching face to the given fingerprint
+
+		:param fingerprint: The fingerprint of the current face
+		:type fingerprint: list
+		:returns: the fingerprint generated for the face
+		:rtype: list
+		"""
+		
 		body = {'instances': np.reshape(fingerprint, [-1]).tolist()}
 		
 		client = aiohttp.ClientSession()
@@ -77,7 +117,7 @@ class ImageProcessor:
 		return data
 	
 	@staticmethod
-	def count_frames_manual(video):
+	def _count_frames_manual(video) -> int:
 		total = 0
 		
 		while True:
@@ -87,34 +127,39 @@ class ImageProcessor:
 				break
 			
 			total += 1
-		
 		return total
 	
-	def count_frames(self, path):
-		
+	def _count_frames(self, path) -> int:
 		video = cv2.VideoCapture(path)
-		total = 0
 		
 		try:
 			total = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
 		except Exception:
-			total = self.count_frames_manual(video)
+			total = self._count_frames_manual(video)
 		
 		return total
 	
 	@staticmethod
-	def _find_face_by_id(lst, value):
+	def _find_face_by_id(lst, value) -> Tuple[int, dict]:
 		for i, dic in enumerate(lst):
 			if dic["id"] == value:
 				return i, dic
-		return -1, None
+		return -1, {}
 	
-	async def preprocess(self, filename):
+	async def preprocess(self, filename) -> list:
+		"""Processes a video file frame by frame
+
+		:param filename: The filename of the video
+		:type filename: str
+		:returns: all the detected faces with their corresponding timestamps
+		:rtype: list
+		"""
+		
 		all_detections = []
 		path = "./preprocess-videos/{filename}".format(filename=filename)
 		
 		video_capture = cv2.VideoCapture(path)
-		total_frames = self.count_frames(path)
+		total_frames = self._count_frames(path)
 		
 		skip_amount = total_frames * 10 / 100
 		next_frame_index = 0
@@ -158,7 +203,7 @@ class ImageProcessor:
 					
 					index, entry = self._find_face_by_id(all_detections, face_data['id'])
 					
-					if entry is None:
+					if index == -1:
 						all_detections.append({
 							'id': face_data['id'],
 							'name': face_data['name'],
@@ -180,7 +225,15 @@ class ImageProcessor:
 		os.remove(path)
 		return all_detections
 	
-	async def fetch_coordinates(self, filename):
+	async def fetch_coordinates(self, filename) -> dict:
+		"""Finds the coordinates of faces and the names from an image
+
+		:param filename: The filename of the image
+		:type filename: str
+		:returns: all the faces found in the image with the respective coordinates
+		:rtype: dict
+		"""
+		
 		response = {"faces": []}
 		
 		im = Image.open("./coordinate-images/{}".format(filename))
@@ -203,28 +256,39 @@ class ImageProcessor:
 			# resize the cropped image to the required size
 			face = face.resize((self._FINGERPRINT_SIZE[0], self._FINGERPRINT_SIZE[1]), Image.ANTIALIAS)
 			
-			fingerprint = await self._get_fingerprint(face=face)
-			logging.info(f'[COORDINATES] - Received Fingerprint')
-			
-			face_data = await self._get_comparison(fingerprint=fingerprint)
-			logging.info(f'[COORDINATES] - Received Face Data for Frame')
-			
-			faces = response["faces"]
-			faces.append({
-				'id': face_data['id'],
-				'label': face_data['name'],
-				'blacklisted': face_data['blacklisted'],
-				'coordinates': [top, left, bottom, right]
-			})
-			
-			response["faces"] = faces
+			try:
+				fingerprint = await self._get_fingerprint(face=face)
+				logging.info(f'[COORDINATES] - Received Fingerprint')
+				
+				face_data = await self._get_comparison(fingerprint=fingerprint)
+				logging.info(f'[COORDINATES] - Received Face Data for Frame')
+				
+				faces = response["faces"]
+				faces.append({
+					'id': face_data['id'],
+					'label': face_data['name'],
+					'blacklisted': face_data['blacklisted'],
+					'coordinates': [top, left, bottom, right]
+				})
+				
+				response["faces"] = faces
+			except Exception as e:
+				logging.exception(e)
 		
 		# remove image from the directory
 		os.remove(f"./coordinate-images/{filename}")
 		
 		return response
 	
-	async def generate_fingerprint(self, filename):
+	async def generate_fingerprint(self, filename) -> list:
+		"""Generate fingerprint for a image
+
+		:param filename: The filename of the image
+		:type filename: str
+		:returns: fingerprint
+		:rtype: list
+		"""
+		
 		im = Image.open("./fingerprint-images/{}".format(filename))
 		
 		width, height = im.size
