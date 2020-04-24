@@ -1,8 +1,8 @@
 import pickle
 import cv2
-from facedetector.yolo.yolo import YOLO
+from models.facedetector.yolo.yolo import YOLO
 # from scipy.spatial import distance
-from model import Speculo
+from models.fingerprinter.model import Speculo
 import os
 from sklearn.neighbors import KNeighborsClassifier
 
