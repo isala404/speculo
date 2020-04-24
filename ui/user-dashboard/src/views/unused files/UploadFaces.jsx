@@ -2,14 +2,15 @@ import React, {Component} from "react";
 import Dropzone from 'react-dropzone-uploader';
 import 'react-dropzone-uploader/dist/styles.css';
 import { getDroppedOrSelectedFiles } from 'html5-file-selector'
-import {footageUploadEndpoint} from "../endpoints";
+import {facesUploadEndpoint} from "../../endpoints";
 
-class UploadFootage extends Component{
+class UploadFaces extends Component{
     state={};
     
     render(){
 
 
+      // Used to extract all image files from a dropped folder
         const Input = ({ accept, onFiles, files, getFilesFromEvent }) => {
             const text = files.length > 0 ? 'Add more files' : 'Choose files'
           
@@ -31,7 +32,7 @@ class UploadFootage extends Component{
             )
           }
           
-          const CustomInput = () => {
+          const MyImageUploader = () => {
             const handleSubmit = (files, allFiles) => {
               console.log(files.map(f => f.meta))
               allFiles.forEach(f => f.remove())
@@ -50,7 +51,7 @@ class UploadFootage extends Component{
 
             return (
                 <Dropzone
-                  getUploadParams={() => ({ url: footageUploadEndpoint })}
+                  getUploadParams={() => ({ url: facesUploadEndpoint })}
                   onSubmit={handleSubmit}
                   InputComponent={Input}
                   getFilesFromEvent={getFilesFromEvent}
@@ -64,10 +65,11 @@ class UploadFootage extends Component{
             <div>
                 <h1>ADD IMAGES BY DROPPING FILE/ Images</h1>
 
-                <CustomInput />
+                {/* Dropzone to upload extracte image files from dropped folders */}
+                <MyImageUploader />
             </div>
         )
     }
 }
 
-export default UploadFootage;
+export default UploadFaces;

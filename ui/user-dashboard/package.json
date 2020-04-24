@@ -3,24 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@brainhubeu/react-carousel": "^1.13.38",
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-solid-svg-icons": "^5.13.0",
+    "@fortawesome/react-fontawesome": "^0.1.9",
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^5.5.0",
     "@testing-library/react": "^10.0.3",
     "@testing-library/user-event": "^10.0.2",
     "@videojs/themes": "^1.0.0",
     "axios": "^0.19.2",
-    "html5-file-selector": "^2.1.0",
     "bootstrap": "^4.4.1",
+    "html5-file-selector": "^2.1.0",
     "node-sass": "^4.13.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
     "react-dropzone-uploader": "^2.11.0",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
-    "video.js": "^7.6.6",
     "react-flexbox-grid": "^2.1.2",
     "react-player": "^1.15.3",
+<<<<<<< HEAD
     "styled-components": "^5.1.0"
+=======
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.0",
+    "react-select": "^3.1.0",
+    "react-switch": "^5.0.1",
+    "react-table": "^7.0.4",
+    "react-webcam": "^5.0.1",
+    "styled-components": "^5.0.1",
+    "video-snapshot": "^1.0.3",
+    "video.js": "^7.6.6"
+>>>>>>> ui/dashboard
   },
   "scripts": {
     "start": "react-scripts start",
@@ -43,5 +58,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "node-sass": "^4.13.1"
+  }
 }

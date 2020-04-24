@@ -1,7 +1,8 @@
-import Home from "./views/Home.jsx";
-import Dashboard from "./views/Dashboard.jsx";
-import UploadFootage from "./views/UploadFootage.jsx";
-import UploadFaces from "./views/UploadFaces.jsx"
+import {Home} from "./views/Home.jsx";
+import Dashboard from "./views/dashboard.jsx";
+import WebCam from "./components/webcam/webcam.component"
+import { UploadPage } from "./views/upload.jsx";
+import { Admin } from "./views/Admin.jsx";
 
 // data object to make code simpler
 
@@ -9,8 +10,9 @@ import UploadFaces from "./views/UploadFaces.jsx"
 const Routes = [
     {name: 'Home', path:'/', Component:Home},
     {name: 'Dashboard', path:'/dashboard', Component:Dashboard},
-    {name: 'Upload Footage', path:'/upload', Component:UploadFootage},
-    {name: 'Upload Faces', path:'/add', Component:UploadFaces}
+    {name: 'Uploads', path:'/upload', Component:UploadPage},
+    {name: 'Proof of Concept', path:'/live-detection', Component:WebCam},
+    {name: 'Admin', path:'/admin', Component:Admin}
 ];
 
 export default Routes
