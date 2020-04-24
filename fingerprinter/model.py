@@ -3,7 +3,7 @@ from sklearn.utils import shuffle
 from PIL import Image
 import os
 import numpy as np
-from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 from tensorflow.keras.layers import Input, Dense, Conv2D, Conv2DTranspose, \
     MaxPooling2D, BatchNormalization, Flatten, Reshape, Activation, Dropout
 from tensorflow.keras import backend as K
@@ -30,13 +30,16 @@ class AutoEncoderProgress(keras.callbacks.Callback):
 
 
 class Speculo:
-    def __init__(self, image_size=(32, 32, 1), model_path=None, visualize=True, batch_size=64):
-        self.optimizer = 'adam'
-        self.loss_function = 'binary_crossentropy'
+    def __init__(self, image_size=(128, 128, 1), model_path=None, visualize=True, batch_size=64):
+        self.optimizer = 'adadelta'
+        self.loss_function = 'mse'
         self.LR = 1e-3
 
-        self.filters = (64, 128, 256, 512, 1024)[::-1]
-        self.latent_size = 4096
+        self.encoder_filters = (1024, 1024, 512, 256, 128, 64)
+        self.decoder_filters = (64, 128, 256, 512)
+        self.input_shape = image_size
+        self.output_shape = (32, 32, 1)
+        self.latent_size = 2048
 
         self.image_size = image_size
         self.model_path = model_path
@@ -57,23 +60,24 @@ class Speculo:
         input_img = Input(shape=self.image_size, name="input")
         x = input_img
 
-        for f in self.filters:
+        for i, f in enumerate(self.encoder_filters):
             x = Conv2D(f, (3, 3), activation='relu', padding='same')(x)
             x = MaxPooling2D((2, 2))(x)
-            x = Dropout(0.1)(x)
+            if (i + 1) % 2 == 0:
+                x = Dropout(0.2)(x)
 
         size = K.int_shape(x)
         x = Flatten()(x)
-        x = Dropout(0.2)(x)
         x = Dense(self.latent_size, name="latent_space")(x)
 
         x = Dense(np.prod(size[1:]))(x)
         x = Reshape((size[1], size[2], size[3]))(x)
 
-        for f in self.filters[::-1]:
+        for i, f in enumerate(self.decoder_filters):
             x = Conv2DTranspose(f, (3, 3), strides=2, activation='relu', padding='same')(x)
             x = BatchNormalization()(x)
-            x = Dropout(0.1)(x)
+            if i % 2 == 0:
+                x = Dropout(0.2)(x)
 
         x = Conv2DTranspose(self.image_size[2], (3, 3), activation='relu', padding='same')(x)
         output = Activation("sigmoid", name="output")(x)
@@ -85,7 +89,7 @@ class Speculo:
         autoencoder.compile(optimizer=self.optimizer, loss=self.loss_function)
         return autoencoder
 
-    def display_image_array(self, n, *image_sets, figsize=(8, 4), title=None, labels=None, save_dir=None):
+    def display_image_array(self, n, *image_sets, figsize=(8, 4), title=None, labels=None, save_dir=None, shapes=None):
         plt.figure(figsize=figsize)
         if title:
             plt.suptitle(title)
@@ -98,11 +102,18 @@ class Speculo:
                 ax = plt.subplot(len(image_sets), n, i)
                 if x == 0 and labels:
                     ax.set_title(labels[row])
-                if self.image_size[2] == 1:
-                    plt.imshow(image_set[x].reshape(self.image_size[:2]))
-                    plt.gray()
+                if shapes and shapes[row]:
+                    if shapes[row][2] == 1:
+                        plt.imshow(image_set[x].reshape(shapes[row][:2]))
+                        plt.gray()
+                    else:
+                        plt.imshow(image_set[x].reshape(shapes[row]))
                 else:
-                    plt.imshow(image_set[x].reshape(self.image_size))
+                    if self.image_size[2] == 1:
+                        plt.imshow(image_set[x].reshape(self.image_size[:2]))
+                        plt.gray()
+                    else:
+                        plt.imshow(image_set[x].reshape(self.image_size))
                 ax.get_xaxis().set_visible(False)
                 ax.get_yaxis().set_visible(False)
                 i += 1
@@ -111,9 +122,12 @@ class Speculo:
             plt.savefig(save_dir)
         plt.show()
 
-    def read_image(self, file):
+    def read_image(self, file, output=False):
         im = Image.open(file)
-        im = im.resize(self.image_size[:2], Image.ANTIALIAS)
+        if output:
+            im = im.resize(self.output_shape[:2], Image.ANTIALIAS)
+        else:
+            im = im.resize(self.input_shape[:2], Image.ANTIALIAS)
         if self.image_size[2] == 1:
             im = im.convert('L')
         return np.array(im)
@@ -125,7 +139,7 @@ class Speculo:
             if person_dir == "Front":
                 continue
             else:
-                y_image = self.read_image(f"dataset/{directory}/Front/{fronts[i - 1]}")
+                y_image = self.read_image(f"dataset/{directory}/Front/{fronts[i - 1]}", output=True)
                 for image in os.listdir(f"dataset/{directory}/{person_dir}"):
                     x_image = self.read_image(f"dataset/{directory}/{person_dir}/{image}")
                     x.append(np.array(x_image))
@@ -133,8 +147,8 @@ class Speculo:
 
         x = np.array(x).astype("float32") / 255.0
         y = np.array(y).astype("float32") / 255.0
-        x = x.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
-        y = y.reshape([-1, self.image_size[0], self.image_size[1], self.image_size[2]])
+        x = x.reshape([-1, self.input_shape[0], self.input_shape[1], self.input_shape[2]])
+        y = y.reshape([-1, self.output_shape[0], self.output_shape[1], self.output_shape[2]])
         x, y = shuffle(x, y)
         return tf.data.Dataset.from_tensor_slices((x, y))
 
@@ -146,9 +160,9 @@ class Speculo:
         self.dataset_size = len(data)
         for x, y in data:
             x = self.read_image(x).astype("float32") / 255.0
-            y = self.read_image(y).astype("float32") / 255.0
-            x = x.reshape([self.image_size[0], self.image_size[1], self.image_size[2]])
-            y = y.reshape([self.image_size[0], self.image_size[1], self.image_size[2]])
+            y = self.read_image(y, output=True).astype("float32") / 255.0
+            x = x.reshape([self.input_shape[0], self.input_shape[1], self.input_shape[2]])
+            y = y.reshape([self.output_shape[0], self.output_shape[1], self.output_shape[2]])
             yield x, y
 
     def _sample_generator(self, generator):
@@ -157,24 +171,26 @@ class Speculo:
         for sample in generator.take(10):
             x = np.array(sample[0])
             y = np.array(sample[1])
-            samples_x.append(np.reshape((x * 255).astype("uint8"), self.image_size))
-            samples_y.append(np.reshape((y * 255).astype("uint8"), self.image_size))
+            samples_x.append(np.reshape((x * 255).astype("uint8"), self.input_shape))
+            samples_y.append(np.reshape((y * 255).astype("uint8"), self.output_shape))
 
         return samples_x, samples_y
 
     def _create_dataset(self):
-        output_shape = tf.TensorShape([self.image_size[0], self.image_size[1], self.image_size[2]])
+        X_shape = tf.TensorShape([self.input_shape[0], self.input_shape[1], self.input_shape[2]])
+        Y_shape = tf.TensorShape([self.output_shape[0], self.output_shape[1], self.output_shape[2]])
         train_data_set = tf.data.Dataset.from_generator(self._image_set_generator,
                                                         (tf.float32, tf.float32),
-                                                        (output_shape, output_shape))
+                                                        (X_shape, Y_shape))
         test_data_set = self._load_image_set("test")
         train_samples_x, train_samples_y = self._sample_generator(train_data_set)
         test_samples_x, test_samples_y = self._sample_generator(test_data_set)
         if self.visualize:
-            self.display_image_array(10, train_samples_x, test_samples_x, test_samples_x, test_samples_y,
+            self.display_image_array(10, train_samples_x, train_samples_y, test_samples_x, test_samples_y,
                                      title=f"Dataset ({self.dataset_size})",
                                      labels=["x_train", "y_train", "x_test", "y_test"],
-                                     save_dir=f'models/{self.model_number}/img/dataset.png')
+                                     save_dir=f'models/{self.model_number}/img/dataset.png',
+                                     shapes=[self.input_shape, self.output_shape, self.input_shape, self.output_shape])
         return train_data_set.batch(self.batch_size), test_data_set.batch(self.batch_size)
 
     def train(self):
@@ -191,8 +207,10 @@ class Speculo:
             f.write(f"# Model v{self.model_number}\n")
             f.write(f"Optimizer - {self.optimizer} (LR - {self.LR}) <br>\n")
             f.write(f"Loss Function - {self.loss_function} <br>\n")
-            f.write(f"Input Shape - {self.image_size} <br>\n")
-            f.write(f"Filters - {self.filters} <br>\n")
+            f.write(f"Input Shape - {self.input_shape} <br>\n")
+            f.write(f"Output Shape - {self.output_shape} <br>\n")
+            f.write(f"Encoding Filters - {self.encoder_filters} <br>\n")
+            f.write(f"Decoding Filters - {self.decoder_filters} <br>\n")
             f.write(f"Latent Size - {self.latent_size} <br>\n\n")
             if self.visualize:
                 f.write("### Dataset Sample\n")
@@ -207,7 +225,7 @@ class Speculo:
                                      verbose=1, save_best_only=True, mode='min')
 
         tensorboard = TensorBoard(log_dir=f'logs/Model-v{self.model_number}', histogram_freq=0, write_graph=False)
-        early_stopping = EarlyStopping(monitor='loss', min_delta=0, patience=4, verbose=1, mode='auto')
+        # early_stopping = EarlyStopping(monitor='loss', min_delta=0, patience=4, verbose=1, mode='auto')
         auto_encoder_progress = AutoEncoderProgress(self)
         history = None
         try:
@@ -217,8 +235,7 @@ class Speculo:
                                      validation_data=test_data_set.repeat(),
                                      validation_steps=64,
                                      use_multiprocessing=True,
-                                     callbacks=[checkpoint, tensorboard, auto_encoder_progress,
-                                                early_stopping])
+                                     callbacks=[checkpoint, tensorboard, auto_encoder_progress])
 
             self.model.save(f"models/{self.model_number}/Model-v{self.model_number}-Final.h5")
         except KeyboardInterrupt:
@@ -260,13 +277,14 @@ class Speculo:
             self._load_model()
         gen_image = []
         org_image = []
-        for image in os.listdir("dataset/evaluate"):
+        for image in sorted(os.listdir("dataset/evaluate")):
             image = self.read_image(os.path.join("dataset/evaluate", image))
             org_image.append(image)
             gen_image.append(self.predict(image, preview=True))
 
         self.display_image_array(10, org_image[:10], gen_image[:10], org_image[10:], gen_image[10:],
-                                 title=title, figsize=(8, 4), save_dir=file)
+                                 title=title, figsize=(8, 4), save_dir=file,
+                                 shapes=[self.input_shape, self.output_shape, self.input_shape, self.output_shape])
 
     def predict(self, image, preview=False):
         if self.model is None:
@@ -274,7 +292,7 @@ class Speculo:
         output = self.model.predict(np.reshape(image, [1, self.image_size[0], self.image_size[1], self.image_size[2]]))
         if preview:
             output = (output * 255).astype("uint8")
-            return np.reshape(output, self.image_size)
+            return np.reshape(output, self.output_shape)
         return output.reshape([-1])
 
 
@@ -290,5 +308,5 @@ def test_nn(nn):
 
 if __name__ == "__main__":
     speculo = Speculo()
-    print(speculo.autoencoder().summary())
-    # speculo.train()
+    # print(speculo.autoencoder().summary())
+    speculo.train()
