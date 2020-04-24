@@ -1,3 +1,10 @@
+"""image_processor.py: A microservice to process images & videos"""
+
+__author__ = "Akassharjun Shanmugarajah"
+__version__ = "0.0.1"
+__email__ = "akassharjun@ieee.org"
+__status__ = "Testing"
+
 import logging
 import os
 
@@ -5,7 +12,6 @@ import aiohttp
 import cv2
 import numpy as np
 from PIL import Image
-from tqdm import tqdm
 
 
 class ImageProcessor:
@@ -203,17 +209,15 @@ class ImageProcessor:
 			face_data = await self._get_comparison(fingerprint=fingerprint)
 			logging.info(f'[COORDINATES] - Received Face Data for Frame')
 			
-			print(face_data['id'])
-			print(face_data['name'])
 			faces = response["faces"]
 			faces.append({
 				'id': face_data['id'],
 				'label': face_data['name'],
 				'blacklisted': face_data['blacklisted'],
+				'coordinates': [top, left, bottom, right]
 			})
 			
 			response["faces"] = faces
-			print(response)
 		
 		# remove image from the directory
 		os.remove(f"./coordinate-images/{filename}")
