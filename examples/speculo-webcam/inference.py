@@ -85,6 +85,7 @@ while True:
     ret, frame = video_capture.read()
     height, width, _ = frame.shape
     small_frame = cv2.resize(frame, (SIZE, SIZE))
+    # api this
     boxes = yolo.detect_image_fast(small_frame)
     for top, left, bottom, right in boxes:
         top = int(top * height / SIZE)
@@ -100,11 +101,13 @@ while True:
         face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
 
         font = cv2.FONT_HERSHEY_DUPLEX
+        
         face_encoding = speculo.predict(face)
         face_name = best_match(face_encoding, frame.copy())
         # face_name = neigh.predict([face_encoding])[0]
         cv2.putText(frame, face_name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+
     cv2.imshow('Video', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

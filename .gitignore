@@ -417,6 +417,7 @@ fingerprinter/models/**/img/predictions-epoch-*
 **/assets
 
 api/image-preprocessor/videos/**
+api/image-preprocessor/videos/**
 api/postprocessor/images/**
 
 database_config.env

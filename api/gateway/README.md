@@ -2,7 +2,6 @@
 
 API Gateway for Speculo.
 
-* The data sent in the body must be encoded in `x-www-form-urlencoded`.
 * Gateway runs on port 3000
 
 ## Installation
@@ -152,12 +151,19 @@ If email or password was invalid
 ```json
 {
      "status": "error",
-     "message": "Invalid email/password!",
-     "data": null
+     "message": "Invalid email/password!"
 }
 ```
 
-Here's a more detailed [documentation](https://web.postman.co/collections/4847812-ec1143e9-3e6c-408c-8d6c-86dd81b62467?version=latest&workspace=5cd5ce26-92d0-47e9-8ffb-9e2d98effd0c) about the Authentication API.
+Here's a more detailed [documentation](https://documenter.getpostman.com/view/8545971/Szf6X8SC?version=latest) about the Authentication API.
+
+## Running the tests
+
+### Running the tests with newman
+
+```bash
+newman run tests/test.json
+```
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
