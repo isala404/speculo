@@ -19,6 +19,10 @@ Latent Size - 256 <br>
 
 ![Predictions](models/1/img/predictions.png)
 
+## Model Loss
+
+![Loss](models/1/img/loss.png)
+
 # [Model v2](models\2\README.md)
 
 ## Parameters
@@ -45,6 +49,10 @@ Latent Size - 256 <br>
 
 ![Predictions](models/2/img/predictions.png)
 
+## Model Loss
+
+![Loss](models/2/img/loss.png)
+
 # [Model v3](models\3\README.md)
 
 ## Parameters
@@ -63,6 +71,10 @@ Latent Size - 350 <br>
 ## Predictions
 
 ![Predictions](models/3/img/predictions.png)
+
+## Model Loss
+
+![Loss](models/3/img/loss.png)
 
 # [Model v4](models\4\README.md)
 
@@ -96,6 +108,10 @@ Latent Size - 256 <br>
 ## Predictions
 
 ![Predictions](models/4/img/predictions.png)
+
+## Model Loss
+
+![Loss](models/4/img/loss.png)
 
 # [Model v5](models\5\README.md)
 
@@ -138,6 +154,10 @@ Latent Size - 4096 <br>
 
 ![Predictions](models/6/img/predictions.png)
 
+## Model Loss
+
+![Loss](models/6/img/loss.png)
+
 # [Model v7](models\7\README.md)
 
 ## Parameters
@@ -159,6 +179,10 @@ Latent Size - 4096 <br>
 
 ![Predictions](models/7/img/predictions.png)
 
+## Model Loss
+
+![Loss](models/7/img/loss.png)
+
 # [Model v8](models\8\README.md)
 
 ## Parameters
@@ -178,6 +202,10 @@ Latent Size - 4096 <br>
 ## Predictions
 
 ![Predictions](models/8/img/predictions.png)
+
+## Model Loss
+
+![Loss](models/8/img/loss.png)
 
 # [Model v9](models\9\README.md)
 
@@ -199,6 +227,10 @@ Latent Size - 1024 <br>
 ## Predictions
 
 ![Predictions](models/9/img/predictions.png)
+
+## Model Loss
+
+![Loss](models/9/img/loss.png)
 
 # [Model v10](models\10\README.md)
 
@@ -223,6 +255,10 @@ Latent Size - 2048 <br>
 
 ![Predictions](models/10/img/predictions.png)
 
+## Model Loss
+
+![Loss](models/10/img/loss.png)
+
 # [Model v11](models\11\README.md)
 
 ## Parameters
@@ -242,6 +278,10 @@ Latent Size - 2048 <br>
 ## Predictions
 
 ![Predictions](models/11/img/predictions.png)
+
+## Model Loss
+
+![Loss](models/11/img/loss.png)
 
 # [Model v12](models\12\README.md)
 
@@ -264,6 +304,10 @@ Latent Size - 256 <br>
 ## Predictions
 
 ![Predictions](models/12/img/predictions.png)
+
+## Model Loss
+
+![Loss](models/12/img/loss.png)
 
 # Archived Models
 
