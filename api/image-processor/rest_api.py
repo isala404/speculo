@@ -1,18 +1,11 @@
 import json
 import logging
 import os
+import traceback
+
 from aiohttp import web
 
 from image_processor import ImageProcessor
-
-if not os.path.isdir("../preprocess-videos"):
-	os.makedirs("../preprocess-videos")
-
-if not os.path.isdir("../fingerprint-images"):
-	os.makedirs("../fingerprint-images")
-
-if not os.path.isdir("../coordinate-images"):
-	os.makedirs("../coordinate-images")
 
 
 async def preprocess_video(request):
@@ -42,8 +35,8 @@ async def preprocess_video(request):
 		return web.json_response(data=response_obj, status=200)
 	
 	except Exception as e:
-		logging.error(e)
-		print(e)
+		logging.exception(e)
+		
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
@@ -78,8 +71,8 @@ async def fetch_coordinates(request):
 		return web.json_response(data=response_obj, status=200)
 	
 	except Exception as e:
-		logging.error(e)
-		print(e)
+		logging.exception(e)
+		
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
@@ -114,8 +107,8 @@ async def generate_fingerprint(request):
 		return web.json_response(data=response_obj, status=200)
 	
 	except Exception as e:
-		logging.error(e)
-		print(e)
+		logging.exception(e)
+		
 		# Failed path where name is not set
 		response_obj = {'status': 'failed', 'reason': str(e)}
 		
