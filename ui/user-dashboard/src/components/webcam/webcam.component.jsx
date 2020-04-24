@@ -26,8 +26,8 @@ export default class WebCam extends React.Component {
 
   //asynchronous function to get the image from the state and downscale it using the canvas
   // returns the downscalled bas64 image
-  downscaledImage = async() =>{
-    var image = await this.state.imageSrc
+  downscaledImage = () =>{
+    var image = this.state.imageSrc
     var img = new Image();
     img.src = image;
     this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
@@ -51,7 +51,9 @@ export default class WebCam extends React.Component {
       //sending the image every 75microseconds
       setInterval(() => {
         //getting the downscaled image and POSTing to get the coordinates of the faces
-        var imageSource = this.downscaledImage();;
+        var img = this.downscaledImage()
+        // console.log(img)
+        var imageSource = img;
         // imageSource = downscaledImage( 648, 432);
         var truncatedImageSource = this.splitImageValue(imageSource);
         fetch("http://speculo.isala.me/", {
