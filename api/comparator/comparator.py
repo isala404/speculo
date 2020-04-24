@@ -101,7 +101,8 @@ class ImageComparator:
 			data = {
 				'found': False,
 				'id': str(face_id),
-				'name': 'Unknown'
+				'name': 'Unknown',
+				'blacklisted' : False
 			}
 			
 			return data
@@ -114,7 +115,7 @@ class ImageComparator:
 				'found': True,
 				'id': face_id,
 				'name': name_label,
-				'blacklist': face_blacklist == "True"
+				'blacklisted': face_blacklist == "True"
 			}
 		
 		return data

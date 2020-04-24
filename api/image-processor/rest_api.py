@@ -10,9 +10,6 @@ from image_processor import ImageProcessor
 
 async def preprocess_video(request):
 	try:
-		# Success path where name is set
-		response_obj = {'status': 'success'}
-		
 		reader = await request.multipart()
 		
 		field = await reader.next()
@@ -29,7 +26,9 @@ async def preprocess_video(request):
 		
 		data = await ImageProcessor().preprocess(filename=filename)
 		
-		response_obj['data'] = data
+		response_obj = {
+			'data': data
+		}
 		
 		# return a success json response with status code 200 i.e. 'OK'
 		return web.json_response(data=response_obj, status=200)
@@ -38,7 +37,7 @@ async def preprocess_video(request):
 		logging.exception(e)
 		
 		# Failed path where name is not set
-		response_obj = {'status': 'failed', 'reason': str(e)}
+		response_obj = {'error': str(e)}
 		
 		# return failed with a status code of 500 i.e. 'Server Error'
 		return web.json_response(data=response_obj, status=500)
@@ -46,9 +45,6 @@ async def preprocess_video(request):
 
 async def fetch_coordinates(request):
 	try:
-		# Success path where name is set
-		response_obj = {'status': 'success'}
-		
 		reader = await request.multipart()
 		
 		field = await reader.next()
@@ -65,8 +61,9 @@ async def fetch_coordinates(request):
 		
 		data = await ImageProcessor().fetch_coordinates(filename=filename)
 		
-		response_obj['data'] = data
-		
+		response_obj = {
+			'data': data
+		}
 		# return a success json response with status code 200 i.e. 'OK'
 		return web.json_response(data=response_obj, status=200)
 	
@@ -74,7 +71,7 @@ async def fetch_coordinates(request):
 		logging.exception(e)
 		
 		# Failed path where name is not set
-		response_obj = {'status': 'failed', 'reason': str(e)}
+		response_obj = {'error': str(e)}
 		
 		# return failed with a status code of 500 i.e. 'Server Error'
 		return web.json_response(data=response_obj, status=500)
@@ -82,9 +79,6 @@ async def fetch_coordinates(request):
 
 async def generate_fingerprint(request):
 	try:
-		# Success path where name is set
-		response_obj = {'status': 'success'}
-		
 		reader = await request.multipart()
 		
 		field = await reader.next()
@@ -101,8 +95,9 @@ async def generate_fingerprint(request):
 		
 		data = await ImageProcessor().generate_fingerprint(filename=filename)
 		
-		response_obj['data'] = data
-		
+		response_obj = {
+			'data': data
+		}
 		# return a success json response with status code 200 i.e. 'OK'
 		return web.json_response(data=response_obj, status=200)
 	
@@ -110,7 +105,7 @@ async def generate_fingerprint(request):
 		logging.exception(e)
 		
 		# Failed path where name is not set
-		response_obj = {'status': 'failed', 'reason': str(e)}
+		response_obj = {'error': str(e)}
 		
 		# return failed with a status code of 500 i.e. 'Server Error'
 		return web.json_response(data=response_obj, status=500)
