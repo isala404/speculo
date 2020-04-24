@@ -93,3 +93,7 @@ _________________________________________________________________
 ![loss](img/predictions.png)
 
 ## Notes
+- Increased number of hidden layers
+- Increased Latent Space Size
+- Tried binary_crossentropy again becouse most of the people had luck with binary_crossentropy than Mean squared error
+- Model loss improvements is good but the validation loss didn't improve a lot

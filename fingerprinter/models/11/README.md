@@ -93,3 +93,4 @@ _________________________________________________________________
 ![loss](img/predictions.png)
 
 ## Notes
+- Same model as V10 but loss function is different. need to check what is better by testing both models

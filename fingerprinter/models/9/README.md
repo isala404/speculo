@@ -89,3 +89,5 @@ _________________________________________________________________
 ![loss](img/predictions.png)
 
 ## Notes
+- Update the model have different input and output size. so model don't have to predict lot of out features while having considerable amount of input features
+- Results are okish but I will try to fine tune the model layout to get better results

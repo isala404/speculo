@@ -73,3 +73,5 @@ _________________________________________________________________
 ![loss](img/predictions.png)
 
 ## Notes
+- Decreased the number of hidden layers and layer sizes to have larger amount of Trainable params.
+- This Model has the lowest loss but the validation loss is not that good
