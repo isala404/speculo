@@ -10,8 +10,7 @@ logging.basicConfig(filename='app.log', filemode='w',
 
 FINGERPRINT_THRESHOLD = os.getenv("FINGERPRINT_THRESHOLD", 1.7)
 FINGERPRINT_SHAPE = os.getenv("FINGERPRINT_SHAPE", (64, 64, 1))
-comparator = ImageComparator(
-    FINGERPRINT_SHAPE=FINGERPRINT_SHAPE, FINGERPRINT_THRESHOLD=FINGERPRINT_THRESHOLD)
+comparator = ImageComparator(FINGERPRINT_SHAPE, FINGERPRINT_THRESHOLD)
 
 
 async def predict(request):

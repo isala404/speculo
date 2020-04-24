@@ -4,17 +4,20 @@ import os
 from sklearn.neighbors import KNeighborsClassifier
 import aiohttp
 import numpy as np
+import asyncio
 
 
 class ImageComparator:
-    def __init__(self, FINGERPRINT_SHAPE, FINGERPRINT_THRESHOLD):
-        self.FINGERPRINT_SHAPE = FINGERPRINT_SHAPE
-        self.FINGERPRINT_THRESHOLD = FINGERPRINT_THRESHOLD
+    def __init__(self, shape, threshold):
+        self.FINGERPRINT_SHAPE = shape
+        self.FINGERPRINT_THRESHOLD = threshold
         self._FACE_SERVICE_ENDPOINT = os.getenv('FACE_SERVICE_URL')
         self.known_face_encodings = []
         self.known_face_names = []
 
-        for entry in self._get_all_faces():
+        loop = asyncio.get_event_loop()
+        faces = loop.run_until_complete(self._get_all_faces())
+        for entry in faces:
             for fingerprint in entry['matrix']:
                 self.known_face_encodings.append(fingerprint)
                 self.known_face_names.append(entry['id'])
