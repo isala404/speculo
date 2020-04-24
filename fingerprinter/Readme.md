@@ -154,10 +154,6 @@ Latent Size - 4096 <br>
 
 ![Predictions](models/6/img/predictions.png)
 
-## Model Loss
-
-![Loss](models/6/img/loss.png)
-
 # [Model v7](models\7\README.md)
 
 ## Parameters
