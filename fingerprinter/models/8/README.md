@@ -109,3 +109,6 @@ _________________________________________________________________
 ![loss](img/predictions.png)
 
 ## Notes
+- binary cross entropy didn't gave improvement so I reverted back to mean squared error
+- lowered fingerprint size so it has less values to predict
+- although this model has the lowest low I don't think this is the better than model v7 due to fact it produced less face looking outputs

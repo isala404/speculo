@@ -108,8 +108,3 @@ _________________________________________________________________
 ## Notes
 - Increased Input size
 - Scaled up the model size by increasing filter values
-
-## Notes for next model
-- Fixed the bug in the data ingestion pipeline
-- Scaled up the model size by increasing filter values
-- Changed to loss function binary cross entropy because it may give better results due to that fact we are compressing image pixels to a value between 0-1
