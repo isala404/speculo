@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import Dropzone from "react-dropzone-uploader";
 import "react-dropzone-uploader/dist/styles.css";
-import { footageUploadEndpoint } from "../../../endpoints";
-import Dashboard from '../../../views/dashboard.jsx';
-import "../upload.scss";
+import { footageUploadEndpoint } from "../endpoints";
+import Dashboard from '../components/dashboard.jsx';
+import "../components/upload-face-footage/upload.scss";
 
 class UploadFootage extends Component {
   constructor(props){
@@ -12,14 +12,6 @@ class UploadFootage extends Component {
       video: null
     };
   }
-
-
-  displayVideoOnDashboard = () => {
-    // this.props.onDisplay(video);
-
-  }
-
-
 
 render(){
 
@@ -63,9 +55,6 @@ render(){
 
           this.setState( {video: URL.createObjectURL(file)});
 
-          // this.displayVideoOnDashboard(URL.createObjectURL(file));
-          // this.props.InitializeVideoPlayer(URL.createObjectURL(file));
-          
           allFiles.forEach(f => f.remove())
         }
         
@@ -85,8 +74,6 @@ render(){
     return(
         <div>
           {/* <MyVideoUploader /> */}
-
-          {/* <button onClick={this.displayVideoOnDashboard}>Display Video</button> */}
 
             {!this.state.video &&
               <MyVideoUploader />}

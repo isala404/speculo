@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "@videojs/themes/dist/fantasy/index.css";
-import {TimeCard} from "../components/TimeCard";
-import Person from "../components/PersonCard";
-import UploadFootage from '../components/upload-face-footage/upload-footage/UploadFootage';
-import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
+import {TimeCard} from "./TimeCard";
+import Person from "./PersonCard";
+import { NavigationMenu } from "./navigation-bar/navigation-bar.component";
 import "../styles/commonStyles.scss";
 import styled from "styled-components";
 import "../styles/videojsStyle.scss";
@@ -74,9 +73,6 @@ export default class Dashboard extends Component {
   };
 
   componentDidMount() {
-    // console.log(this.videoNode);
-    
-
 
     //for grabbing a screencapture
     this.container = document.getElementById("videoPlayer");
@@ -145,9 +141,6 @@ export default class Dashboard extends Component {
     if (this.player) {
       this.player.dispose();
     }
-
-    // Remove saved data from sessionStorage
-    // sessionStorage.removeItem('videoURL');
   }
 
 
@@ -267,93 +260,87 @@ async editPersonSave(newPersonDetails) {
         {/* <div>
           <NavigationMenu />
         </div>
-        
-        {!this.state.videoSRC && 
-              <UploadFootage 
-                onDisplay = {(video) => this.InitializeVideoPlayer(video)}
-              />} */}
-              
-        <Grid>
-          {
-          // this.state.videoSRC && 
-          <>
-            <Row>
-              <Col xs={12} sm={12} md={12} lg={9}> 
-                <div id="video-js-responsive-container vjs-hd videoContainer">
-                  {<video
-                    ref={node => (this.videoNode = node)}
-                    id="videoPlayer"
-                    className="video-js vjs-fluid vjs-theme-fantasy"
-                    data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
-                    type= "video/mp4"
-                  >
-                    <source
-                      // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                      // src = {this.state.videoSRC}
-                      src = {this.props.videoSRC}
+         */}
 
-                      type="video/mp4"
-                    />
-                    {/* video that needs to be added to check for faces will be opened here */}
-                  </video>}
-                </div>
-              </Col>
-              <Col xs={12} sm={12} md={12} lg={3}>
-                <div
-                  className="allDetectedFaces"
-                  style={{ height: this.state.videoHeight }}
+        <Grid>
+          <Row>
+            <Col xs={12} sm={12} md={12} lg={9}> 
+              <div id="video-js-responsive-container vjs-hd videoContainer">
+                {<video
+                  ref={node => (this.videoNode = node)}
+                  id="videoPlayer"
+                  className="video-js vjs-fluid vjs-theme-fantasy"
+                  data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
+                  type= "video/mp4"
                 >
-                  <PersonDiv>
-                    {/* display all the names of the people recognized */}
-                    {this.state.allDetections.map((person, index) => (
-                      <div key={index}>
-                        <Person
-                          key={index}
-                          id={person.id}
-                          name={person.name}
-                          blacklisted={person.blacklisted}
-                          timestamps={person.timestamps} // taking all the timestamps of the relevant person
-                          onChoose={() => this.showTimeCards(person)} // display timestamps of the person
-                          onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
-                          onSaveEdit={personDetails =>
-                            this.editPersonSave(personDetails)
-                          } // save the new details pf the person
-                          onDelete={() => this.deletePerson(person.id)} // delete the person from the db
-                        />
-                      </div>
-                    ))}
-                  </PersonDiv>
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <div className="allTimeCards">
-                <div className="timeCardContent">
-                  {
-                    (this.result =
-                      this.state.selectedPerson &&
-                      this.state.selectedPerson.timestamps.map(
-                        (timestamp, index) => {
-                          // if a selectedPerson exists, display all Time Cards of that person
-                          return (
-                            <TimeCard
-                              key={index}
-                              timestamp={timestamp}
-                              onSeek={() => this.seekToTime(timestamp)} // when button is pressed, go to seek time
-                              ctx={this.ctx}
-                              canvas={this.canvas}
-                              video={this.video}
-                            />
-                          );
-                        }
-                      ))
-                  }
-                </div>
+                  <source
+                    // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    // src = {this.state.videoSRC}
+                    src = {this.props.videoSRC}
+
+                    type="video/mp4"
+                  />
+                  {/* video that needs to be added to check for faces will be opened here */}
+                </video>}
               </div>
-            </Row>
-          </>
-  }
+            </Col>
+            <Col xs={12} sm={12} md={12} lg={3}>
+              <div
+                className="allDetectedFaces"
+                style={{ height: this.state.videoHeight }}
+              >
+                <PersonDiv>
+                  {/* display all the names of the people recognized */}
+                  {this.state.allDetections.map((person, index) => (
+                    <div key={index}>
+                      <Person
+                        key={index}
+                        id={person.id}
+                        name={person.name}
+                        blacklisted={person.blacklisted}
+                        timestamps={person.timestamps} // taking all the timestamps of the relevant person
+                        onChoose={() => this.showTimeCards(person)} // display timestamps of the person
+                        onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
+                        onSaveEdit={personDetails =>
+                          this.editPersonSave(personDetails)
+                        } // save the new details pf the person
+                        onDelete={() => this.deletePerson(person.id)} // delete the person from the db
+                      />
+                    </div>
+                  ))}
+                </PersonDiv>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <div className="allTimeCards">
+              <div className="timeCardContent">
+                {
+                  (this.result =
+                    this.state.selectedPerson &&
+                    this.state.selectedPerson.timestamps.map(
+                      (timestamp, index) => {
+                        // if a selectedPerson exists, display all Time Cards of that person
+                        return (
+                          <TimeCard
+                            key={index}
+                            timestamp={timestamp}
+                            onSeek={() => this.seekToTime(timestamp)} // when button is pressed, go to seek time
+                            ctx={this.ctx}
+                            canvas={this.canvas}
+                            video={this.video}
+                          />
+                        );
+                      }
+                    ))
+                }
+              </div>
+            </div>
+          </Row>
         </Grid>
+
+
+
         <button onClick={this.getTimestampImages}>hajdfkjak</button>
       </div>
     );

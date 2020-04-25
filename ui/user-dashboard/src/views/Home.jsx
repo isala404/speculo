@@ -3,7 +3,7 @@ import { NavigationMenu } from "../components/navigation-bar/navigation-bar.comp
 import { Header } from "../components/home-header/header.component";
 import { Features } from "../components/home-features/home-features.component";
 import { Applications } from "../components/home-applications/applications.components";
-import DashBoard from "./dashboard";
+// import DashBoard from "./dashboard";
 import { SystemFeatures } from "../components/system-features/system-features.component";
 import { Footer } from "../components/home-footer/footer.component";
 import { UsageMap } from "../components/location-map/location-map.component";
