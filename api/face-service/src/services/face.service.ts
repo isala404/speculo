@@ -92,4 +92,53 @@ export class FaceService {
 		});
 	}
 
+	public updateFace(req: Request, res: Response) {
+		let id = req.params.id;
+
+		let file = req.file;
+
+		let fileBuffer = new Buffer(fs.readFileSync(file.path));
+
+		let form = new FormData();
+
+		form.append('image', fileBuffer, file.originalname)
+
+		const config = {
+			headers: {
+				'content-type': `multipart/form-data; boundary=${form.getBoundary()}`
+			}
+		}
+
+		axios.post(FINGERPRINT_GEN, form, config)
+			.then(function (response) {
+				const updateFace = {
+					'label': file.originalname.split('.')[0],
+					'fingerprints': [response['data']['data']],
+					'lastUpdated': Date.now()
+				}
+
+				Face.findByIdAndUpdate(id, updateFace, {new: true}, function (err, face) {
+					if (face) {
+						res.status(200).json({"label": face.get("label")});
+					} else {
+						new Face({
+							'label': updateFace['label'],
+							'fingerprints': updateFace['fingerprints'],
+						}).save((error: Error, face: MongooseDocument) => {
+							if (error) {
+								res.send(error);
+							}
+
+							res.status(201).json({"id": face._id});
+						});
+					}
+				});
+
+			})
+			.catch(function (error) {
+				res.status(500).json({"status": error.message});
+			});
+	}
+
+
 }
