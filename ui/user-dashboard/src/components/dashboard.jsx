@@ -28,8 +28,9 @@ export default class Dashboard extends Component {
     this.editPersonSave = this.editPersonSave.bind(this);
 
     this.state = {
-      // allDetections: [],           // stores all the detected faces with the timestamps
-      allDetections: people,
+      allDetections: [],           // stores all the detected faces with the timestamps
+      processing: true,           // processing status of video - to handle displaying detections once received
+      // allDetections: people,
       selectedPerson: null,
       seekTime: 0,
       chosenIndexToEdit: 0,
@@ -142,6 +143,11 @@ export default class Dashboard extends Component {
       this.player.dispose();
     }
   }
+  
+  // for testing purposes
+//   timeout = (ms) => { 
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 
   //function to get the width and height of the viewport dynamically
@@ -169,7 +175,10 @@ export default class Dashboard extends Component {
   async getAllDetections() {
     try { 
         const res = await retrieveAllDetections();
-        this.setState({allDetections: res});
+        this.setState({processing:false , allDetections: res});
+
+        // await this.timeout(10000);     // tester
+        // this.setState({processing:false , allDetections: people});
     } catch (e) {
         console.log(e);
     }
@@ -291,7 +300,7 @@ async editPersonSave(newPersonDetails) {
               >
                 <PersonDiv>
                   {/* display all the names of the people recognized */}
-                  {this.state.allDetections.map((person, index) => (
+                  {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
                       <Person
                         key={index}
