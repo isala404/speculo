@@ -39,7 +39,7 @@ update_configs:
 
   ## image comparator
   - package_manager: "python"
-    directory: "/api/comparator/"
+    directory: "models/comparator/"
     update_schedule: "live"
     default_assignees:
       - "mrsupiri"
@@ -50,7 +50,7 @@ update_configs:
 
   ## facedetector
   - package_manager: "python"
-    directory: "/facedetector/"
+    directory: "models/facedetector/"
     update_schedule: "live"
     default_assignees:
       - "mrsupiri"
@@ -61,7 +61,7 @@ update_configs:
 
   ## fingerprinter
   - package_manager: "python"
-    directory: "/fingerprinter/"
+    directory: "models/fingerprinter/"
     update_schedule: "live"
     default_assignees:
       - "mrsupiri"
