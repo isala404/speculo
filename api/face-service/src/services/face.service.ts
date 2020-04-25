@@ -140,5 +140,14 @@ export class FaceService {
 			});
 	}
 
+	public deleteAllFaces(req: Request, res: Response) {
+		Face.deleteMany({}, (error => {
+			if (error){
+				res.status(500).json({'error' : error.message});
+			} else {
+				res.status(200).json({"status" : "success"})
+			}
+		}));
+	}
 
 }
