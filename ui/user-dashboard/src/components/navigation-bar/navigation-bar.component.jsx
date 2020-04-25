@@ -26,6 +26,7 @@ export const NavigationMenu = () => {
             <Nav>
               <Nav.Link href="features" style={linkStyle}>Features</Nav.Link>
               <Nav.Link href="dashboard" style={linkStyle}>Dashboard</Nav.Link>
+              <Nav.Link href="profile" style={linkStyle}>Profile</Nav.Link>
               <Nav.Link href="login" style={linkStyle}><span id="navbar-login-button">Log In</span></Nav.Link>
               <Nav.Link href="sign-up" style={linkStyle}><BasicButton buttonTitle="Sign Up"/></Nav.Link>
             </Nav>
