@@ -11,7 +11,7 @@ services:
     ports:
       - 8501:8501
     volumes:
-      - ./models/fingerprinter/models:/models/fingerprinter
+      - ./models/fingerprinter/models/11:/models/fingerprinter/1
     environment:
       - MODEL_NAME=fingerprinter
   comparator:
