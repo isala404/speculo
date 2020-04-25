@@ -417,10 +417,14 @@ models/fingerprinter/models/**/img/predictions-epoch-*
 **/assets
 
 api/image-preprocessor/videos/**
-api/image-preprocessor/videos/**
 api/postprocessor/images/**
 
 database_config.env
 *tar.gz
 *ipynb_checkpoints/
 *.pkl
+
+**/node_modules
+./api/face-service/dist
+./api/face-service/images
+**/package-lock.json

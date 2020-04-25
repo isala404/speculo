@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import traceback
+import base64
 
 from aiohttp import web
 
