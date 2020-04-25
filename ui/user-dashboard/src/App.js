@@ -1,26 +1,44 @@
 import React from "react";
 import "./App.css";
-import { Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  NavLink
+} from "react-router-dom";
 import Routes from "./Routes";
+import { NavigationMenu } from "./components/navigation-bar/navigation-bar.component";
+import { Container, Navbar, Nav } from "react-bootstrap";
+import { CSSTransition } from "react-transition-group";
 
 const App = () => {
   // mobile handlers can be places here
 
   return (
-    <div className="App">
-      {Routes.map(({ path, Component }) => (
-        <Route key={path} exact path={path}>
-          {({ match }) => {
-            if (match) {
-              // only display component if the component was requested in the URL
-              // if not, all the components gets mounted here
-              return <Component />; // load relevant component defined in Routes here
-            }
-            return null;
-          }}
-        </Route>
-      ))}
-    </div>
+    <>
+      <div className="App">
+        <NavigationMenu />
+        {Routes.map(({ path, Component }) => (
+          <Route key={path} exact path={path}>
+            {/* http://reactcommunity.org/react-transition-group/with-react-router.
+            use of CSSTransition to animate page routing */}
+            {({ match }) => (
+              <CSSTransition
+                in={match != null}
+                timeout={200}
+                classNames="view"
+                unmountOnExit
+              >
+                <div className="view">
+                  {/* rendering the component onto the div */}
+                  <Component />   
+                </div>
+              </CSSTransition>
+            )}
+          </Route>
+        ))}
+      </div>
+    </>
   );
 };
 
