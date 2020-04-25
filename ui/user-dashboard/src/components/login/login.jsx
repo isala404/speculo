@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import { NavigationMenu } from "../navigation-bar/navigation-bar.component";
 import { Footer } from "../home-footer/footer.component";
+import {Animation} from "./animation";
+
 
 export class Login extends React.Component {
 
@@ -115,17 +117,18 @@ export class Login extends React.Component {
             }
         } else {
             alert("All Fields Required!")
-            
+
         }
     }
 
     render() {
         return (
             <>
+                <Animation />
                 <div style={{ background: "#000000" }}>
                     <NavigationMenu />
                 </div>
-                <div className="base-container" ref={this.props.containerRef} style={{ marginTop:"10em", marginBottom:"10em" }}>
+                <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
 
                     <div className="header">Login</div>
                     <div className="content">
