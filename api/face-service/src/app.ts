@@ -4,6 +4,7 @@ import cors from 'cors';
 import {Controller} from "./main.controller";
 import mongoose from 'mongoose';
 import logger from 'morgan';
+import {MONGO_URI} from "./constants/face.constants";
 
 class App {
 	public app: express.Application;
@@ -12,7 +13,7 @@ class App {
 	constructor() {
 		this.app = express();
 		this.setConfig();
-		this.setMongoConfig();
+		App.setMongoConfig();
 
 		this.faceController = new Controller(this.app);
 	}
@@ -30,11 +31,11 @@ class App {
 		this.app.use(logger("dev"));
 	}
 
-	//Connecting to our MongoDB database
-	private setMongoConfig() {
+	private static setMongoConfig() {
 		mongoose.Promise = global.Promise;
-		mongoose.connect("mongodb://localhost:27017/speculo", {
-			useNewUrlParser: true
+		console.log(MONGO_URI);
+		mongoose.connect(MONGO_URI, {
+			useNewUrlParser: true,
 		});
 	}
 }

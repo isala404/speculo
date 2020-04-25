@@ -4,8 +4,8 @@ import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
 import {Document, Error, MongooseDocument} from "mongoose";
+import {IMAGE_PROCESSOR_URL} from "../constants/face.constants";
 
-const FINGERPRINT_GEN = 'http://localhost:8506/api/v1/fingerprint';
 
 export class FaceService {
 	public test(req: Request, res: Response) {
@@ -27,7 +27,7 @@ export class FaceService {
 			}
 		}
 
-		axios.post(FINGERPRINT_GEN, form, config)
+		axios.post(IMAGE_PROCESSOR_URL, form, config)
 			.then(function (response) {
 				const face = new Face({
 					'label': file.originalname.split('.')[0],
@@ -110,7 +110,7 @@ export class FaceService {
 			}
 		}
 
-		axios.post(FINGERPRINT_GEN, form, config)
+		axios.post(IMAGE_PROCESSOR_URL, form, config)
 			.then(function (response) {
 				const updateFace = {
 					'label': file.originalname.split('.')[0],
