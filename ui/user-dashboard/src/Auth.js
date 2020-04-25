@@ -67,4 +67,4 @@ const RightSide = props => {
   );
 };
 
-export default Auth;
+export {Auth};
