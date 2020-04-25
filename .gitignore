@@ -399,7 +399,7 @@ yarn-error.log*
 
 **/faces
 *.avi
-fingerprinter/dataset*
+models/fingerprinter/dataset*
 
 **/logs
 *.h5
@@ -409,9 +409,9 @@ fingerprinter/dataset*
 # video file
 *.mp4
 
-facedetector/model-weights
-fingerprinter/archive
-fingerprinter/models/**/img/predictions-epoch-*
+models/facedetector/model-weights
+models/fingerprinter/archive
+models/fingerprinter/models/**/img/predictions-epoch-*
 
 **/variables
 **/assets

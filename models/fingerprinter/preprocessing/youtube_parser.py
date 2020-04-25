@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 from scipy.io import loadmat
-from facedetector.yolo.yolo import YOLO
+from models.facedetector.yolo.yolo import YOLO
 from tqdm import tqdm
 import numpy as np
 

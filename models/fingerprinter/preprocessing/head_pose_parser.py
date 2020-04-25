@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 from tqdm import tqdm
-from facedetector.yolo.yolo import YOLO
+from models.facedetector.yolo.yolo import YOLO
 import numpy as np
 
 BASE_DIR = "/mnt/hdd/Projects/SDGP/RAW_Data/FacePose"
