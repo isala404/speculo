@@ -21,7 +21,7 @@ services:
     ports:
       - 8502:8080
     environment:
-      - FACE_SERVICE_URL=http://faceservice:8503/api/v1/faces
+      - FACE_SERVICE_URL=http://faceservice:8080/api/v1/faces
       - FINGERPRINT_THRESHOLD="1.7"
       - FINGERPRINT_SHAPE="(64, 64, 1)"
     env_file:
@@ -35,7 +35,7 @@ services:
     ports:
       - 8503:8080
     environment:
-      - FACEDETECTOR_URL=http://facedetector:8500/v1/models/facedetector:predict
+      - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
     env_file:
       - database_config.env
@@ -46,8 +46,8 @@ services:
     ports:
       - 8504:3000
     environment:
-      - FACE_SERVICE_URL=http://faceservice:8503/
-      - IMAGE_PROCESSOR_URL=http://imageprocessor:8506/
+      - FACE_SERVICE_URL=http://faceservice:8080/
+      - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/
     env_file:
       - database_config.env
   videodownscaler:
@@ -65,8 +65,8 @@ services:
     environment:
       - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
-      - COMPARATOR_PREDICT_URL=http://comparator:8502/v1/models/comparator:predict
-      - COMPARATOR_ADD_URL=http://comparator:8502/v1/models/comparator:addFace
+      - COMPARATOR_PREDICT_URL=http://comparator:8080/v1/models/comparator:predict
+      - COMPARATOR_ADD_URL=http://comparator:8080/v1/models/comparator:addFace
   dashboard:
     build:
       context: ui/user-dashboard
