@@ -22,7 +22,7 @@
         }
 
         .form{
-            margin-top: 2em;
+            margin-top: 0.3em;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -69,13 +69,13 @@
 //Custom Fonts
 @import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 
-.App {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "Open Sans", sans-serif;
-}
+// .App {
+//   text-align: center;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-family: "Open Sans", sans-serif;
+// }
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
@@ -178,14 +178,15 @@
   font-size: 21px;
   padding: 5px 20px;
   border: 0;
-  background-color: #181818;
+  background-color: #2BBA8F;
   color: #fff;
   border-radius: 3px;
   margin-right: 5px;
   transition: all 250ms ease-in-out;
   cursor: pointer;
   &:hover {
-    background-color: #0d8f3f;
+    background-color: rgb(31, 214, 159);
+    color: #fff;
   }
   &:focus {
     outline: none;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createElement } from "react";
 import Webcam from "react-webcam";
 import "./web-cam.style.scss";
 import ImageCanvas from "../image-canvas/image-canvas.component";
@@ -17,20 +17,22 @@ export default class WebCamComponent extends React.Component {
       truncatedImgSrc: "",
       faceData: [],
       isDataRecieved: false,
-      displayComponent: true,
-      numberOfFaces: 0
+      displayComponent: true
     };
   }
 
   componentDidMount() {
-    //invoking a method call at a set interval.
-    // if (this.state.displayComponent) {
-    //   setInterval(() => {
-    //     this.capture();
-    //     console.log("captured is " + this.state.displayComponent);
-    //   }, 1000);
-    // }
+    if (this.state.displayComponent) {
+      setInterval(() => {
+        console.log("interval");
+        this.capture();
+      }, 1000);
+    }
   }
+  componentDidUpdate() {
+    this.captureOnInterval();
+  }
+
 
   setRef = webcam => {
     this.webcam = webcam;

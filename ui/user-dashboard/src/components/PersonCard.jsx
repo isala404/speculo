@@ -7,15 +7,17 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 
 const PersonCard = styled.div`
-  background-color: ${prop => prop.blacklisted ? '#FF5A5A' : '#a0ffdc'};
-// background-color: #a0ffdc;
+  /* background-color: ${prop => prop.blacklisted ? '#FF5A5A' : '#a0ffdc'}; */
+  background:${prop => prop.blacklisted?"linear-gradient(20deg, rgba(255,0,0,.8) 0%, rgba(0,65,112,0) 80%)" : "linear-gradient(20deg, rgba(32,217,148,.8) 0%, rgba(0,65,112,0) 70%)"}, #0f1e3d;
+/* // background-color: #a0ffdc; */
   font-size: 1em;
   // color: #0b162b;
-  color: ${prop => prop.blacklisted ? 'white' : '#0b162b'};;
+  color: white;
   font-family: "Gilroy-Bold";
   text-align: left;
   padding: 1em 1em 1em 1em;
-  height: 80px;
+  text-align:center;
+  height: 100px;
   width: 250px;
   border: 1px solid white;
   border-radius: 3px;
@@ -23,13 +25,14 @@ const PersonCard = styled.div`
  
   &:hover {
     cursor: pointer;
+    color: ${prop => prop.blacklisted ? 'white' : '#0b162b'};
     background-color: ${prop => prop.blacklisted ? '#BF2525' : '#44DEA5'};
     // background-color: #44DEA5;
   }
 `;
 
 const unKnownStyle = {
-  backgroundColor: 'grey',
+  background: 'linear-gradient(20deg, rgba(121,121,121,1) 0%, rgba(11,22,43,0) 70%), #0f1e3d',
   color: 'white',
   fontFamily: 'Gilroy-SemiBold',
   fontStyle: 'italic'
@@ -61,7 +64,6 @@ class Person extends Component {
       name: this.props.name,
       timestamps: this.props.timestamps,
       blacklisted: this.props.blacklisted, // black-listed status of the person (1 = black-listed, 0 = white-listed)
-
       show: false, // display status of the Edit pop-up
     };
   }

@@ -46,7 +46,15 @@ def best_match(f_encoding):
     for person in persons:
         persons[person] = sum(persons[person])/len(persons[person])
 
+<<<<<<< HEAD
+    print(persons)
+
     return min(persons.keys(), key=(lambda k: persons[k]))
+
+    # return known_face_names[int(np.argmin(distances))]
+=======
+    return min(persons.keys(), key=(lambda k: persons[k]))
+>>>>>>> cb9025eeadd33d5bce4f8f82e75d77dd0d4a024b
 
 
 print("Start Detecting .... ")
@@ -54,6 +62,7 @@ video_capture = cv2.VideoCapture(0)
 
 while True:
     ret, frame = video_capture.read()
+    org_frame = frame.copy()
     height, width, _ = frame.shape
     small_frame = cv2.resize(frame, (SIZE, SIZE))
     boxes = yolo.detect_image_fast(small_frame)
@@ -64,6 +73,8 @@ while True:
         left = int(left * width / SIZE)
 
         face = frame[top:bottom, left:right]
+        if not face.any():
+            continue
         if FINGERPRINT_SIZE[2] == 1:
             face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
         face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
@@ -73,6 +84,7 @@ while True:
         cv2.putText(frame, best_match(speculo.predict(face)), (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
     cv2.imshow('Video', frame)
+    cv2.imshow('ORG Video', org_frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

@@ -55,7 +55,7 @@ export async function deleteFaceFromSystem(personId){
             'Access-Control-Allow-Origin': '*',
         }
     });
-
+    
     return res;
 }
 
