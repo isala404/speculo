@@ -148,20 +148,20 @@ describe('Testing Routing functionality', () => {
 
   it('Redirection to Register', () => {
     const wrapper = mount(
-      <MemoryRouter initialEntries={['/register']}>
+      <MemoryRouter initialEntries={['/sign-up']}>
         <App />
       </MemoryRouter>
     );
     expect(wrapper.find(Register)).toHaveLength(1);
   });
 
-  it('Redirection to Auth', () => {
-    const wrapper = mount(
-      <MemoryRouter initialEntries={['/Auth']}>
-        <App />
-      </MemoryRouter>
-    );
-    expect(wrapper.find(Register)).toHaveLength(1);
-  });
+  // it('Redirection to Auth', () => {
+  //   const wrapper = mount(
+  //     <MemoryRouter initialEntries={['/Auth']}>
+  //       <App />
+  //     </MemoryRouter>
+  //   );
+  //   expect(wrapper.find(Register)).toHaveLength(1);
+  // });
 
 });
