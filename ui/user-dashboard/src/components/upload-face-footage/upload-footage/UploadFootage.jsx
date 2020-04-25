@@ -5,10 +5,21 @@ import { footageUploadEndpoint } from "../../../endpoints";
 import "../upload.scss";
 
 class UploadFootage extends Component {
-  // state={
-  //   video: null
-  // };
-    
+  constructor(props){
+    super(props);
+    this.state={
+      video: null
+    };
+  }
+
+
+  displayVideoOnDashboard = () => {
+    // this.props.onDisplay(video);
+
+  }
+
+
+
 render(){
 
   const Input = ({ accept, onFiles, files, getFilesFromEvent }) => {
@@ -49,9 +60,10 @@ render(){
           // Save data to sessionStorage
           // sessionStorage.setItem('videoURL', JSON.stringify({src: URL.createObjectURL(file), type: file.type}));
 
-          // this.setState( {video: URL.createObjectURL(file)});
-          
-          
+          this.setState( {video: URL.createObjectURL(file)});
+
+          this.displayVideoOnDashboard(URL.createObjectURL(file));
+          // this.props.InitializeVideoPlayer(URL.createObjectURL(file));
           
           allFiles.forEach(f => f.remove())
         }
@@ -72,6 +84,9 @@ render(){
     return(
         <div>
           <MyVideoUploader />
+
+          <button onClick={this.displayVideoOnDashboard}>Display Video</button>
+
             {/* {!this.state.video &&
               <MyVideoUploader />}
 

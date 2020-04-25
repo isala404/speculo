@@ -141,7 +141,7 @@ export default class Dashboard extends Component {
   }
 
 
-  InitializeVideoPlayer(videoSRC){
+  InitializeVideoPlayer = (videoSRC) => {
 
     // set received src to videoSRC variable here
     this.state.videoSRC = videoSRC;
@@ -278,7 +278,9 @@ async editPersonSave(newPersonDetails) {
         </div>
         <Grid>
           {!this.state.videoSRC && 
-                <UploadFootage />}
+                <UploadFootage 
+                  onDisplay = {(video) => this.InitializeVideoPlayer(video)}
+                />}
           
           {this.state.videoSRC && 
           <>
