@@ -150,4 +150,17 @@ export class FaceService {
 		}));
 	}
 
+	public deleteFaceById(req: Request, res: Response) {
+		let id = req.params.id;
+
+		Face.deleteOne({_id : id}, (error => {
+			if (error){
+				res.status(500).json({'error' : error.message});
+			} else {
+				res.status(200).json({"status" : "success"})
+			}
+		}));
+	}
+
+
 }
