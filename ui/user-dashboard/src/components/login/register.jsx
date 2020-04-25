@@ -3,7 +3,7 @@ import axios from "axios";
 import { NavigationMenu } from "../navigation-bar/navigation-bar.component";
 import { Footer } from "../home-footer/footer.component";
 import  { Redirect } from 'react-router-dom';
-import {Animation} from "./animation";
+//import {Animation} from "./animation";
 
 
 export class Register extends React.Component {
@@ -137,7 +137,7 @@ export class Register extends React.Component {
     render() {
         return (
             <>
-                <Animation />
+                {/* <Animation /> */}
                 <div style={{ background: "#000000" }}>
                     <NavigationMenu />
                 </div>
