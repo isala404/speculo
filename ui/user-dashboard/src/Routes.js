@@ -21,7 +21,7 @@ const Routes = [
     {name: 'Admin', path:'/admin', Component:Admin},
     {name: 'Login', path:'/login', Component:Login},
     {name: 'Register', path:'/sign-up', Component:Register},
-    {name: 'Profile', path:'/profile', Component:Profile}
+    {name: 'Profile', path:'/profile', Component:Profile},
     {name: 'Filtered Detections', path:'/filter', Component:FilterResults},
 
 ];
