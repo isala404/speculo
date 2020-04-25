@@ -1,59 +1,96 @@
-import React, { useState } from "react";
-import UploadFootage from "../views/UploadFootage";
-import UploadFaces from "../components/upload-face-footage/upload-faces/UploadFaces";
-import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
-import { BasicButton } from "../components/button/button.component";
+import React, { Component } from "react";
+import Dropzone from "react-dropzone-uploader";
+import "react-dropzone-uploader/dist/styles.css";
+import { footageUploadEndpoint } from "../endpoints";
+import Dashboard from '../components/dashboard.jsx';
+import "../components/upload-face-footage/upload.scss";
 
-export const DashboardPanel = () => {
-  const [isScanByFace, setScanByFace] = useState(false);
+class DashboardPanel extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      video: null
+    };
+  }
 
-  const checkboxHandler = () => {
-    isScanByFace ? setScanByFace(false) : setScanByFace(true);
+render(){
+
+  const Input = ({ accept, onFiles, files, getFilesFromEvent }) => {
+    const text = files.length > 0 ? "Add more files" : "Choose files";
+
+    return (
+      <label className="upload-label">
+        {text}
+        <input
+          style={{ display: "none" }}
+          type="file"
+          accept={accept}
+          multiple
+          onChange={e => {
+            getFilesFromEvent(e).then(chosenFiles => {
+              onFiles(chosenFiles);
+            });
+          }}
+        />
+      </label>
+    );
   };
-  return (
-    <>
-      <NavigationMenu />
-      <div>
-        <div style={{ margin: window.innerWidth * 0.1}}>
-          <div style={uploadTextStyleHeading}>
-            <span style={{ uploadTextStyle }}>
-              Select the footage you want to analyse.
-            </span>
-          </div>
-          <UploadFootage />
-          <div style={uploadTextStyle}>
-            <input type="checkbox" onChange={checkboxHandler} />
-            <span style={{ uploadTextStyle }}>
-              {" "}
-              I want to see if a selected face(s) is/are in the footage
-            </span>
-          </div>{" "}
-          {isScanByFace ? (
-          <div>
-            <div style={uploadTextStyleHeading}>
-              <span>Select the faces.</span>
-            </div>
-            <UploadFaces />
-          </div>
-          ) : null}
-          <div style={{marginTop: "2em"}}></div>
-          <BasicButton toggleShadow={false} buttonTitle={"Analyse Footage"}/>
+
+    const MyVideoUploader = () => {         // react-dropzone-uploader
+        // specify upload params and url for files
+        const getUploadParams = ({ meta }) => { return { url: footageUploadEndpoint } }
+        
+        // called every time a file's `status` changes
+        const handleChangeStatus = ({ meta, file }, status) => { console.log(status, meta, file) }
+        
+        // receives array of files that are done uploading when submit button is clicked
+        const handleSubmit = (files, allFiles) => {
+          const file = files[0].file;
+          
+          // console.log(files[0]);
+          // const objURL = URL.createObjectURL(files[0].file);
+          // console.log(objURL);
+          // Save data to sessionStorage
+          // sessionStorage.setItem('videoURL', JSON.stringify({src: URL.createObjectURL(file), type: file.type}));
+
+          this.setState( {video: URL.createObjectURL(file)});
+
+          allFiles.forEach(f => f.remove())
+        }
+        
+        return (
+            <Dropzone
+                getUploadParams={getUploadParams}
+                onChangeStatus={handleChangeStatus}
+                onSubmit={handleSubmit}
+                accept="video/*"      // allow only video files to be uploaded
+                maxFiles = "1"
+                inputContent={"Drag a video file or Click to browse"}
+            />
+          )
+    }
+
+    
+    return(
+        <div>
+          {/* <MyVideoUploader /> */}
+
+            {!this.state.video &&
+              <MyVideoUploader />}
+
+
+            {this.state.video && 
+            <Dashboard 
+              videoSRC = {this.state.video}
+            />}
+
+             {/* <video width="320" height="240" controls>
+               <source src={this.state.video} type="video/mp4"/>
+             </video> */}
+
         </div>
-      </div>
-    </>
-  );
-};
+    )
+}
+}
 
-const uploadTextStyle = {
-    textAlign: "left",
-    margin: "1em 0",
-    fontFamily: "Gilroy-Regular",
-  };
-  
-  const uploadTextStyleHeading = {
-    textAlign: "left",
-    margin: "1em 0",
-    fontSize:"1.5em",
-    fontFamily: "Gilroy-Regular",
-    fontWeight: 'bold',
-  };
+export default DashboardPanel;

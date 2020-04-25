@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 
 import { Login, Register } from './components/login/index';
 import { Home } from "./views/Home.jsx";
-import DashboardPanel from "./views/DashboardPanel.jsx";
+import Dashboard from "./views/dashboard.jsx";
 import WebCam from "./components/webcam/webcam.component"
 import { UploadPage } from "./views/upload.jsx";
 import { Admin } from "./views/Admin.jsx";
