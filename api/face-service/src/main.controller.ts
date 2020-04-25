@@ -22,6 +22,8 @@ export class Controller {
 		const upload = multer({storage}); // multer configuration
 
 		this.app.post('/faces', upload.single('image'), this.faceService.addFace)
-		this.app.route('/').get(this.faceService.test);
+		this.app.get('/faces', this.faceService.getAllFaces);
+
+		this.app.get('/test', this.faceService.test);
 	}
 }
