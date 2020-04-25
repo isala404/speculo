@@ -88,37 +88,47 @@ export default class Dashboard extends Component {
         return;
     }
 
-    // if (sessionStorage.getItem('videoURL') != null){
-    //     // Get saved data from sessionStorage
-    //     let data = JSON.parse(sessionStorage.getItem('videoURL'));
-    //     console.log(data);
-    //     this.videoNode.src = data.src;
-    //     this.videoNode.type = data.type;
-    //     this.videoNode.load();
-    //     this.videoNode.onloadeddata = function() {
-    //     this.videoNode.play();
-    // }
-    //     this.setState({videoSRC: data});
+    if (sessionStorage.getItem('videoURL') != null){
+        // Get saved data from sessionStorage
+        let data = JSON.parse(sessionStorage.getItem('videoURL'));
+        console.log(data);
+        this.videoNode.src = data.src;
+        this.videoNode.type = data.type;
+        this.videoNode.load();
+        this.videoNode.onloadeddata = function() {
+        this.videoNode.play();
+    }
+        this.setState({videoSRC: data});
 
-    // } else{
-    //     // redirect back to uploading footage? / show message that video isn't available
-    // }
+    } else{
+        // redirect back to uploading footage? / show message that video isn't available
+    }
 
     
-    // this.video.src ="../../demo.mp4";
-    // this.container.appendChild(this.video);
-    // this.video.pause();
-    // // this.video.play();
+    this.video.src ="../../demo.mp4";
+    this.container.appendChild(this.video);
+    this.video.pause();
+    // this.video.play();
+    this.video.hidden = true;
+    this.video.muted = true;
+    this.canvas = document.createElement("canvas");
+    this.canvas.width = 1600;
+    this.canvas.height = 1000;
+    this.ctx = this.canvas.getContext("2d");
     // this.video.hidden = true;
-    // this.video.muted = true;
-    // this.canvas = document.createElement("canvas");
-    // this.canvas.width = 1600;
-    // this.canvas.height = 1000;
-    // this.ctx = this.canvas.getContext("2d");
-    // // this.video.hidden = true;
 
 
-    
+    // instantiate Video.js
+    this.videoPlayer = videojs("videoPlayer", { responsive: true });
+    this.videoPlayer.responsive(true);
+
+    this.player = videojs(this.videoNode, this.props, function onPlayerReady() {
+      console.log("onPlayerReady", this);
+    });
+
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
+    //settin the viewport dimensions
     
 
     // get detected faces with timestamps from the backend
@@ -138,25 +148,6 @@ export default class Dashboard extends Component {
 
     // Remove saved data from sessionStorage
     // sessionStorage.removeItem('videoURL');
-  }
-
-
-  InitializeVideoPlayer = (videoSRC) => {
-
-    // set received src to videoSRC variable here
-    this.state.videoSRC = videoSRC;
-
-    // instantiate Video.js
-    this.videoPlayer = videojs("videoPlayer", { responsive: true });
-    this.videoPlayer.responsive(true);
-
-    this.player = videojs(this.videoNode, this.props, function onPlayerReady() {
-      console.log("onPlayerReady", this);
-    });
-
-    this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions);
-    //settin the viewport dimensions
   }
 
 
@@ -273,16 +264,18 @@ async editPersonSave(newPersonDetails) {
   render() {
     return (
       <div style={{ backgroundImage: 'url("../assets/wire-art.svg")' }}>
-        <div>
+        {/* <div>
           <NavigationMenu />
         </div>
+        
+        {!this.state.videoSRC && 
+              <UploadFootage 
+                onDisplay = {(video) => this.InitializeVideoPlayer(video)}
+              />} */}
+              
         <Grid>
-          {!this.state.videoSRC && 
-                <UploadFootage 
-                  onDisplay = {(video) => this.InitializeVideoPlayer(video)}
-                />}
-          
-          {this.state.videoSRC && 
+          {
+          // this.state.videoSRC && 
           <>
             <Row>
               <Col xs={12} sm={12} md={12} lg={9}> 
@@ -296,7 +289,8 @@ async editPersonSave(newPersonDetails) {
                   >
                     <source
                       // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                      src = {this.state.videoSRC}
+                      // src = {this.state.videoSRC}
+                      src = {this.props.videoSRC}
 
                       type="video/mp4"
                     />

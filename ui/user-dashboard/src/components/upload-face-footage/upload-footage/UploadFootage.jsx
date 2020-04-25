@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Dropzone from "react-dropzone-uploader";
 import "react-dropzone-uploader/dist/styles.css";
 import { footageUploadEndpoint } from "../../../endpoints";
+import Dashboard from '../../../views/dashboard.jsx';
 import "../upload.scss";
 
 class UploadFootage extends Component {
@@ -62,7 +63,7 @@ render(){
 
           this.setState( {video: URL.createObjectURL(file)});
 
-          this.displayVideoOnDashboard(URL.createObjectURL(file));
+          // this.displayVideoOnDashboard(URL.createObjectURL(file));
           // this.props.InitializeVideoPlayer(URL.createObjectURL(file));
           
           allFiles.forEach(f => f.remove())
@@ -83,17 +84,23 @@ render(){
     
     return(
         <div>
-          <MyVideoUploader />
+          {/* <MyVideoUploader /> */}
 
-          <button onClick={this.displayVideoOnDashboard}>Display Video</button>
+          {/* <button onClick={this.displayVideoOnDashboard}>Display Video</button> */}
 
-            {/* {!this.state.video &&
+            {!this.state.video &&
               <MyVideoUploader />}
 
 
-            {this.state.video && <video width="320" height="240" controls>
-              <source src={this.state.video} type="video/mp4"/>
-            </video>} */}
+            {this.state.video && 
+            <Dashboard 
+              videoSRC = {this.state.video}
+            />}
+
+             {/* <video width="320" height="240" controls>
+               <source src={this.state.video} type="video/mp4"/>
+             </video> */}
+
         </div>
     )
 }
