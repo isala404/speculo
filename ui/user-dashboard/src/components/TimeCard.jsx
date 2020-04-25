@@ -55,8 +55,8 @@ const CardDiv = styled.div`
   background-image: url(${props => props.imgSrc});
   background-size: 400px 300px;
   margin: 0.5em;
-  width: 400px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   color: #ffffff;
   border-radius: 4px;
   box-shadow: 0px 1px 10px #ccc;
