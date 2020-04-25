@@ -19,10 +19,12 @@ async def predict(request):
 
         fingerprint = np.array(data['instances'])
         if data.shape != comparator.FINGERPRINT_SHAPE:
-            return web.Response(body=json.dumps({'error': f'input shape mismatched, shape of the passed image is {fingerprint.shape} and model is expecting shape {comparator.FINGERPRINT_SHAPE}'}),
-                                status=400, content_type='application/json')
+            return web.Response(body=json.dumps(
+                {'error': f'input shape mismatched, shape of the passed image is {fingerprint.shape} '
+                          f'and model is expecting shape {comparator.FINGERPRINT_SHAPE}'}),
+                status=400, content_type='application/json')
 
-        output = comparator.get_best_match(fingerprint)
+        output = comparator.get_best_match(fingerprint.reshape([-1]))
 
         return web.Response(body=json.dumps({'predictions': output}),
                             status=200, content_type='application/json')
@@ -46,8 +48,10 @@ async def add_new_face(request):
 
         fingerprint = np.array(data['fingerprint'])
         if data.shape != comparator.FINGERPRINT_SHAPE:
-            return web.Response(body=json.dumps({'error': f'input shape mismatched, shape of the passed image is {fingerprint.shape} and model is expecting shape {comparator.FINGERPRINT_SHAPE:}'}),
-                                status=400, content_type='application/json')
+            return web.Response(body=json.dumps(
+                {'error': f'input shape mismatched, shape of the passed image is {fingerprint.shape} '
+                          f'and model is expecting shape {comparator.FINGERPRINT_SHAPE}'}),
+                status=400, content_type='application/json')
 
         if comparator.add_new_face(fingerprint, data['id']):
             return web.Response(body=json.dumps({'data': 'fingerprint-added'}),

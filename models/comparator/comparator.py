@@ -19,7 +19,7 @@ class ImageComparator:
         faces = loop.run_until_complete(self._get_all_faces())
         for entry in faces:
             for fingerprint in entry['matrix']:
-                self.known_face_encodings.append(fingerprint)
+                self.known_face_encodings.append(np.array(fingerprint).reshape([-1]))
                 self.known_face_names.append(entry['id'])
 
         self.model = KNeighborsClassifier(
