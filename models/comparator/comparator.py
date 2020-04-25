@@ -9,8 +9,9 @@ import asyncio
 
 class ImageComparator:
     def __init__(self):
-        self.FINGERPRINT_SHAPE = eval(os.getenv("FINGERPRINT_THRESHOLD", "1.7"))
-        self.FINGERPRINT_THRESHOLD = eval(os.getenv("FINGERPRINT_SHAPE", "(64, 64, 1)"))
+        self.FINGERPRINT_THRESHOLD = eval(os.getenv("FINGERPRINT_THRESHOLD", "1.7"))
+        self.FINGERPRINT_SHAPE = eval(os.getenv("FINGERPRINT_SHAPE", "(64, 64, 1)"))
+        self.COMPARATOR_SHAPE = np.ones(self.FINGERPRINT_SHAPE).reshape([-1]).shape
         self._FACE_SERVICE_ENDPOINT = os.getenv('FACE_SERVICE_URL')
         self.known_face_encodings = []
         self.known_face_names = []
