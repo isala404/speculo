@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import {Controller} from "./main.controller";
 import mongoose from 'mongoose';
+import logger from 'morgan';
 
 class App {
 	public app: express.Application;
@@ -25,6 +26,8 @@ class App {
 
 		//Enables cors
 		this.app.use(cors());
+
+		this.app.use(logger("dev"));
 	}
 
 	//Connecting to our MongoDB database

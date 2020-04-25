@@ -48,6 +48,7 @@ export class FaceService {
 				console.log(error.message);
 				res.sendStatus(500).json({"error": error.message});
 			});
+		fs.unlinkSync(file.path)
 	}
 
 	public getAllFaces(req: Request, res: Response) {
@@ -138,6 +139,8 @@ export class FaceService {
 			.catch(function (error) {
 				res.status(500).json({"status": error.message});
 			});
+
+		fs.unlinkSync(file.path)
 	}
 
 	public deleteAllFaces(req: Request, res: Response) {
@@ -178,7 +181,6 @@ export class FaceService {
 			}
 		});
 	}
-
 
 	public patchBlacklist(req: Request, res: Response) {
 		let id = req.params.id;
