@@ -11,7 +11,7 @@ services:
     ports:
       - 8501:8501
     volumes:
-      - ./models/fingerprinter/models:/models/fingerprinter
+      - ./models/fingerprinter/models/11:/models/fingerprinter/1
     environment:
       - MODEL_NAME=fingerprinter
   comparator:
@@ -22,8 +22,12 @@ services:
       - 8502:8080
     environment:
       - FACE_SERVICE_URL=http://faceservice:8080/api/v1/faces
+      - FINGERPRINT_THRESHOLD="1.7"
+      - FINGERPRINT_SHAPE="(64, 64, 1)"
     env_file:
       - database_config.env
+    depends_on:
+      - faceservice
   faceservice:
     build:
       context: api/face-service/
@@ -66,3 +70,9 @@ services:
       - COMPARATOR_ADD_URL=http://comparator:8080/v1/models/comparator:addFace
     depends_on:
       - facedetector
+  dashboard:
+    build:
+      context: ui/user-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - 4000:80
