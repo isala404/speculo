@@ -2,15 +2,12 @@ import json
 import logging
 import numpy as np
 from aiohttp import web
-import os
 from comparator import ImageComparator
 
 logging.basicConfig(filename='app.log', filemode='w',
                     format='%(name)s - %(levelname)s - %(message)s')
 
-FINGERPRINT_THRESHOLD = os.getenv("FINGERPRINT_THRESHOLD", 1.7)
-FINGERPRINT_SHAPE = os.getenv("FINGERPRINT_SHAPE", (64, 64, 1))
-comparator = ImageComparator(FINGERPRINT_SHAPE, FINGERPRINT_THRESHOLD)
+comparator = ImageComparator()
 
 
 async def predict(request):
@@ -21,8 +18,8 @@ async def predict(request):
                                 status=400, content_type='application/json')
 
         fingerprint = np.array(data['instances'])
-        if data.shape != FINGERPRINT_SHAPE:
-            return web.Response(body=json.dumps({'error': f'input shape mismatched, shape of the passed image is {data.shape} and model is expecting shape {FINGERPRINT_SHAPE}'}),
+        if data.shape != comparator.FINGERPRINT_SHAPE:
+            return web.Response(body=json.dumps({'error': f'input shape mismatched, shape of the passed image is {fingerprint.shape} and model is expecting shape {comparator.FINGERPRINT_SHAPE}'}),
                                 status=400, content_type='application/json')
 
         output = comparator.get_best_match(fingerprint)
@@ -48,8 +45,8 @@ async def add_new_face(request):
                                 status=400, content_type='application/json')
 
         fingerprint = np.array(data['fingerprint'])
-        if data.shape != FINGERPRINT_SHAPE:
-            return web.Response(body=json.dumps({'error': f'input shape mismatched, shape of the passed image is {data.shape} and model is expecting shape {FINGERPRINT_SHAPE}'}),
+        if data.shape != comparator.FINGERPRINT_SHAPE:
+            return web.Response(body=json.dumps({'error': f'input shape mismatched, shape of the passed image is {fingerprint.shape} and model is expecting shape {comparator.FINGERPRINT_SHAPE:}'}),
                                 status=400, content_type='application/json')
 
         if comparator.add_new_face(fingerprint, data['id']):
@@ -67,4 +64,5 @@ async def add_new_face(request):
 
 app = web.Application()
 app.add_routes([web.post('/v1/models/comparator:predict', predict)])
+app.add_routes([web.post('/v1/models/comparator:addFace', add_new_face)])
 web.run_app(app, port=8080)

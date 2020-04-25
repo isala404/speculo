@@ -61,4 +61,5 @@ services:
     environment:
       - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
-      - COMPARATOR_URL=http://comparator:8080/v1/models/comparator:predict
+      - COMPARATOR_PREDICT_URL=http://comparator:8080/v1/models/comparator:predict
+      - COMPARATOR_ADD_URL=http://comparator:8080/v1/models/comparator:addFace
