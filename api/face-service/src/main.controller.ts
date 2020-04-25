@@ -19,6 +19,7 @@ export class Controller {
 				cb(null, file.originalname)
 			}
 		});
+
 		const upload = multer({storage}); // multer configuration
 
 		this.app.post('/faces', upload.single('image'), this.faceService.addFace)

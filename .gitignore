@@ -427,4 +427,6 @@ database_config.env
 **/node_modules
 ./api/face-service/dist
 ./api/face-service/images
+**/images/
 **/package-lock.json
+/api/face-service/images/
