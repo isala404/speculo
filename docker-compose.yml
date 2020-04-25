@@ -52,9 +52,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8504:8080
-  preprocessor:
+  imageprocessor:
     build:
-      context: api/preprocessor/
+      context: api/image-processor/
       dockerfile: Dockerfile
     ports:
       - 8505:8080

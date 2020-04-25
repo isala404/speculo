@@ -12,6 +12,10 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-RUN mkdir -p ./videos
+RUN mkdir -p ./preprocess-videos
+
+RUN mkdir -p ./coordinate-images
+
+RUN mkdir -p ./fingerprint-images
 
 CMD python3 rest_api.py
