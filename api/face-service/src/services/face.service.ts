@@ -162,5 +162,21 @@ export class FaceService {
 		}));
 	}
 
+	public patchLabel(req: Request, res: Response) {
+		let id = req.params.id;
+		let label = req.body['label'];
+
+		let face = {
+			label : label
+		}
+
+		Face.updateOne({_id:id}, face, error => {
+			if (error){
+				res.status(500).json({'error' : error.message});
+			} else {
+				res.status(200).json({"status" : "success"})
+			}
+		});
+	}
 
 }
