@@ -5,9 +5,9 @@ import { footageUploadEndpoint } from "../../../endpoints";
 import "../upload.scss";
 
 class UploadFootage extends Component {
-  state={
-    video: null
-  };
+  // state={
+  //   video: null
+  // };
     
 render(){
 
@@ -49,7 +49,9 @@ render(){
           // Save data to sessionStorage
           // sessionStorage.setItem('videoURL', JSON.stringify({src: URL.createObjectURL(file), type: file.type}));
 
-          this.setState( {video: URL.createObjectURL(file)});
+          // this.setState( {video: URL.createObjectURL(file)});
+          
+          
           
           allFiles.forEach(f => f.remove())
         }
