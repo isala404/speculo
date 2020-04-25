@@ -33,7 +33,7 @@ class App {
 
 	private static setMongoConfig() {
 		mongoose.Promise = global.Promise;
-		console.log(MONGO_URI);
+
 		mongoose.connect(MONGO_URI, {
 			useNewUrlParser: true,
 		});
