@@ -3,6 +3,8 @@ import Dashboard from "./views/dashboard.jsx";
 import WebCam from "./components/webcam/webcam.component"
 import { UploadPage } from "./views/upload.jsx";
 import { Admin } from "./views/Admin.jsx";
+import {Login, Register} from "./components/login/index";
+//import { Auth } from "./Auth";
 
 // data object to make code simpler
 
@@ -12,7 +14,9 @@ const Routes = [
     {name: 'Dashboard', path:'/dashboard', Component:Dashboard},
     {name: 'Uploads', path:'/upload', Component:UploadPage},
     {name: 'Proof of Concept', path:'/live-detection', Component:WebCam},
-    {name: 'Admin', path:'/admin', Component:Admin}
+    {name: 'Admin', path:'/admin', Component:Admin},
+    {name: 'Login', path:'/login', Component:Login},
+    {name: 'Register', path:'/sign-up', Component:Register}
 ];
 
 export default Routes
