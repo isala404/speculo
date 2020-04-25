@@ -4,6 +4,7 @@ import "video.js/dist/video-js.css";
 import "@videojs/themes/dist/fantasy/index.css";
 import {TimeCard} from "../components/TimeCard";
 import Person from "../components/PersonCard";
+import UploadFootage from '../components/upload-face-footage/upload-footage/UploadFootage';
 import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
 import "../styles/commonStyles.scss";
 import styled from "styled-components";
@@ -142,8 +143,11 @@ export default class Dashboard extends Component {
     }
 
     // Remove saved data from sessionStorage
-    sessionStorage.removeItem('videoURL');
+    // sessionStorage.removeItem('videoURL');
   }
+
+
+
 
   //function to get the width and height of the viewport dynamically
   updateDimensions = () => {
@@ -264,8 +268,14 @@ async editPersonSave(newPersonDetails) {
         <Grid>
           <Row>
             <Col xs={12} sm={12} md={12} lg={9}>
+
+              {!this.state.videoSRC && 
+                <UploadFootage />}
+              
               <div id="video-js-responsive-container vjs-hd videoContainer">
-                {<video
+                {
+                this.state.videoSRC && 
+                <video
                   ref={node => (this.videoNode = node)}
                   id="videoPlayer"
                   className="video-js vjs-fluid vjs-theme-fantasy"
