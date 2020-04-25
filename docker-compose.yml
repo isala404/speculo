@@ -69,7 +69,7 @@ services:
       - COMPARATOR_ADD_URL=http://comparator:8502/v1/models/comparator:addFace
   dashboard:
     build:
-      context: ui/user-dashboard/DockerFile
+      context: ui/user-dashboard
       dockerfile: Dockerfile
     ports:
       - 4000:80
