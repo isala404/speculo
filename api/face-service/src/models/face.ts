@@ -12,17 +12,23 @@ const FaceSchema = new mongoose.Schema({
 	blacklisted: {
 		type: Boolean,
 		trim: true,
-		required: true
+		default : false,
+		required : true
 	},
 	createdAt: {
 		type: Date,
+		default: Date.now(),
 		required: true
 	},
 	lastUpdated: {
 		type: Date,
-		default: Date.now()
+		default: Date.now(),
+		required : true
 	},
-	fingerprints: [Array]
+	fingerprints: {
+		type : [Array],
+		required : true
+	}
 });
 
 export const Face = mongoose.model("Face", FaceSchema);

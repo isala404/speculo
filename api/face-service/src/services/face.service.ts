@@ -3,7 +3,7 @@ import FormData from 'form-data';
 import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
-import {MongooseDocument} from "mongoose";
+import {Document, Error, MongooseDocument} from "mongoose";
 
 const FINGERPRINT_GEN = 'http://localhost:8506/api/v1/fingerprint';
 
@@ -41,12 +41,12 @@ export class FaceService {
 						res.send(error);
 					}
 
-					res.json({"status": "success"});
+					res.status(201).json({"id": face._id});
 				});
 			})
 			.catch(function (error) {
 				console.log(error.message);
-				res.sendStatus(200).json({"status": "success"});
+				res.sendStatus(500).json({"error": error.message});
 			});
 	}
 
@@ -55,13 +55,41 @@ export class FaceService {
 
 		let fingerprintCondition = fingerprint ? {} : {fingerprints: 0};
 
-		Face.find({}, fingerprintCondition, (error: Error, faces: MongooseDocument) => {
+		Face.find({}, fingerprintCondition, (error: Error, faces) => {
 			if (error) {
 				res.send(error);
 			}
-			// if (faces.)
-			res.status(200).json({'data': faces});
+
+			if (faces.length === 0) {
+				res.status(204).json({'data': []});
+			} else {
+				res.status(200).json({'data': faces});
+			}
 		});
 
 	}
+
+	public getFaceById(req: Request, res: Response) {
+		let id = req.params.id;
+		let fingerprint = req.query['fingerprint'] == 'true';
+
+		let fingerprintCondition = fingerprint ? {} : {fingerprints: 0};
+
+		if (id.length != 24) {
+			return res.status(404).json({"error": "Invalid ID provided"});
+		}
+
+		Face.findOne({_id: id}, fingerprintCondition, (error: Error, face) => {
+			if (error) {
+				res.send(error);
+			}
+
+			if (face === null) {
+				return res.status(404).json({"error": "Invalid ID provided"});
+			}
+
+			res.status(200).json({'data': face});
+		});
+	}
+
 }
