@@ -22,16 +22,14 @@ export class Controller {
 
 		const upload = multer({storage}); // multer configuration
 
-		this.app.post('/faces', upload.single('image'), this.faceService.addFace)
-		this.app.get('/faces', this.faceService.getAllFaces);
-		this.app.get('/faces/:id', this.faceService.getFaceById);
-		this.app.put('/faces/:id',upload.single('image'), this.faceService.updateFace);
-		this.app.delete('/faces', this.faceService.deleteAllFaces);
-		this.app.delete('/faces/:id', this.faceService.deleteFaceById);
-		this.app.patch('/faces/:id/label', this.faceService.patchLabel);
-		this.app.patch('/faces/:id/blacklist', this.faceService.patchBlacklist);
-		this.app.patch('/faces/:id/whitelist', this.faceService.patchWhitelist);
-
-		this.app.get('/test', this.faceService.test);
+		this.app.post('/api/v1/faces', upload.single('image'), this.faceService.addFace)
+		this.app.get('/api/v1/faces', this.faceService.getAllFaces);
+		this.app.get('/api/v1/faces/:id', this.faceService.getFaceById);
+		this.app.put('/api/v1/faces/:id',upload.single('image'), this.faceService.updateFace);
+		this.app.delete('/api/v1/faces', this.faceService.deleteAllFaces);
+		this.app.delete('/api/v1/faces/:id', this.faceService.deleteFaceById);
+		this.app.patch('/api/v1/faces/:id/label', this.faceService.patchLabel);
+		this.app.patch('/api/v1/faces/:id/blacklist', this.faceService.patchBlacklist);
+		this.app.patch('/api/v1/faces/:id/whitelist', this.faceService.patchWhitelist);
 	}
 }

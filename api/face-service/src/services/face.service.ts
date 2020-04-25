@@ -3,14 +3,11 @@ import FormData from 'form-data';
 import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
-import {Document, Error, MongooseDocument} from "mongoose";
+import {Error, MongooseDocument} from "mongoose";
 import {IMAGE_PROCESSOR_URL} from "../constants/face.constants";
 
 
 export class FaceService {
-	public test(req: Request, res: Response) {
-		return res.status(200).send("Hello World");
-	}
 
 	public addFace(req: Request, res: Response) {
 		let file = req.file;
@@ -145,10 +142,10 @@ export class FaceService {
 
 	public deleteAllFaces(req: Request, res: Response) {
 		Face.deleteMany({}, (error => {
-			if (error){
-				res.status(500).json({'error' : error.message});
+			if (error) {
+				res.status(500).json({'error': error.message});
 			} else {
-				res.status(200).json({"status" : "success"})
+				res.status(200).json({"status": "success"})
 			}
 		}));
 	}
@@ -156,11 +153,11 @@ export class FaceService {
 	public deleteFaceById(req: Request, res: Response) {
 		let id = req.params.id;
 
-		Face.deleteOne({_id : id}, (error => {
-			if (error){
-				res.status(500).json({'error' : error.message});
+		Face.deleteOne({_id: id}, (error => {
+			if (error) {
+				res.status(500).json({'error': error.message});
 			} else {
-				res.status(200).json({"status" : "success"})
+				res.status(200).json({"status": "success"})
 			}
 		}));
 	}
@@ -170,14 +167,14 @@ export class FaceService {
 		let label = req.body['label'];
 
 		let face = {
-			label : label
+			label: label
 		}
 
-		Face.updateOne({_id:id}, face, error => {
-			if (error){
-				res.status(500).json({'error' : error.message});
+		Face.updateOne({_id: id}, face, error => {
+			if (error) {
+				res.status(500).json({'error': error.message});
 			} else {
-				res.status(200).json({"status" : "success"})
+				res.status(200).json({"status": "success"})
 			}
 		});
 	}
@@ -186,14 +183,14 @@ export class FaceService {
 		let id = req.params.id;
 
 		let face = {
-			blacklisted : true
+			blacklisted: true
 		}
 
-		Face.updateOne({_id:id}, face, error => {
-			if (error){
-				res.status(500).json({'error' : error.message});
+		Face.updateOne({_id: id}, face, error => {
+			if (error) {
+				res.status(500).json({'error': error.message});
 			} else {
-				res.status(200).json({"status" : "success"})
+				res.status(200).json({"status": "success"})
 			}
 		});
 	}
@@ -202,14 +199,14 @@ export class FaceService {
 		let id = req.params.id;
 
 		let face = {
-			blacklisted : false
+			blacklisted: false
 		}
 
-		Face.updateOne({_id:id}, face, error => {
-			if (error){
-				res.status(500).json({'error' : error.message});
+		Face.updateOne({_id: id}, face, error => {
+			if (error) {
+				res.status(500).json({'error': error.message});
 			} else {
-				res.status(200).json({"status" : "success"})
+				res.status(200).json({"status": "success"})
 			}
 		});
 	}
