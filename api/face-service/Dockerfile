@@ -12,6 +12,8 @@ COPY ./src /app/src
 
 COPY ./.gitignore /app
 
+RUN mkdir -p ./images
+
 ENV  NODE_ENV production
 
 CMD npm run prod

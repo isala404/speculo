@@ -1,33 +1,37 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import {Controller} from "./main.controller";
+import {FaceController} from "./face.controller";
 import mongoose from 'mongoose';
 import logger from 'morgan';
 import {MONGO_URI} from "./constants/face.constants";
 
+/** Express Application */
 class App {
 	public app: express.Application;
-	public faceController: Controller;
+	public faceController: FaceController;
 
 	constructor() {
 		this.app = express();
+		// configure base express app
 		this.setConfig();
+		// configure mongo db connection
 		App.setMongoConfig();
 
-		this.faceController = new Controller(this.app);
+		this.faceController = new FaceController(this.app);
 	}
 
 	private setConfig() {
-		//Allows us to receive requests with data in json format
-		this.app.use(bodyParser.json({limit: '50mb'}));
+		// allows us to receive requests with data in json format
+		this.app.use(bodyParser.json());
 
-		//Allows us to receive requests with data in x-www-form-urlencoded format
-		this.app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+		// allows us to receive requests with data in x-www-form-urlencoded format
+		this.app.use(bodyParser.urlencoded());
 
-		//Enables cors
+		// enables cors
 		this.app.use(cors());
 
+		// logs request
 		this.app.use(logger("dev"));
 	}
 

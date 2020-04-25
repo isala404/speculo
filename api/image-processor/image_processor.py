@@ -74,7 +74,7 @@ class ImageProcessor:
 		:rtype: list
 		"""
 		
-		body = {'instances': np.reshape(face, [-1, 128, 128, 1]).tolist()}
+		body = {'instances': np.reshape(face, [-1, 64, 64, 3]).tolist()}
 		
 		client = aiohttp.ClientSession()
 		

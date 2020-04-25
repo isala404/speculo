@@ -1,5 +1,6 @@
 import mongoose, {Schema} from 'mongoose';
 
+/** Representation of a face */
 const FaceSchema = new mongoose.Schema({
 	id: {
 		type: Schema.Types.ObjectId,

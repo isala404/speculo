@@ -9,13 +9,16 @@ import {IMAGE_PROCESSOR_URL} from "../constants/face.constants";
 
 export class FaceService {
 
+	/** This method adds a face to the database. */
 	public addFace(req: Request, res: Response) {
 		let file = req.file;
 
+		// open the file in memory
 		let fileBuffer = new Buffer(fs.readFileSync(file.path));
 
 		let form = new FormData();
 
+		// append the file to the form data object
 		form.append('image', fileBuffer, file.originalname)
 
 		const config = {
@@ -26,16 +29,19 @@ export class FaceService {
 
 		axios.post(IMAGE_PROCESSOR_URL, form, config)
 			.then(function (response) {
+				// get the label of the face from the filename
+				let label = file.originalname.split('.')[0];
 				const face = new Face({
-					'label': file.originalname.split('.')[0],
+					'label': label,
 					'blacklisted': false,
 					'fingerprints': [response['data']['data']],
 					'createdAt': Date.now(),
 					'lastUpdated': Date.now()
 				});
+				// save the face
 				face.save((error: Error, face: MongooseDocument) => {
 					if (error) {
-						res.send(error);
+						res.status(500).json({'error': error.message});
 					}
 
 					res.status(201).json({"id": face._id});
@@ -45,12 +51,16 @@ export class FaceService {
 				console.log(error.message);
 				res.sendStatus(500).json({"error": error.message});
 			});
+		//  delete the file after the request
 		fs.unlinkSync(file.path)
 	}
 
+	/** This method gets all the faces from the database. */
 	public getAllFaces(req: Request, res: Response) {
 		let fingerprint = req.query['fingerprint'] == 'true';
 
+		// if the fingerprint is not required then the below condition is passed
+		// to avoid retrieving it from the database.
 		let fingerprintCondition = fingerprint ? {} : {fingerprints: 0};
 
 		Face.find({}, fingerprintCondition, (error: Error, faces) => {
@@ -67,12 +77,14 @@ export class FaceService {
 
 	}
 
+	/** This method gets a face by id from the database. */
 	public getFaceById(req: Request, res: Response) {
 		let id = req.params.id;
 		let fingerprint = req.query['fingerprint'] == 'true';
 
 		let fingerprintCondition = fingerprint ? {} : {fingerprints: 0};
 
+		// checking if the client has sent a valid UUID.
 		if (id.length != 24) {
 			return res.status(404).json({"error": "Invalid ID provided"});
 		}
@@ -90,8 +102,14 @@ export class FaceService {
 		});
 	}
 
+	/** This method updates a face by id to the database, if it doesn't exist it will create a new entry */
 	public updateFace(req: Request, res: Response) {
 		let id = req.params.id;
+
+		// checking if the client has sent a valid UUID.
+		if (id.length != 24) {
+			return res.status(404).json({"error": "Invalid ID provided"});
+		}
 
 		let file = req.file;
 
@@ -119,6 +137,7 @@ export class FaceService {
 					if (face) {
 						res.status(200).json({"label": face.get("label")});
 					} else {
+						// if the face doesn't exist, it will create a new entry.
 						new Face({
 							'label': updateFace['label'],
 							'fingerprints': updateFace['fingerprints'],
@@ -140,6 +159,7 @@ export class FaceService {
 		fs.unlinkSync(file.path)
 	}
 
+	/** This method deletes all the faces in the database. */
 	public deleteAllFaces(req: Request, res: Response) {
 		Face.deleteMany({}, (error => {
 			if (error) {
@@ -150,8 +170,14 @@ export class FaceService {
 		}));
 	}
 
+	/** This method deletes a face by id in the database. */
 	public deleteFaceById(req: Request, res: Response) {
 		let id = req.params.id;
+
+		// checking if the client has sent a valid UUID.
+		if (id.length != 24) {
+			return res.status(404).json({"error": "Invalid ID provided"});
+		}
 
 		Face.deleteOne({_id: id}, (error => {
 			if (error) {
@@ -162,8 +188,15 @@ export class FaceService {
 		}));
 	}
 
+	/** This method patches a face's label in the database. */
 	public patchLabel(req: Request, res: Response) {
 		let id = req.params.id;
+
+		// checking if the client has sent a valid UUID.
+		if (id.length != 24) {
+			return res.status(404).json({"error": "Invalid ID provided"});
+		}
+
 		let label = req.body['label'];
 
 		let face = {
@@ -179,8 +212,14 @@ export class FaceService {
 		});
 	}
 
+	/** This method patches a face's listing status to blacklisted in the database. */
 	public patchBlacklist(req: Request, res: Response) {
 		let id = req.params.id;
+
+		// checking if the client has sent a valid UUID.
+		if (id.length != 24) {
+			return res.status(404).json({"error": "Invalid ID provided"});
+		}
 
 		let face = {
 			blacklisted: true
@@ -195,8 +234,14 @@ export class FaceService {
 		});
 	}
 
+	/** This method patches a face's listing status to whitelisted in the database. */
 	public patchWhitelist(req: Request, res: Response) {
 		let id = req.params.id;
+
+		// checking if the client has sent a valid UUID.
+		if (id.length != 24) {
+			return res.status(404).json({"error": "Invalid ID provided"});
+		}
 
 		let face = {
 			blacklisted: false
