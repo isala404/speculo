@@ -196,4 +196,19 @@ export class FaceService {
 		});
 	}
 
+	public patchWhitelist(req: Request, res: Response) {
+		let id = req.params.id;
+
+		let face = {
+			blacklisted : false
+		}
+
+		Face.updateOne({_id:id}, face, error => {
+			if (error){
+				res.status(500).json({'error' : error.message});
+			} else {
+				res.status(200).json({"status" : "success"})
+			}
+		});
+	}
 }
