@@ -4,9 +4,10 @@ import "react-dropzone-uploader/dist/styles.css";
 import { footageUploadEndpoint } from "../../../endpoints";
 import "../upload.scss";
 
-class UploadFootage extends Component {    state={
-  video: null
-};
+class UploadFootage extends Component {
+  state={
+    video: null
+  };
     
 render(){
 
@@ -69,16 +70,10 @@ render(){
 
     
     return(
-        <div>             
-            {/* <form action="/file-upload" class="dropzone">       // standard dropzone
-                <div class="fallback">
-                    <input name="file" type="file" accept="video/*" multiple />
-                    upload any video file
-                </div>
-            </form> */}
+        <div>
 
-{!this.state.video &&
-            <MyVideoUploader />}
+            {!this.state.video &&
+              <MyVideoUploader />}
 
 
             {this.state.video && <video width="320" height="240" controls>

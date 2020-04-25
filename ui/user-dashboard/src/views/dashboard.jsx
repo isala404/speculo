@@ -73,7 +73,7 @@ export default class Dashboard extends Component {
   };
 
   componentDidMount() {
-    console.log(this.videoNode);
+    // console.log(this.videoNode);
     
     // instantiate Video.js
     this.videoPlayer = videojs("videoPlayer", { responsive: true });
@@ -89,21 +89,21 @@ export default class Dashboard extends Component {
         return;
     }
 
-    if (sessionStorage.getItem('videoURL') != null){
-        // Get saved data from sessionStorage
-        let data = JSON.parse(sessionStorage.getItem('videoURL'));
-        console.log(data);
-        this.videoNode.src = data.src;
-        this.videoNode.type = data.type;
-        this.videoNode.load();
-        this.videoNode.onloadeddata = function() {
-        this.videoNode.play();
-    }
-        this.setState({videoSRC: data});
+    // if (sessionStorage.getItem('videoURL') != null){
+    //     // Get saved data from sessionStorage
+    //     let data = JSON.parse(sessionStorage.getItem('videoURL'));
+    //     console.log(data);
+    //     this.videoNode.src = data.src;
+    //     this.videoNode.type = data.type;
+    //     this.videoNode.load();
+    //     this.videoNode.onloadeddata = function() {
+    //     this.videoNode.play();
+    // }
+    //     this.setState({videoSRC: data});
 
-    } else{
-        // redirect back to uploading footage? / show message that video isn't available
-    }
+    // } else{
+    //     // redirect back to uploading footage? / show message that video isn't available
+    // }
 
     
     this.video.src ="../../demo.mp4";
@@ -118,6 +118,8 @@ export default class Dashboard extends Component {
     this.ctx = this.canvas.getContext("2d");
     // this.video.hidden = true;
 
+
+    
     this.player = videojs(this.videoNode, this.props, function onPlayerReady() {
       console.log("onPlayerReady", this);
     });
@@ -127,6 +129,10 @@ export default class Dashboard extends Component {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
     //settin the viewport dimensions
+  }
+  
+  componentDidUpdate() {
+    window.addEventListener("resize", this.updateDimensions);
   }
 
   // destroy player on unmount
@@ -207,10 +213,6 @@ async editPersonSave(newPersonDetails) {
             console.log(e);
         }
     }
-  }
-
-  componentDidUpdate() {
-    window.addEventListener("resize", this.updateDimensions);
   }
 
   // Delete known people from the system db
