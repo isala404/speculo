@@ -67,9 +67,9 @@ services:
       - FINGERPRINTER_URL=http://fingerprinter:8501/v11/models/fingerprinter:predict
       - COMPARATOR_PREDICT_URL=http://comparator:8080/v1/models/comparator:predict
       - COMPARATOR_ADD_URL=http://comparator:8080/v1/models/comparator:addFace
-  dashboard:
-    build:
-      context: ui/user-dashboard
-      dockerfile: Dockerfile
-    ports:
-      - 4000:80
+#  dashboard:
+#    build:
+#      context: ui/user-dashboard
+#      dockerfile: Dockerfile
+#    ports:
+#      - 4000:80
