@@ -1,17 +1,19 @@
-FROM python:3.8-slim-buster
-
-RUN apt-get update && apt-get install -y python3-numpy
-
-ENV PYTHONPATH=/usr/lib/python3.8/site-packages
+FROM node:13
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY package.json /app
 
-RUN pip3 install -r requirements.txt
+RUN npm install
 
-COPY . .
+COPY ./tsconfig.json /app
+
+COPY ./src /app/src
+
+COPY ./.gitignore /app
 
 RUN mkdir -p ./images
 
-CMD python3 rest_api.py
+ENV  NODE_ENV production
+
+CMD npm run prod
