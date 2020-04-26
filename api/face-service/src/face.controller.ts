@@ -35,5 +35,6 @@ export class FaceController {
 		this.app.patch('/api/v1/faces/:id/blacklist', this.faceService.patchBlacklist);
 		this.app.patch('/api/v1/faces/:id/whitelist', this.faceService.patchWhitelist);
 		this.app.post('/api/v1/faces/unknown', this.faceService.addUnknownFace);
+		this.app.put('/api/v1/faces/:id/append', upload.single('image'), this.faceService.appendFace);
 	}
 }

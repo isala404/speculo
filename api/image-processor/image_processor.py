@@ -242,6 +242,7 @@ class ImageProcessor:
 					
 					print(index, all_detections)
 			except Exception as e:
+				logging.exception(e)
 				logging.info(f"Frame #{next_frame_index} was skipped due to an error.")
 			finally:
 				video_capture.set(cv2.CAP_PROP_POS_FRAMES, next_frame_index)

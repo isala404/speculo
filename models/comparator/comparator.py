@@ -27,7 +27,9 @@ class ImageComparator:
 		
 		self.model = KNeighborsClassifier(
 			n_neighbors=len(set(self.known_face_names)))
-		self.model.fit(self.known_face_encodings, self.known_face_names)
+
+		if self.known_face_names:
+		    self.model.fit(self.known_face_encodings, self.known_face_names)
 	
 	async def _get_all_faces(self):
 		session = aiohttp.ClientSession()
@@ -50,7 +52,7 @@ class ImageComparator:
 			[f_encoding], n_neighbors=1, return_distance=True)
 		
 		if distance.tolist()[0][0] >= self.FINGERPRINT_THRESHOLD and len(self.known_face_names) == 0:
-			return "5ea4c38494c408001a04dbba"
+			return await self._save_unknown_face(f_encoding)
 		
 		return self.known_face_names[face_idx.tolist()[0][0]]
 	
@@ -67,9 +69,9 @@ class ImageComparator:
 		
 		await session.close()
 		
-		# if 'reason' in data.keys():
-		# 	logging.error(data['reason'])
-		# 	raise Exception("There was an error in saving the unknown face.")
+		if 'error' in data.keys():
+			logging.error(data['error'])
+			raise Exception("There was an error in saving the unknown face.")
 		# TODO: Check if ths works properly
 		self.model.fit([fingerprint], [data['id']])
 		return data['id']
