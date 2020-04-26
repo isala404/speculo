@@ -249,17 +249,9 @@ export default class Dashboard extends Component {
               </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={3}>
-
-              <div
-                className="allDetectedFaces"
-                style={{ height: this.state.videoHeight }}
-              >
+              <div className="allDetectedFaces">
                 <PersonDiv
-                  style={{
-                    backgroundImage:
-                      "url('http://your-photography.com/files/2016/02/HH0A5456.jpg')",
-                    backgroundAttachment: "fixed"
-                  }}
+                  style={{ height: this.state.videoHeight, overflowY: "auto" }}
                 >
                   {/* display all the names of the people recognized */}
                   {this.state.allDetections.map((person, index) => (
@@ -279,28 +271,35 @@ export default class Dashboard extends Component {
                       />
                     </div>
                   ))}
+                  <div style={{ height: 100 }}></div>
                 </PersonDiv>
+                <div className="fadeout" />
               </div>
             </Col>
           </Row>
           <Row>
             {selectedPerson != null ? (
-              <div className="allTimeCards">
-                <div className="timeCardContent">
-                  {selectedPerson &&
-                    selectedPerson.timestamps.map((timestamp, index) => {
-                      // if a selectedPerson exists, display all Time Cards of that person
-                      return (
-                        <TimeCard
-                          key={index}
-                          timestamp={timestamp}
-                          onSeek={() => this.seekToTime(timestamp)} // when button is pressed, go to seek time
-                          ctx={this.ctx}
-                          canvas={this.canvas}
-                          video={this.video}
-                        />
-                      );
-                    })}
+              <div>
+                <div
+                  className="allTimeCards"
+                  style={{ width: this.state.videoWidth}}
+                >
+                  <div className="timeCardContent">
+                    {selectedPerson &&
+                      selectedPerson.timestamps.map((timestamp, index) => {
+                        // if a selectedPerson exists, display all Time Cards of that person
+                        return (
+                          <TimeCard
+                            key={index}
+                            timestamp={timestamp}
+                            onSeek={() => this.seekToTime(timestamp)} // when button is pressed, go to seek time
+                            ctx={this.ctx}
+                            canvas={this.canvas}
+                            video={this.video}
+                          />
+                        );
+                      })}
+                  </div>
                 </div>
               </div>
             ) : null}
