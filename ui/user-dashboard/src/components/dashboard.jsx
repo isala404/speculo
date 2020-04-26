@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "@videojs/themes/dist/fantasy/index.css";
-import {TimeCard} from "./TimeCard";
-import Person from "./PersonCard";
-import { NavigationMenu } from "./navigation-bar/navigation-bar.component";
-import "../styles/commonStyles.scss";
+import { TimeCard } from "../components/TimeCard";
+import Person from "../components/PersonCard";
+import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
+import "../styles/dashboard.style.scss";
 import styled from "styled-components";
 import "../styles/videojsStyle.scss";
 import VideoSnapshot from "video-snapshot";
@@ -36,8 +36,7 @@ export default class Dashboard extends Component {
       chosenIndexToEdit: 0,
       videoWidth: null,
       videoHeight: 100,
-
-      videoSRC: null
+      windowHeight: window.innerHeight
     };
 
     this.videoPlayer = null;
@@ -154,9 +153,11 @@ export default class Dashboard extends Component {
   updateDimensions = () => {
     var videoHeight = document.getElementById("videoPlayer").offsetHeight;
     var videoWidth = document.getElementById("videoPlayer").offsetWidth;
+    var windowHeight = window.innerHeight;
     this.setState({
       videoHeight: videoHeight,
-      videoWidth: videoWidth
+      videoWidth: videoWidth,
+      windowHeight: windowHeight
     });
   };
 
@@ -167,7 +168,17 @@ export default class Dashboard extends Component {
   }
 
   showTimeCards(person) {
-    this.setState({ selectedPerson: person }); // updating state of selectedPerson
+    // updating state of selectedPerson
+    var selection = this.state.selectedPerson;
+    if (selection == null) {
+      this.setState({ selectedPerson: person });
+    } else {
+      if (selection.id == person.id) {
+        this.setState({ selectedPerson: null });
+      } else {
+        this.setState({ selectedPerson: person });
+      }
+    }
   }
 
 
@@ -238,24 +249,6 @@ async editPersonSave(newPersonDetails) {
     this.setState({ allDetections: newDetectionsArray });
   }
 
-  // getTimestampImages = async () =>{
-  //   var images = [];
-  //   var people = this.state.allDetections;
-  //   for(var x = 0; x < people.length; x++){
-  //     var arr = [];
-  //     for (var y = 0; y < people[x].timestamps.length; y++){
-  //       var time = people[x].timestamps[y]
-  //       var img = await this.grabVideoFrame(time)
-  //       console.log(img)
-  //     }
-  //     images.push({
-  //       id: people[x].id,
-  //       images: arr
-  //     })
-  //   }
-  //   console.log(images)
-  // }
-
   // choosen index of the person to be edited
   choosenPersonToEdit(index) {
     this.setState({
@@ -264,6 +257,7 @@ async editPersonSave(newPersonDetails) {
   }
 
   render() {
+    const { selectedPerson } = this.state;
     return (
       <div style={{ backgroundImage: 'url("../assets/wire-art.svg")' }}>
         {/* <div>
@@ -294,11 +288,10 @@ async editPersonSave(newPersonDetails) {
               </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={3}>
-              <div
-                className="allDetectedFaces"
-                style={{ height: this.state.videoHeight }}
-              >
-                <PersonDiv>
+              <div className="allDetectedFaces">
+                <PersonDiv
+                  style={{ height: this.state.videoHeight, overflowY: "auto" }}
+                >
                   {/* display all the names of the people recognized */}
                   {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
@@ -317,18 +310,22 @@ async editPersonSave(newPersonDetails) {
                       />
                     </div>
                   ))}
+                  <div style={{ height: 100 }}></div>
                 </PersonDiv>
+                <div className="fadeout" />
               </div>
             </Col>
           </Row>
           <Row>
-            <div className="allTimeCards">
-              <div className="timeCardContent">
-                {
-                  (this.result =
-                    this.state.selectedPerson &&
-                    this.state.selectedPerson.timestamps.map(
-                      (timestamp, index) => {
+            {selectedPerson != null ? (
+              <div>
+                <div
+                  className="allTimeCards"
+                  style={{ width: this.state.videoWidth}}
+                >
+                  <div className="timeCardContent">
+                    {selectedPerson &&
+                      selectedPerson.timestamps.map((timestamp, index) => {
                         // if a selectedPerson exists, display all Time Cards of that person
                         return (
                           <TimeCard
@@ -340,17 +337,14 @@ async editPersonSave(newPersonDetails) {
                             video={this.video}
                           />
                         );
-                      }
-                    ))
-                }
+                      })}
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : null}
           </Row>
         </Grid>
-
-
-
-        <button onClick={this.getTimestampImages}>hajdfkjak</button>
+        {/* <button onClick={this.getTimestampImages}>hajdfkjak</button> */}
       </div>
     );
   }

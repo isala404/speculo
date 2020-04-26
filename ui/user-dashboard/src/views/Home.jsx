@@ -12,9 +12,6 @@ import { AlliedCompanies } from "../components/companies/companies.component";
 export const Home = () => {
   return (
     <>
-      <div style={{ background: "#000000" }}>
-        <NavigationMenu />
-      </div>
       <div className="Header">
         <Header />
       </div>
@@ -27,11 +24,10 @@ export const Home = () => {
       >
         <Applications />
       </div>
-      <div className="SystemFeatures"
-      >
+      <div className="SystemFeatures">
         <SystemFeatures />
       </div>
-      <div className="UsageMap" style={{ background: "#F8F8F8"}}>
+      <div className="UsageMap" style={{ background: "#F8F8F8" }}>
         <UsageMap />
       </div>
       <div className="Customers">
