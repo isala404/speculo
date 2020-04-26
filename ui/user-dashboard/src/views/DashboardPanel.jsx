@@ -38,7 +38,23 @@ render(){
 
     const MyVideoUploader = () => {         // react-dropzone-uploader
         // specify upload params and url for files
-        const getUploadParams = ({ meta }) => { return { url: footageUploadEndpoint } }
+        const getUploadParams = ({ meta }) => {
+
+          let token = null;
+          if (localStorage.getItem("token") != null) {
+              token = localStorage.getItem("token")
+          } else{
+              console.log("token not found");
+          }
+
+          const headers = {
+            'x-access-token': token,
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          }
+          
+          return { url: footageUploadEndpoint, headers }
+          }
         
         // called every time a file's `status` changes
         const handleChangeStatus = ({ meta, file }, status) => { console.log(status, meta, file) }
