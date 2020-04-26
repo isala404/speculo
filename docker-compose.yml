@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8500:8080
+    restart: unless-stopped
   fingerprinter:
     image: tensorflow/serving
     ports:
@@ -14,6 +15,8 @@ services:
       - ./models/fingerprinter/models/11:/models/fingerprinter/1
     environment:
       - MODEL_NAME=fingerprinter
+    restart: unless-stopped
+
   comparator:
     build:
       context: models/comparator/
@@ -21,13 +24,15 @@ services:
     ports:
       - 8502:8080
     environment:
-      - FACE_SERVICE_URL=http://faceservice:8080/api/v1/faces
+      - FACE_SERVICE_URL=http://faceservice:3000/api/v1/faces
       - FINGERPRINT_THRESHOLD="1.7"
       - FINGERPRINT_SHAPE="(64, 64, 1)"
     env_file:
       - database_config.env
     depends_on:
       - faceservice
+    restart: unless-stopped
+
   faceservice:
     build:
       context: api/face-service/
@@ -40,6 +45,8 @@ services:
       - database_config.env
     depends_on:
       - imageprocessor
+    restart: unless-stopped
+
   gateway:
     build:
       context: api/gateway/
@@ -51,12 +58,16 @@ services:
       - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/
     env_file:
       - database_config.env
+    restart: unless-stopped
+
   videodownscaler:
     build:
       context: api/video-downscaler/
       dockerfile: Dockerfile
     ports:
       - 8505:8080
+    restart: unless-stopped
+
   imageprocessor:
     build:
       context: api/image-processor/
@@ -70,9 +81,13 @@ services:
       - COMPARATOR_ADD_URL=http://comparator:8080/v1/models/comparator:addFace
     depends_on:
       - facedetector
-  dashboard:
-    build:
-      context: ui/user-dashboard
-      dockerfile: Dockerfile
-    ports:
-      - 4000:80
+      - fingerprinter
+    restart: unless-stopped
+
+#  dashboard:
+#    build:
+#      context: ui/user-dashboard
+#      dockerfile: Dockerfile
+#    ports:
+#      - 4000:80
+
