@@ -50,8 +50,6 @@ services:
       - COMPARATOR_URL=http://comparator:8080/v1/models/comparator:addFace
     env_file:
       - database_config.env
-    depends_on:
-      - imageprocessor
   gateway:
     build:
       context: api/gateway/
