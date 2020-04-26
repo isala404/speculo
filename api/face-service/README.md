@@ -1,6 +1,6 @@
-# Image Processor
+# Face Service
 
-A microservice to perform CRUD operations on Face.
+A microservice to perform CRUD operations on the Face.
 
 ## API Documentation
 
