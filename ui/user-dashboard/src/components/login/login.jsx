@@ -57,9 +57,10 @@ export class Login extends React.Component {
                             localStorage.setItem('password', parsedResponse.data.data.user.password);
                             localStorage.setItem('__v', parsedResponse.data.data.user.__v);
                             localStorage.setItem('token', parsedResponse.data.data.token);
-                            localStorage.setItem('type', 'user');
+                            localStorage.setItem('type', parsedResponse.data.data.user.type);
 
                             //alert(parsedResponse.data.data.user.email)
+                            alert("Login Success!");
                             window.location.href = "/";
 
                         }
@@ -101,7 +102,7 @@ export class Login extends React.Component {
                             localStorage.setItem('password', parsedResponse.data.data.user.password);
                             localStorage.setItem('__v', parsedResponse.data.data.user.__v);
                             localStorage.setItem('token', parsedResponse.data.data.token);
-                            localStorage.setItem('type', 'admin');
+                            localStorage.setItem('type', parsedResponse.data.data.user.type);
 
                             //alert(parsedResponse.data.data.user.email)
                             alert("Login Success!");
