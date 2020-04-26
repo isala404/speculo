@@ -52,7 +52,7 @@ export class Register extends React.Component {
 
         if (this.state.name != "" && this.state.password != "" && this.state.email != "") {
             if (expression.test(String(this.state.email).toLowerCase()) && this.state.password==this.state.passwordCon) {
-                axios.post('http://ec2-18-217-163-34.us-east-2.compute.amazonaws.com:3000/user/register', this.state)
+                axios.post('http://speculo.isala.me/api/v1/user/register', this.state)
                     .then(response => {
                         console.log(response)
                         const parsedResponse = JSON.parse(JSON.stringify(response));
@@ -97,7 +97,7 @@ export class Register extends React.Component {
 
         if (this.state.name != "" && this.state.password != "" && this.state.email != "") {
             if (expression.test(String(this.state.email).toLowerCase()) && this.state.password==this.state.passwordCon) {
-                axios.post('http://ec2-18-217-163-34.us-east-2.compute.amazonaws.com:3000/admin/register', this.state)
+                axios.post('http://speculo.isala.me/api/v1/admin/register', this.state)
                     .then(response => {
                         console.log(response)
                         const parsedResponse = JSON.parse(JSON.stringify(response));

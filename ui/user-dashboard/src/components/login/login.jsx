@@ -45,7 +45,7 @@ export class Login extends React.Component {
         if (this.state.name != "" && this.state.password != "" && this.state.email != "") {
             if (expression.test(String(this.state.email).toLowerCase())) {
 
-                axios.post('http://ec2-18-217-163-34.us-east-2.compute.amazonaws.com:3000/user/authenticate', this.state)
+                axios.post('http://speculo.isala.me/api/v1/user/authenticate', this.state)
                     .then(response => {
                         const parsedResponse = JSON.parse(JSON.stringify(response));
                         if (parsedResponse.data.status === "success") {
@@ -88,23 +88,23 @@ export class Login extends React.Component {
 
         if (this.state.name != "" && this.state.password != "" && this.state.email != "") {
             if (expression.test(String(this.state.email).toLowerCase())) {
-                axios.post('http://ec2-18-217-163-34.us-east-2.compute.amazonaws.com:3000/admin/authenticate', this.state)
+                axios.post('http://speculo.isala.me/api/v1/admin/authenticate', this.state)
                     .then(response => {
                         const parsedResponse = JSON.parse(JSON.stringify(response));
                         if (parsedResponse.data.status === "success") {
                             alert(parsedResponse.data.message);
-                            //console.log(parsedResponse);
+                            console.log(parsedResponse);
 
-                            localStorage.setItem('_id', parsedResponse.data.data.admin._id);
-                            localStorage.setItem('name', parsedResponse.data.data.admin.name);
-                            localStorage.setItem('email', parsedResponse.data.data.admin.email);
-                            localStorage.setItem('password', parsedResponse.data.data.admin.password);
-                            localStorage.setItem('__v', parsedResponse.data.data.admin.__v);
+                            localStorage.setItem('_id', parsedResponse.data.data.user._id);
+                            localStorage.setItem('name', parsedResponse.data.data.user.name);
+                            localStorage.setItem('email', parsedResponse.data.data.user.email);
+                            localStorage.setItem('password', parsedResponse.data.data.user.password);
+                            localStorage.setItem('__v', parsedResponse.data.data.user.__v);
                             localStorage.setItem('token', parsedResponse.data.data.token);
                             localStorage.setItem('type', 'admin');
 
                             //alert(parsedResponse.data.data.user.email)
-                            alert("Login Success!")
+                            alert("Login Success!");
                             window.location.href = "/";
 
                         }
