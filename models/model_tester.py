@@ -5,8 +5,8 @@ import os
 from sklearn.neighbors import KNeighborsClassifier
 
 SIZE = 256
-FINGERPRINT_SIZE = (96, 96, 1)
-MODEL_VERSION = 6
+FINGERPRINT_SIZE = (64, 64, 3)
+MODEL_VERSION = 13
 known_face_encodings = []
 known_face_names = []
 
@@ -60,7 +60,7 @@ neigh = KNeighborsClassifier(n_neighbors=n_faces)
 neigh.fit(known_face_encodings, known_face_names)
 total_samples = 0
 correct_predictions = 0
-
+f = open("badimages.txt", "w")
 print("Start Predicting .... ")
 for person_dir in sorted(os.listdir("dataset_evaluate")):
     if person_dir == "Front":
@@ -75,11 +75,12 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
             predicted_name = best_match(face_encoding)
             if image[:8] == predicted_name:
                 correct_predictions += 1
-            # else:
-            #     print(image, "!=", predicted_name)
+            else:
+                f.write(f"{img_path}\n")
             print("current_samples", total_samples, "correct_predictions", correct_predictions,
                   "accuracy:", (correct_predictions / total_samples) * 100)
 
 print("total_samples:", total_samples)
 print("correct_predictions:", correct_predictions)
 print("accuracy:", (correct_predictions / total_samples) * 100)
+f.close()

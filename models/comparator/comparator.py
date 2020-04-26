@@ -10,8 +10,8 @@ from sklearn.neighbors import KNeighborsClassifier
 
 class ImageComparator:
     def __init__(self):
-        self.FINGERPRINT_THRESHOLD = 25
-        self.FINGERPRINT_SHAPE = (96, 96, 1)
+        self.FINGERPRINT_THRESHOLD = 30
+        self.FINGERPRINT_SHAPE = (64, 64, 3)
         self.COMPARATOR_SHAPE = np.ones(self.FINGERPRINT_SHAPE).reshape([-1]).shape
         self._FACE_SERVICE_ENDPOINT = os.getenv('FACE_SERVICE_URL')
         self.known_face_encodings = []
