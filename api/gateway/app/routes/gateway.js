@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer")();
 const faceController = require("../api/controllers/face");
 const imageProcessorController = require("../api/controllers/imageProcessor");
+const downscaler = require("../api/controllers/downscaler");
 const userController = require("../api/controllers/user");
 
 router.post(
@@ -60,4 +61,10 @@ router.post(
   imageProcessorController.upload_footage
 );
 
+router.post(
+  "/v1/downscale",
+  userController.validateUser,
+  multer.any(),
+  downscaler.downscale
+);
 module.exports = router;
