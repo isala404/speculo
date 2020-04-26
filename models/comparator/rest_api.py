@@ -18,11 +18,6 @@ async def predict(request):
                                 status=400, content_type='application/json')
 
         fingerprint = np.array(data['instances'])
-        # if data.shape != comparator.COMPARATOR_SHAPE:
-        #     return web.Response(body=json.dumps(
-        #         {'error': f'input shape mismatched, shape of the passed image is {fingerprint.shape} '
-        #                   f'and model is expecting shape {comparator.COMPARATOR_SHAPE}'}),
-        #         status=400, content_type='application/json')
 
         output = await comparator.get_best_match(fingerprint)
 
@@ -47,11 +42,6 @@ async def add_new_face(request):
                                 status=400, content_type='application/json')
 
         fingerprint = np.array(data['fingerprint'])
-        # if data.shape != comparator.COMPARATOR_SHAPE:
-        #     return web.Response(body=json.dumps(
-        #         {'error': f'input shape mismatched, shape of the passed image is {fingerprint.shape} '
-        #                   f'and model is expecting shape {comparator.COMPARATOR_SHAPE}'}),
-        #         status=400, content_type='application/json')
 
         if comparator.add_new_face(fingerprint, data['id']):
             return web.Response(body=json.dumps({'data': 'fingerprint-added'}),
@@ -69,4 +59,4 @@ async def add_new_face(request):
 app = web.Application()
 app.add_routes([web.post('/v1/models/comparator:predict', predict)])
 app.add_routes([web.post('/v1/models/comparator:addFace', add_new_face)])
-web.run_app(app, port=8000)
+web.run_app(app, port=8080)

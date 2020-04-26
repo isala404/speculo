@@ -23,7 +23,7 @@ class App {
 
 	private setConfig() {
 		// allows us to receive requests with data in json format
-		this.app.use(bodyParser.json());
+		this.app.use(bodyParser.json({limit: '50mb'}));
 
 		// allows us to receive requests with data in x-www-form-urlencoded format
 		this.app.use(bodyParser.urlencoded());
