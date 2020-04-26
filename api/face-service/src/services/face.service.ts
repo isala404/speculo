@@ -106,25 +106,21 @@ export class FaceService {
 					}
 
 					let fingerprints = face.get('fingerprints')
-					console.log(fingerprints.length);
 
 					let fingerprint = response['data']['data']
 					fingerprints.push(fingerprint);
-
-					console.log(fingerprints.length);
 
 
 					let updateQuery = {
 						fingerprints: fingerprints
 					}
 
-					console.log(updateQuery['fingerprints'].length)
-
 					Face.updateOne({_id: id}, updateQuery, err => {
-						if (err){
-							res.status(500).json({"error" : "There is an error"});
+						if (err) {
+							res.status(500).json({"error": "There is an error"});
 						} else {
-							res.status(200).json({"error" : "Successfully added face fingerprint to face."});
+							console.log(`[DATABASE] New face added to existing face successfully`);
+							res.status(200).json({"error": "Successfully added face fingerprint to face."});
 						}
 					});
 
@@ -133,14 +129,8 @@ export class FaceService {
 						'fingerprint': fingerprint
 					}
 
-					console.log(data)
-
 					axios.post(COMPARATOR_URL, data).then(function (response) {
-						if (response.data['error']) {
-							console.log("There was an issue in saving the face to Comparator")
-						} else {
-							console.log("Face successfully saved to Comparator")
-						}
+						console.log(`[COMPARATOR] Face successfully saved`)
 					}).catch(function (error) {
 						console.log(error.message);
 					});
@@ -171,8 +161,10 @@ export class FaceService {
 			}
 
 			if (faces.length === 0) {
+				console.log(`[DATABASE] No faces in the database.`);
 				res.status(200).json({'data': []});
 			} else {
+				console.log(`[DATABASE] Retrieved all the faces from the database.`);
 				res.status(200).json({'data': faces});
 			}
 		});
@@ -200,6 +192,7 @@ export class FaceService {
 				return res.status(404).json({"error": "Invalid ID provided"});
 			}
 
+			console.log(`[DATABASE] Retrieved a face by ID from the database.`);
 			res.status(200).json({'data': face});
 		});
 	}
@@ -248,6 +241,7 @@ export class FaceService {
 								res.send(error);
 							}
 
+							console.log(`[DATABASE] Updated a face by ID from the database.`);
 							res.status(201).json({"id": face._id});
 						});
 					}
@@ -267,6 +261,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Deleted all the faces from the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		}));
@@ -285,6 +280,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Deleted a face by ID from the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		}));
@@ -309,6 +305,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Patched face label in the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		});
@@ -331,6 +328,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Patched face blacklist status in the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		});
@@ -353,6 +351,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Patched face whitelist status in the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		});
@@ -362,8 +361,6 @@ export class FaceService {
 	public addUnknownFace(req: Request, res: Response) {
 		let fingerprint = req.body["fingerprint"];
 
-		console.log("ADDING UNKNOWN FACE")
-		
 		const face = new Face({
 			'label': "Unknown",
 			'blacklisted': false,
@@ -377,7 +374,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			}
-
+			console.log(`[DATABASE] Added unknown face to the database.`);
 			res.status(201).json({"id": face._id});
 		});
 	}
