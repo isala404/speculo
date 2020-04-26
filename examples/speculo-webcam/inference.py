@@ -1,7 +1,6 @@
 import pickle
 import cv2
 from facedetector.yolo.yolo import YOLO
-# from scipy.spatial import distance
 from models.fingerprinter.speculo import Speculo
 import os
 from sklearn.neighbors import KNeighborsClassifier
@@ -9,8 +8,8 @@ from sklearn.neighbors import KNeighborsClassifier
 yolo = YOLO(draw=False, debug=False)
 
 SIZE = 256
-FINGERPRINT_SIZE = (96, 96, 1)
-MODEL_VERSION = 6
+FINGERPRINT_SIZE = (64, 64, 3)
+MODEL_VERSION = 13
 known_face_encodings = []
 known_face_names = []
 speculo = Speculo(
@@ -72,7 +71,7 @@ def add_new_face(f_encoding, user_face):
 def best_match(f_encoding):
     distance, face_idx = neigh.kneighbors([f_encoding], n_neighbors=1, return_distance=True)
     print(known_face_names[face_idx.tolist()[0][0]], distance.tolist()[0][0])
-    if distance.tolist()[0][0] >= 25:
+    if distance.tolist()[0][0] >= 30:
         return "Unknown"
 
     return known_face_names[face_idx.tolist()[0][0]]
