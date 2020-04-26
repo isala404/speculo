@@ -22,7 +22,7 @@ class ImageComparator:
 		for entry in faces:
 			for fingerprint in entry['fingerprints']:
 				self.known_face_encodings.append(np.array(fingerprint).reshape([-1]))
-				self.known_face_names.append(entry['id'])
+				self.known_face_names.append(entry['_id'])
 		
 		self.model = KNeighborsClassifier(
 			n_neighbors=len(set(self.known_face_names)))
