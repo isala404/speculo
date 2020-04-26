@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 
-version = 6
+version = 11
 
 MODEL_DIR = "../models/fingerprinter/models"
 model = tf.keras.models.load_model(f"../models/fingerprinter/models/{version}/Model-v{version}.h5")
