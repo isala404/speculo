@@ -57,6 +57,7 @@ export class Login extends React.Component {
                             localStorage.setItem('password', parsedResponse.data.data.user.password);
                             localStorage.setItem('__v', parsedResponse.data.data.user.__v);
                             localStorage.setItem('token', parsedResponse.data.data.token);
+                            localStorage.setItem('type', 'user');
 
                             //alert(parsedResponse.data.data.user.email)
                             window.location.href = "/";
@@ -92,12 +93,15 @@ export class Login extends React.Component {
                         const parsedResponse = JSON.parse(JSON.stringify(response));
                         if (parsedResponse.data.status === "success") {
                             alert(parsedResponse.data.message);
-                            localStorage.setItem('_id', parsedResponse.data.data.user._id);
-                            localStorage.setItem('name', parsedResponse.data.data.user.name);
-                            localStorage.setItem('email', parsedResponse.data.data.user.email);
-                            localStorage.setItem('password', parsedResponse.data.data.user.password);
-                            localStorage.setItem('__v', parsedResponse.data.data.user.__v);
+                            //console.log(parsedResponse);
+
+                            localStorage.setItem('_id', parsedResponse.data.data.admin._id);
+                            localStorage.setItem('name', parsedResponse.data.data.admin.name);
+                            localStorage.setItem('email', parsedResponse.data.data.admin.email);
+                            localStorage.setItem('password', parsedResponse.data.data.admin.password);
+                            localStorage.setItem('__v', parsedResponse.data.data.admin.__v);
                             localStorage.setItem('token', parsedResponse.data.data.token);
+                            localStorage.setItem('type', 'admin');
 
                             //alert(parsedResponse.data.data.user.email)
                             alert("Login Success!")
