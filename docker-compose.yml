@@ -17,7 +17,7 @@ services:
     ports:
       - 8501:8501
     volumes:
-      - ./models/fingerprinter/models/11:/models/fingerprinter/1
+      - ./models/fingerprinter/models/6:/models/fingerprinter/1
     environment:
       - MODEL_NAME=fingerprinter
 #    device_requests:
