@@ -58,7 +58,7 @@ services:
     ports:
       - 8504:3000
     environment:
-      - FACE_SERVICE_URL=http://faceservice:8080/
+      - FACE_SERVICE_URL=http://faceservice:3000/
       - VIDEO_DOWNSCALER_URL=http://videodownscaler:8080/
     env_file:
       - database_config.env
