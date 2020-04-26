@@ -306,11 +306,6 @@ def test_nn(nn):
     out.show()
 
 
-if __name__ == "__main__":
-    speculo = Speculo()
-    # print(speculo.autoencoder().summary())
-    speculo.train()
-<<<<<<< HEAD
-    # test_nn(speculo)
-=======
->>>>>>> cb9025eeadd33d5bce4f8f82e75d77dd0d4a024b
+# if __name__ == "__main__":
+#     speculo = Speculo()
+#     speculo.train()
