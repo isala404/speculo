@@ -20,22 +20,35 @@ export const NavigationMenu = () => {
           style={navStyle}
           fixed="top"
         >
-          <Link to="/">
+          <Navbar.Brand href="/">
             <Logo />
-          </Link>
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto"></Nav>
             <Nav>
-            <NavLink to="/dashboard">
-                Features
-              </NavLink>
-              <NavLink to="/login">
-                Login
-              </NavLink>
-              <NavLink href="sign-up" style={linkStyle}>
-                <BasicButton buttonTitle="Sign Up" />
-              </NavLink>
+              <Nav.Link href="features" style={linkStyle}>Features</Nav.Link>
+
+              {localStorage.getItem('type') == 'admin' ?
+              <Nav.Link href="admin" style={linkStyle}>Admin</Nav.Link>
+              :
+              null}
+
+              {localStorage.getItem('type') !==null ?
+              <Nav.Link href="dashboard-panel" style={linkStyle}>Dashboard</Nav.Link>
+              :
+              null}
+
+
+              {localStorage.getItem('token') == null ?
+                [
+                  <Nav.Link href="login" style={linkStyle}><span id="navbar-login-button">Log In</span></Nav.Link>,
+                  <Nav.Link href="sign-up" style={linkStyle}><BasicButton buttonTitle="Sign Up" /></Nav.Link>
+                ]
+                :
+                <Nav.Link href="profile" style={linkStyle}><BasicButton buttonTitle="Profile" /></Nav.Link>
+              }
+
             </Nav>
           </Navbar.Collapse>
         </Navbar>

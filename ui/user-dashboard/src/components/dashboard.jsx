@@ -28,8 +28,9 @@ export default class Dashboard extends Component {
     this.editPersonSave = this.editPersonSave.bind(this);
 
     this.state = {
-      // allDetections: [],           // stores all the detected faces with the timestamps
-      allDetections: people,
+      allDetections: [],           // stores all the detected faces with the timestamps
+      processing: true,           // processing status of video - to handle displaying detections once received
+      // allDetections: people,
       selectedPerson: null,
       seekTime: 0,
       chosenIndexToEdit: 0,
@@ -72,19 +73,35 @@ export default class Dashboard extends Component {
   };
 
   componentDidMount() {
-    // instantiate Video.js
-    this.videoPlayer = videojs("videoPlayer", { responsive: true });
-    this.videoPlayer.responsive(true);
+
     //for grabbing a screencapture
     this.container = document.getElementById("videoPlayer");
     this.video = document.createElement("video");
     this.video.width = 600;
     this.canCapture = true;
     if (!this.video.canPlayType("video/mp4")) {
-      this.canCapture = false;
-      return;
+        this.canCapture = false;
+        return;
     }
-    this.video.src = "../../demo.mp4";
+
+    if (sessionStorage.getItem('videoURL') != null){
+        // Get saved data from sessionStorage
+        let data = JSON.parse(sessionStorage.getItem('videoURL'));
+        console.log(data);
+        this.videoNode.src = data.src;
+        this.videoNode.type = data.type;
+        this.videoNode.load();
+        this.videoNode.onloadeddata = function() {
+        this.videoNode.play();
+    }
+        this.setState({videoSRC: data});
+
+    } else{
+        // redirect back to uploading footage? / show message that video isn't available
+    }
+
+    
+    this.video.src ="../../demo.mp4";
     this.container.appendChild(this.video);
     this.video.pause();
     // this.video.play();
@@ -96,15 +113,27 @@ export default class Dashboard extends Component {
     this.ctx = this.canvas.getContext("2d");
     // this.video.hidden = true;
 
+
+    // instantiate Video.js
+    this.videoPlayer = videojs("videoPlayer", { responsive: true });
+    this.videoPlayer.responsive(true);
+
     this.player = videojs(this.videoNode, this.props, function onPlayerReady() {
       console.log("onPlayerReady", this);
     });
 
-    // get detected faces with timestamps from the backend
-    this.getAllDetections();
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
     //settin the viewport dimensions
+    
+
+    // get detected faces with timestamps from the backend
+    this.getAllDetections();
+
+  }
+  
+  componentDidUpdate() {
+    window.addEventListener("resize", this.updateDimensions);
   }
 
   // destroy player on unmount
@@ -113,6 +142,12 @@ export default class Dashboard extends Component {
       this.player.dispose();
     }
   }
+  
+  // for testing purposes
+//   timeout = (ms) => { 
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+
 
   //function to get the width and height of the viewport dynamically
   updateDimensions = () => {
@@ -146,60 +181,57 @@ export default class Dashboard extends Component {
     }
   }
 
+
   // Get all detected people with detected timestamps in a video
   async getAllDetections() {
-    try {
-      const res = await retrieveAllDetections();
-      this.setState({ allDetections: res });
+    try { 
+        const res = await retrieveAllDetections();
+        this.setState({processing:false , allDetections: res});
+
+        // await this.timeout(10000);     // tester
+        // this.setState({processing:false , allDetections: people});
     } catch (e) {
-      console.log(e);
+        console.log(e);
     }
-  }
+}
+
 
   // Edit name/ black-list status of a person in the system db & display in UI
-  async editPersonSave(newPersonDetails) {
+async editPersonSave(newPersonDetails) {
     const chosenIndexToEdit = this.state.chosenIndexToEdit;
     let oldDetailsOfPerson = this.state.allDetections[chosenIndexToEdit];
 
     let newDetectionsArray = [...this.state.allDetections];
     newDetectionsArray[chosenIndexToEdit] = newPersonDetails; // replacing the chosen index with the person details obtained from the pop-up component
     this.setState({ allDetections: newDetectionsArray });
+    
 
     // send patch requests to db ---
 
     // check if the name has changed
-    if (oldDetailsOfPerson.name !== newPersonDetails.name) {
-      try {
-        const res = editNameInSystem(
-          newPersonDetails.id,
-          newPersonDetails.name
-        );
-        console.log(res);
-      } catch (e) {
-        console.log(e);
-      }
+    if (oldDetailsOfPerson.name !== newPersonDetails.name){
+        try{
+            const res = editNameInSystem(newPersonDetails.id, newPersonDetails.name);
+            console.log(res);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     // check if the blacklist status has changed
-    if (oldDetailsOfPerson.blacklisted !== newPersonDetails.blacklisted) {
-      try {
-        let res = null;
-        if (newPersonDetails.blacklisted === true) {
-          // blacklist a person
-          res = await blacklistPersonInSystem(newPersonDetails.id);
-        } else if (newPersonDetails.blacklisted === false) {
-          // whitelist a person
-          res = await whitelistPersonInSystem(newPersonDetails.id);
+    if (oldDetailsOfPerson.blacklisted !== newPersonDetails.blacklisted){
+        try{
+            let res = null;
+            if(newPersonDetails.blacklisted === true){           // blacklist a person
+                res = await blacklistPersonInSystem(newPersonDetails.id);
+            } else if (newPersonDetails.blacklisted === false){      // whitelist a person
+                res = await whitelistPersonInSystem(newPersonDetails.id);
+            }
+            console.log(res);
+        } catch (e) {
+            console.log(e);
         }
-        console.log(res);
-      } catch (e) {
-        console.log(e);
-      }
     }
-  }
-
-  componentDidUpdate() {
-    window.addEventListener("resize", this.updateDimensions);
   }
 
   // Delete known people from the system db
@@ -227,25 +259,32 @@ export default class Dashboard extends Component {
   render() {
     const { selectedPerson } = this.state;
     return (
-      <div className="dashboard">
+      <div style={{ backgroundImage: 'url("../assets/wire-art.svg")' }}>
+        {/* <div>
+          <NavigationMenu />
+        </div>
+         */}
+
         <Grid>
-          <Row style={{ marginTop: "3em" }}>
-            <Col xs={12} sm={12} md={12} lg={9}>
+          <Row>
+            <Col xs={12} sm={12} md={12} lg={9}> 
               <div id="video-js-responsive-container vjs-hd videoContainer">
-                <div className="VideoDiv">
-                  <video
-                    ref={node => (this.videoNode = node)}
-                    id="videoPlayer"
-                    className="video-js vjs-fluid vjs-theme-fantasy"
-                    data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
-                  >
-                    <source
-                      src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                      type="video/mp4"
-                    />
-                    {/* video that needs to be added to check for faces will be opened here */}
-                  </video>
-                </div>
+                {<video
+                  ref={node => (this.videoNode = node)}
+                  id="videoPlayer"
+                  className="video-js vjs-fluid vjs-theme-fantasy"
+                  data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
+                  type= "video/mp4"
+                >
+                  <source
+                    // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    // src = {this.state.videoSRC}
+                    src = {this.props.videoSRC}
+
+                    type="video/mp4"
+                  />
+                  {/* video that needs to be added to check for faces will be opened here */}
+                </video>}
               </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={3}>
@@ -254,7 +293,7 @@ export default class Dashboard extends Component {
                   style={{ height: this.state.videoHeight, overflowY: "auto" }}
                 >
                   {/* display all the names of the people recognized */}
-                  {this.state.allDetections.map((person, index) => (
+                  {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
                       <Person
                         key={index}
@@ -305,6 +344,7 @@ export default class Dashboard extends Component {
             ) : null}
           </Row>
         </Grid>
+        {/* <button onClick={this.getTimestampImages}>hajdfkjak</button> */}
       </div>
     );
   }

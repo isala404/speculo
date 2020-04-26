@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import UploadFootage from "../components/upload-face-footage/upload-footage/UploadFootage";
+import DashboardPanel from "./DashboardPanel";
 import UploadFaces from "../components/upload-face-footage/upload-faces/UploadFaces";
 import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
 import { BasicButton } from "../components/button/button.component";
 
-export const UploadPage = () => {
+export const Upload = () => {
   const [isScanByFace, setScanByFace] = useState(false);
 
   const checkboxHandler = () => {
@@ -20,7 +20,7 @@ export const UploadPage = () => {
               Select the footage you want to analyse.
             </span>
           </div>
-          <UploadFootage />
+          {/* <UploadFootage /> */}
           <div style={uploadTextStyle}>
             <input type="checkbox" onChange={checkboxHandler} />
             <span style={{ uploadTextStyle }}>

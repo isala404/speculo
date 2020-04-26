@@ -1,4 +1,6 @@
-export const speculoBackend = process.env.REACT_APP_API_ENDPOINT;
+export const speculoBackend = `http://speculo.isala.me`;           // GCP hosted endpoint
+// export const speculoBackend = process.env.REACT_APP_API_ENDPOINT;           // local hosting endpoint
+
 
 // get endpoints
 export const detectionsEndpoint = `${speculoBackend}/api/get/`;         // get all detections post processing
@@ -6,6 +8,7 @@ export const getAllFacesEndpoint = `${speculoBackend}/api/v1/faces?`;        // 
 
 // post (uploading) endpoints
 export const footageUploadEndpoint = `${speculoBackend}/api/post/footage/`;
+// export const footageUploadEndpoint = 'https://httpbin.org/post';         // for testing purposes
 export const facesUploadEndpoint = `${speculoBackend}/api/v1/faces/`;
 
 // delete endpoints
