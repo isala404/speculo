@@ -7,7 +7,7 @@ update_configs:
     directory: "/ui/user-dashboard/"
     update_schedule: "live"
     default_assignees:
-      - "mrsupiri"
+      - "DinDev3"
     default_labels:
       - "dependencies"
       - "dependabot"
@@ -20,7 +20,18 @@ update_configs:
     directory: "/api/gateway/"
     update_schedule: "live"
     default_assignees:
-      - "mrsupiri"
+      - "akassharjun"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"
+      
+    ## api face service
+  - package_manager: "javascript"
+    directory: "/api/face-service/"
+    update_schedule: "live"
+    default_assignees:
+      - "akassharjun"
     default_labels:
       - "dependencies"
       - "dependabot"
@@ -28,21 +39,10 @@ update_configs:
 
   ## image postprocessor
   - package_manager: "python"
-    directory: "/api/postprocessor/"
+    directory: "/api/image-processor/"
     update_schedule: "live"
     default_assignees:
-      - "mrsupiri"
-    default_labels:
-      - "dependencies"
-      - "dependabot"
-      - "security"
-
-  ## image preprocessor
-  - package_manager: "python"
-    directory: "/api/preprocessor/"
-    update_schedule: "live"
-    default_assignees:
-      - "mrsupiri"
+      - "akassharjun"
     default_labels:
       - "dependencies"
       - "dependabot"
@@ -50,7 +50,7 @@ update_configs:
 
   ## image comparator
   - package_manager: "python"
-    directory: "/api/comparator/"
+    directory: "models/comparator/"
     update_schedule: "live"
     default_assignees:
       - "mrsupiri"
@@ -61,7 +61,7 @@ update_configs:
 
   ## facedetector
   - package_manager: "python"
-    directory: "/facedetector/"
+    directory: "models/facedetector/"
     update_schedule: "live"
     default_assignees:
       - "mrsupiri"
@@ -72,7 +72,7 @@ update_configs:
 
   ## fingerprinter
   - package_manager: "python"
-    directory: "/fingerprinter/"
+    directory: "models/fingerprinter/"
     update_schedule: "live"
     default_assignees:
       - "mrsupiri"
