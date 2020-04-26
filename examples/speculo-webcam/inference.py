@@ -6,7 +6,7 @@ from models.fingerprinter.speculo import Speculo
 import os
 from sklearn.neighbors import KNeighborsClassifier
 
-os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 yolo = YOLO(draw=False, debug=False)
 
@@ -34,16 +34,19 @@ else:
             im = cv2.resize(im, (512, 512), interpolation=cv2.INTER_AREA)
             boxes = yolo.detect_image_fast(im)
             if len(boxes) == 0:
-                print(os.path.join("faces", person_dir, image), "no face found, skipping .....")
+                print(os.path.join("faces", person_dir, image),
+                      "no face found, skipping .....")
                 continue
             if len(boxes) >= 2:
-                print(os.path.join("faces", person_dir, image), "Found more than one face, skipping .....")
+                print(os.path.join("faces", person_dir, image),
+                      "Found more than one face, skipping .....")
                 continue
             top, left, bottom, right = boxes[0]
             face = im[int(top):int(bottom), int(left):int(right)]
             if FINGERPRINT_SIZE[2] == 1:
                 face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-            face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
+            face = cv2.resize(
+                face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
             face_encoding = speculo.predict(face)
             known_face_encodings.append(face_encoding)
             known_face_names.append(person_dir.title())
@@ -72,11 +75,12 @@ def add_new_face(f_encoding, user_face):
 
 
 def best_match(f_encoding, user_face):
-    distance, face_idx = neigh.kneighbors([f_encoding], n_neighbors=1, return_distance=True)
+    distance, face_idx = neigh.kneighbors(
+        [f_encoding], n_neighbors=1, return_distance=True)
     # print(distance, face_idx)
     # if distance.tolist()[0][0] >= 1.7:
     #     return "Unknown"
-        # return add_new_face(f_encoding, user_face)
+    # return add_new_face(f_encoding, user_face)
 
     return known_face_names[face_idx.tolist()[0][0]]
 
@@ -101,14 +105,16 @@ while True:
             continue
         if FINGERPRINT_SIZE[2] == 1:
             face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-        face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
+        face = cv2.resize(
+            face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
 
         font = cv2.FONT_HERSHEY_DUPLEX
-        
+
         face_encoding = speculo.predict(face)
         face_name = best_match(face_encoding, frame.copy())
         # face_name = neigh.predict([face_encoding])[0]
-        cv2.putText(frame, face_name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+        cv2.putText(frame, face_name, (left + 6, bottom - 6),
+                    font, 1.0, (255, 255, 255), 1)
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
     cv2.imshow('Video', frame)
