@@ -3,9 +3,9 @@ import { render } from '@testing-library/react';
 
 import { Login, Register } from './components/login/index';
 import { Home } from "./views/Home.jsx";
-import Dashboard from "./views/dashboard.jsx";
+import DashboardPanel from "./views/DashboardPanel.jsx";
 import WebCam from "./components/webcam/webcam.component"
-import { UploadPage } from "./views/upload.jsx";
+import { Upload } from "./views/upload.jsx";
 import { Admin } from "./views/Admin.jsx";
 
 import Enzyme, { shallow, mount } from 'enzyme';
@@ -67,8 +67,8 @@ describe('To check All componnets are rendered', () => {
   });
 
   it('Dashboard component has rendered', () => {
-    const wrapper = shallow(<Dashboard />);
-    expect(wrapper.contains(<Dashboard />)).toBe(false);
+    const wrapper = shallow(<DashboardPanel />);
+    expect(wrapper.contains(<DashboardPanel />)).toBe(false);
   });
 
   it('WebCam component has rendered', () => {
@@ -76,9 +76,9 @@ describe('To check All componnets are rendered', () => {
     expect(wrapper.contains(<WebCam />)).toBe(false);
   });
 
-  it('UploadPage component has rendered', () => {
-    const wrapper = shallow(<UploadPage />);
-    expect(wrapper.contains(<UploadPage />)).toBe(false);
+  it('Upload component has rendered', () => {
+    const wrapper = shallow(<Upload />);
+    expect(wrapper.contains(<Upload />)).toBe(false);
   });
 
   it('Admin component has rendered', () => {
@@ -103,21 +103,14 @@ describe('Testing Routing functionality', () => {
 
   it('Redirection to Dashboard', () => {
     const wrapper = mount(
-      <MemoryRouter initialEntries={['/dashboard']}>
+      <MemoryRouter initialEntries={['/dashboard-panel']}>
         <App />
       </MemoryRouter>
     );
-    expect(wrapper.find(Dashboard)).toHaveLength(1);
+    expect(wrapper.find(DashboardPanel)).toHaveLength(1);
   });
 
-  it('Redirection to uploads page', () => {
-    const wrapper = mount(
-      <MemoryRouter initialEntries={['/upload']}>
-        <App />
-      </MemoryRouter>
-    );
-    expect(wrapper.find(UploadPage)).toHaveLength(1);
-  });
+  
 
   it('Redirection to Proof of Concept', () => {
     const wrapper = mount(
@@ -148,20 +141,29 @@ describe('Testing Routing functionality', () => {
 
   it('Redirection to Register', () => {
     const wrapper = mount(
-      <MemoryRouter initialEntries={['/register']}>
+      <MemoryRouter initialEntries={['/sign-up']}>
         <App />
       </MemoryRouter>
     );
     expect(wrapper.find(Register)).toHaveLength(1);
   });
 
-  it('Redirection to Auth', () => {
+  // it('Redirection to Auth', () => {
+  //   const wrapper = mount(
+  //     <MemoryRouter initialEntries={['/Auth']}>
+  //       <App />
+  //     </MemoryRouter>
+  //   );
+  //   expect(wrapper.find(Register)).toHaveLength(1);
+  // });
+
+  it('Redirection to Upload', () => {
     const wrapper = mount(
-      <MemoryRouter initialEntries={['/Auth']}>
+      <MemoryRouter initialEntries={['/upload']}>
         <App />
       </MemoryRouter>
     );
-    expect(wrapper.find(Register)).toHaveLength(1);
+    expect(wrapper.find(Upload)).toHaveLength(1);
   });
 
 });
