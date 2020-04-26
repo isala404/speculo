@@ -33,8 +33,8 @@ class ImageProcessor:
 	"""
 	
 	def __init__(self):
-		self._SIZE = 192
-		self._FINGERPRINT_SIZE = (128, 128, 1)
+		self._SIZE = 256
+		self._FINGERPRINT_SIZE = (64, 64, 3)
 		self._FACEDETECTOR_ENDPOINT = os.getenv('FACEDETECTOR_URL')
 		self._FINGERPRINT_ENDPOINT = os.getenv('FINGERPRINTER_URL')
 		self._COMPARATOR_ENDPOINT = os.getenv('COMPARATOR_URL')
@@ -240,7 +240,6 @@ class ImageProcessor:
 						entry['timestamps'] = timestamps
 						all_detections[index] = entry
 					
-					print(index, all_detections)
 			except Exception as e:
 				logging.exception(e)
 				logging.info(f"Frame #{next_frame_index} was skipped due to an error.")
@@ -270,7 +269,6 @@ class ImageProcessor:
 		
 		boxes = await self._get_faces(resized_image=resized_im)
 		logging.info(f'[COORDINATES] - Received Coordinates')
-		print(boxes)
 		
 		for top, left, bottom, right in boxes:
 			# Setting the points for cropped image
