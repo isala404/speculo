@@ -4,8 +4,7 @@ import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
 import {Error, MongooseDocument} from "mongoose";
-import {IMAGE_PROCESSOR_URL} from "../constants/face.constants";
-
+import {IMAGE_PROCESSOR_URL, COMPARATOR_URL} from "../constants/face.constants";
 
 export class FaceService {
 
@@ -29,7 +28,7 @@ export class FaceService {
 
 		axios.post(IMAGE_PROCESSOR_URL, form, config)
 			.then(function (response) {
-				// get the label of the face from the filename
+
 				let label = file.originalname.split('.')[0];
 				const face = new Face({
 					'label': label,
@@ -69,7 +68,7 @@ export class FaceService {
 			}
 
 			if (faces.length === 0) {
-				res.status(204).json({'data': []});
+				res.status(200).json({'data': []});
 			} else {
 				res.status(200).json({'data': faces});
 			}
@@ -253,6 +252,27 @@ export class FaceService {
 			} else {
 				res.status(200).json({"status": "success"})
 			}
+		});
+	}
+
+	public addUnknownFace(req:Request, res:Response) {
+		let fingerprint = req.body["fingerprint"];
+
+		const face = new Face({
+			'label': "Unknown",
+			'blacklisted': false,
+			'fingerprints': [fingerprint],
+			'createdAt': Date.now(),
+			'lastUpdated': Date.now()
+		});
+
+		// save the face
+		face.save((error: Error, face: MongooseDocument) => {
+			if (error) {
+				res.status(500).json({'error': error.message});
+			}
+
+			res.status(201).json({"id": face._id});
 		});
 	}
 }
