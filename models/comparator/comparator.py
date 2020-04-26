@@ -1,16 +1,16 @@
-import functools
+import asyncio
 import json
 import logging
 import os
-from sklearn.neighbors import KNeighborsClassifier
+
 import aiohttp
 import numpy as np
-import asyncio
+from sklearn.neighbors import KNeighborsClassifier
 
 
 class ImageComparator:
 	def __init__(self):
-		self.FINGERPRINT_THRESHOLD = os.getenv("FINGERPRINT_THRESHOLD")
+		self.FINGERPRINT_THRESHOLD = 1.7
 		self.FINGERPRINT_SHAPE = (64, 64, 1)
 		self.COMPARATOR_SHAPE = np.ones(self.FINGERPRINT_SHAPE).reshape([-1]).shape
 		self._FACE_SERVICE_ENDPOINT = os.getenv('FACE_SERVICE_URL')
@@ -19,9 +19,10 @@ class ImageComparator:
 		
 		loop = asyncio.get_event_loop()
 		faces = loop.run_until_complete(self._get_all_faces())
+		
 		for entry in faces:
 			for fingerprint in entry['fingerprints']:
-				self.known_face_encodings.append(np.array(fingerprint).reshape([-1]))
+				self.known_face_encodings.append(fingerprint)
 				self.known_face_names.append(entry['_id'])
 		
 		self.model = KNeighborsClassifier(
@@ -48,7 +49,7 @@ class ImageComparator:
 		distance, face_idx = self.model.kneighbors(
 			[f_encoding], n_neighbors=1, return_distance=True)
 		
-		if distance.tolist()[0][0] >= self.FINGERPRINT_THRESHOLD:
+		if distance.tolist()[0][0] >= self.FINGERPRINT_THRESHOLD and len(self.known_face_names) == 0:
 			return "5ea4c38494c408001a04dbba"
 		
 		return self.known_face_names[face_idx.tolist()[0][0]]
@@ -81,78 +82,3 @@ class ImageComparator:
 			logging.error('Error while fitting a new fingerprint')
 			logging.exception(e)
 			return False
-
-# @staticmethod
-# def _distance01(matrix_one, matrix_two):
-#     mat_one = np.array(matrix_one)
-#     mat_two = np.array(matrix_two)
-#     distance_value = np.linalg.norm(mat_one - mat_two)
-#     return distance_value
-#
-# @staticmethod
-# def _distance02(matrix_one, matrix_two):
-#     mat_one = np.array(matrix_one)
-#     mat_two = np.array(matrix_two)
-#     return np.sqrt(np.sum((mat_one - mat_two) ** 2))
-#
-# def _compare(self, detected_encoding, known_face_encodings_list):
-#     indexes = []
-#     high_matches = []
-#
-#     for index, face_encoding in enumerate(known_face_encodings_list):
-#         face_distance = self._distance01(detected_encoding, face_encoding)
-#
-#         if face_distance < 0.6:
-#             indexes.append(index)
-#             high_matches.append(face_distance)
-#
-#     if len(indexes) > 0:
-#         val = indexes[high_matches.index(min(high_matches))] + 1
-#         return val
-#     else:
-#         return "Error"
-#
-# async def matrix_matcher(self, matrix):
-#     matrix = np.array(matrix)
-#     saved_matrix = []
-#     saved_names = []
-#     saved_ids = []
-#     saved_blacklist = []
-#
-#     faces = await self._get_all_faces()
-#
-#     for face in faces:
-#         saved_matrix.append(np.reshape(
-#             list(face['matrix']), [-1]).tolist())
-#         saved_names.append(list(face['label']))
-#         saved_ids.append(list(str(face['id'])))
-#         saved_blacklist.append(list(str(face['blacklisted'])))
-#         saved_blacklist.append(list(str(face['created_at'])))
-#         saved_blacklist.append(list(str(face['updated_at'])))
-#
-#     identity = self._compare(matrix, saved_matrix)
-#
-#     if identity == "Error":
-#
-#         face_id = await self._save_unknown_face(fingerprint=matrix)
-#
-#         data = {
-#             'found': False,
-#             'id': str(face_id),
-#             'name': 'Unknown'
-#         }
-#
-#         return data
-#
-#     else:
-#         name_label = "".join(saved_names[identity - 1])
-#         face_id = "".join(saved_ids[identity - 1])
-#         face_blacklist = "".join(saved_blacklist[identity - 1])
-#         data = {
-#             'found': True,
-#             'id': face_id,
-#             'name': name_label,
-#             'blacklist': face_blacklist == "True"
-#         }
-#
-#     return data
