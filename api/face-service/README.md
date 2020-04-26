@@ -1,6 +1,6 @@
-# face-service
+# Face Service
 
-A microservice to perform CRUD operations on the Face collection.
+A microservice to perform CRUD operations on the Face.
 
 ## API Documentation
 

@@ -33,12 +33,13 @@ services:
       context: api/face-service/
       dockerfile: Dockerfile
     ports:
-      - 8503:8080
+      - 8503:3000
     environment:
-      - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
-      - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
+      - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/api/v1/fingerprint
     env_file:
       - database_config.env
+    depends_on:
+      - imageprocessor
   gateway:
     build:
       context: api/gateway/
@@ -67,9 +68,12 @@ services:
       - FINGERPRINTER_URL=http://fingerprinter:8501/v11/models/fingerprinter:predict
       - COMPARATOR_PREDICT_URL=http://comparator:8080/v1/models/comparator:predict
       - COMPARATOR_ADD_URL=http://comparator:8080/v1/models/comparator:addFace
+    depends_on:
+      - facedetector
 #  dashboard:
 #    build:
 #      context: ui/user-dashboard
 #      dockerfile: Dockerfile
 #    ports:
 #      - 4000:80
+

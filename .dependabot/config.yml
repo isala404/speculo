@@ -7,7 +7,7 @@ update_configs:
     directory: "/ui/user-dashboard/"
     update_schedule: "live"
     default_assignees:
-      - "mrsupiri"
+      - "DinDev3"
     default_labels:
       - "dependencies"
       - "dependabot"
@@ -20,7 +20,18 @@ update_configs:
     directory: "/api/gateway/"
     update_schedule: "live"
     default_assignees:
-      - "mrsupiri"
+      - "akassharjun"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "security"
+      
+    ## api face service
+  - package_manager: "javascript"
+    directory: "/api/face-service/"
+    update_schedule: "live"
+    default_assignees:
+      - "akassharjun"
     default_labels:
       - "dependencies"
       - "dependabot"
@@ -28,10 +39,10 @@ update_configs:
 
   ## image postprocessor
   - package_manager: "python"
-    directory: "/api/postprocessor/"
+    directory: "/api/image-processor/"
     update_schedule: "live"
     default_assignees:
-      - "mrsupiri"
+      - "akassharjun"
     default_labels:
       - "dependencies"
       - "dependabot"
