@@ -17,7 +17,7 @@ import {Unknown} from "./components/unknown/unknown"
 const privateRoutes = [
     { name: 'Home', path: '/', Component: Home },
     // {name: 'Dashboard', path:'/dashboard', Component:Dashboard},
-    //{ name: 'Unknown', path: '/*', Component: Unknown },
+    //{ name: 'Unknown', path: '*', Component: Unknown },
     { name: 'Dashboard Panel', path: '/dashboard-panel', Component: DashboardPanel },
     { name: 'Upload Faces', path: '/upload', Component: Upload },
     { name: 'Proof of Concept', path: '/live-detection', Component: WebCam },
