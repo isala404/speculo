@@ -3,7 +3,7 @@ var FormData = require('form-data');
 var fs = require('fs');
 
 
-const BASE_URL = process.env.IMAGE_PROCESSOR_URL;
+const BASE_URL = process.env.DOWSCALER_SERVICE_URL;
 const api = apiAdapter(BASE_URL);
 
 const BASE_URL_PROCESSOR = process.env.IMAGE_PROCESSOR_URL;
@@ -24,19 +24,26 @@ module.exports = {
         api
         .post('api'+req.path, form, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, responseType: "stream", headers:{'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp=>{
 
-            resp.data.pipe(fs.createWriteStream("video/video.mp4"));
+            var w = fs.createWriteStream("video/video.mp4");
 
-            const form_data = new FormData();
-            form_data.append('video', fs.createReadStream("video/video.mp4"), 'video.mp4');
+            resp.data.pipe(w);
 
-            var path = '';
-            return api_processor.post('api/v1/preprocess', form_data, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers:{'Content-Type': `multipart/form-data; boundary=${form_data._boundary}`}});
-        })
-        .then(resp=>{
-            res.send(resp.data);
+            w.on('finish', function(){
+                
+                const form_data = new FormData();
+                form_data.append('video', fs.createReadStream("video/video.mp4"), 'video.mp4');
+
+                api_processor.post('api/v1/preprocess', form_data, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers:{'Content-Type': `multipart/form-data; boundary=${form_data._boundary}`}}).then(resp=>{
+                    return res.send(resp.data);
+                })
+                .catch(error =>{
+                    console.log(error);
+                    res.status(400).send({'status':'Bad Request', 'error' : error.meessage})
+                });
+            });
         })
         .catch(error =>{
-            console.log(error)
+            console.log(error);
             res.status(400).send({'status':'Bad Request', 'error' : error.meessage})
         })
 
