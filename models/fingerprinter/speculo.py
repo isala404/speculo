@@ -1,3 +1,10 @@
+"""speculo.py: Base class for fingerprinter"""
+
+__author__ = "Isala Piyarisi"
+__version__ = "0.0.12"
+__email__ = "code@isala.me"
+__status__ = "Development"
+
 import pickle
 from sklearn.utils import shuffle
 from PIL import Image
@@ -119,6 +126,9 @@ class Speculo:
         self.model = None
 
     def _build_model(self):
+        """Create the structure of Auto Encoder
+        @return: Auto Encoder
+        """
         # This is the input layer of the Neural network
         input_img = Input(shape=self.image_size, name="input")
 
