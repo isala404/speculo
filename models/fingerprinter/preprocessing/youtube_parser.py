@@ -1,3 +1,10 @@
+"""youtube_parser.py: Preprocess YoutubeFaceDB to for fingerprinter's usage"""
+
+__author__ = "Isala Piyarisi"
+__version__ = "0.0.1"
+__email__ = "code@isala.me"
+__status__ = "Development"
+
 import os
 from PIL import Image
 from scipy.io import loadmat
@@ -13,12 +20,14 @@ if not os.path.isdir("../dataset_processed"):
 os.chdir("../dataset_processed")
 
 
+# Crop Faces using YOLO Model
 def crop_face(read, write):
     im = Image.open(read)
     shape = np.array(im).shape
     if shape[0] % 32 != 0 and shape[1] % 32 != 0:
-        im = im.resize(((shape[0]//32)*32, (shape[1]//32)*32))
+        im = im.resize(((shape[0] // 32) * 32, (shape[1] // 32) * 32))
     boxes = yolo.detect_image_fast(np.array(im))
+    # Crop the bonding box and save the image
     for top, left, bottom, right in boxes:
         face = im.crop((left, top, right, bottom))
         face.save(write)
@@ -26,6 +35,7 @@ def crop_face(read, write):
     del im
 
 
+# Go though every frame of every person
 person_total = len(os.listdir(f"{YT_DATASET_DIR}/aligned_images_DB/"))
 for person_index, person in enumerate(os.listdir(f"{YT_DATASET_DIR}/aligned_images_DB/")):
     for video_index, video in enumerate(os.listdir(f"{YT_DATASET_DIR}/aligned_images_DB/{person}")):
@@ -36,10 +46,12 @@ for person_index, person in enumerate(os.listdir(f"{YT_DATASET_DIR}/aligned_imag
             # print(person, video, frame)
             faces[f"{YT_DATASET_DIR}/aligned_images_DB/{person}/{video}/{frame}"] = (
                 headpose[0][i], headpose[1][i], headpose[2][i])
+            # Find the Target (which is most most front facing image
             if abs(headpose[0][i] + headpose[1][i] + headpose[2][i]) < target['pos']:
                 target['file'] = f"{YT_DATASET_DIR}/aligned_images_DB/{person}/{video}/{frame}"
                 target['pos'] = abs(headpose[0][i] + headpose[1][i] + headpose[2][i])
 
+        # Remove the target
         files = list(faces.keys())
         files.remove(target["file"])
 
@@ -49,9 +61,12 @@ for person_index, person in enumerate(os.listdir(f"{YT_DATASET_DIR}/aligned_imag
         if not os.path.isdir(f"{person_name}/"):
             os.makedirs(f"{person_name}/Y")
             os.makedirs(f"{person_name}/X")
+
+        # crop out and save the face of the target frame
         crop_face(target["file"], f"{person_name}/Y/{file_name}")
         print(f"Processing Person {person_index}/{person_total} | Video {video_index}")
 
+        # crop out and save the face of the rest of the frames
         for file in tqdm(files):
             file_name = file.replace(f"{YT_DATASET_DIR}/aligned_images_DB/", "")
             person_name = file_name.split("/")[0]
