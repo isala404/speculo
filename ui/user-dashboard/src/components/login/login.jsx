@@ -60,6 +60,7 @@ export class Login extends React.Component {
                             localStorage.setItem('type', 'user');
 
                             //alert(parsedResponse.data.data.user.email)
+                            alert("Login Success!");
                             window.location.href = "/";
 
                         }
@@ -69,7 +70,13 @@ export class Login extends React.Component {
                         //console.log(response)
                     })
                     .catch(error => {
-                        console.log(error)
+                        console.log(error);
+                        if(error.message=='Request failed with status code 401'){
+                            alert("Invalid User Login Details");
+                        }
+                        if(error.message=='Request failed with status code 500'){
+                            alert("Error in server, please try again later");
+                        }
                     })
             } else {
                 alert("Invalid Email Address.")
@@ -114,7 +121,13 @@ export class Login extends React.Component {
                         console.log(response)
                     })
                     .catch(error => {
-                        console.log(error)
+                        console.log(error);
+                        if(error.message=='Request failed with status code 401'){
+                            alert("Invalid Admin Login Details");
+                        }
+                        if(error.message=='Request failed with status code 500'){
+                            alert("Error in server, please try again later");
+                        }
                     })
             } else {
                 alert("Invalid Email Address.")
