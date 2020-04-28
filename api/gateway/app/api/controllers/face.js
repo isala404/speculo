@@ -16,7 +16,7 @@ module.exports = {
         });
 
         api
-            .post('api' + req.path, form, {headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
+            .post('api' + req.path, form, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
             res.send(resp.data)
         })
             .catch(error => {
@@ -34,7 +34,7 @@ module.exports = {
         });
 
         api
-            .put('api' + req.path, form, {headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
+            .put('api' + req.path, form, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
             res.send(resp.data)
         })
             .catch(error => {
