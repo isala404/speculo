@@ -5,8 +5,8 @@ import os
 from sklearn.neighbors import KNeighborsClassifier
 
 SIZE = 256
-FINGERPRINT_SIZE = (64, 64, 3)
-MODEL_VERSION = 13
+FINGERPRINT_SIZE = (128, 128, 1)
+MODEL_VERSION = 11
 known_face_encodings = []
 known_face_names = []
 
@@ -37,7 +37,7 @@ def get_finger_print(path, debug=True):
             return None
     face = cv2.resize(
         face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
-    return speculo.predict(face)
+    return speculo.predict(face, encoder_only=True)
 
 
 def best_match(f_encoding):
@@ -60,7 +60,7 @@ neigh = KNeighborsClassifier(n_neighbors=n_faces)
 neigh.fit(known_face_encodings, known_face_names)
 total_samples = 0
 correct_predictions = 0
-f = open("badimages.txt", "w")
+f = open("badimages-with-decoder.txt", "w")
 print("Start Predicting .... ")
 for person_dir in sorted(os.listdir("dataset_evaluate")):
     if person_dir == "Front":

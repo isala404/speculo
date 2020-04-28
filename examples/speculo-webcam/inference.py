@@ -8,8 +8,8 @@ from sklearn.neighbors import KNeighborsClassifier
 yolo = YOLO(draw=False, debug=False)
 
 SIZE = 256
-FINGERPRINT_SIZE = (64, 64, 3)
-MODEL_VERSION = 13
+FINGERPRINT_SIZE = (128, 128, 1)
+MODEL_VERSION = 11
 known_face_encodings = []
 known_face_names = []
 speculo = Speculo(
@@ -41,7 +41,7 @@ else:
             if FINGERPRINT_SIZE[2] == 1:
                 face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
             face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
-            face_encoding = speculo.predict(face)
+            face_encoding = speculo.predict(face, encoder_only=True)
             known_face_encodings.append(face_encoding)
             known_face_names.append(person_dir.title())
             del im, face, face_encoding
@@ -71,8 +71,8 @@ def add_new_face(f_encoding, user_face):
 def best_match(f_encoding):
     distance, face_idx = neigh.kneighbors([f_encoding], n_neighbors=1, return_distance=True)
     print(known_face_names[face_idx.tolist()[0][0]], distance.tolist()[0][0])
-    if distance.tolist()[0][0] >= 30:
-        return "Unknown"
+    # if distance.tolist()[0][0] >= 30:
+    #     return "Unknown"
 
     return known_face_names[face_idx.tolist()[0][0]]
 
@@ -99,7 +99,7 @@ while True:
         face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
 
         font = cv2.FONT_HERSHEY_DUPLEX
-        face_encoding = speculo.predict(face)
+        face_encoding = speculo.predict(face, encoder_only=True)
         face_name = best_match(face_encoding)
         # face_name = neigh.predict([face_encoding])[0]
         cv2.putText(frame, face_name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)

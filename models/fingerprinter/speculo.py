@@ -415,11 +415,15 @@ class Speculo:
             # Final evaluation with evaluation dataset
             self.evaluate(file=f'models/{self.model_number}/img/predictions.png')
 
-    def _load_model(self):
+    def _load_model(self, encoder_only=False):
         """Load the saved model with current model_path defined in constructor
+        @param encoder_only: Whether use only encoder to produce the output
         @return: model
         """
-        self.model = load_model(self.model_path)
+        if encoder_only:
+            self.model = self._get_latent_space()
+        else:
+            self.model = load_model(self.model_path)
         return self.model
 
     def _get_latent_space(self):
@@ -453,20 +457,21 @@ class Speculo:
                                  title=title, figsize=(8, 4), save_dir=file,
                                  shapes=[self.input_shape, self.output_shape, self.input_shape, self.output_shape])
 
-    def predict(self, image, preview=False):
+    def predict(self, image, preview=False, encoder_only=False):
         """Predict on the current model
         Predict on the current model in the memory if model is None
         it will load the model from self.model_path and predict from that model
+        @param encoder_only: Whether use only encoder to produce the output
         @param image: Input for model
         @param preview: Whether the predict image should be human readable
         @return: Output from the model as machine readable or human readable
         """
         # Load model
         if self.model is None:
-            self._load_model()
+            self._load_model(encoder_only)
         # get the prediction
         output = self.model.predict(np.reshape(image, [1, self.image_size[0], self.image_size[1], self.image_size[2]]))
-        if preview:
+        if preview and not encoder_only:
             # convert to RGB
             output = (output * 255).astype("uint8")
             return np.reshape(output, self.output_shape)
