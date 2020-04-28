@@ -1,6 +1,7 @@
 const apiAdapter = require('../../utils/apiAdapter');
 var FormData = require('form-data');
 var fs = require('fs');
+var del = require('delete');
 
 
 const BASE_URL = process.env.DOWSCALER_SERVICE_URL;
@@ -35,6 +36,9 @@ module.exports = {
 
                 api_processor.post('api/v1/preprocess', form_data, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers:{'Content-Type': `multipart/form-data; boundary=${form_data._boundary}`}}).then(resp=>{
                     return res.send(resp.data);
+                })
+                .then(resp=>{
+                    del.sync(['video/video.mp4'])
                 })
                 .catch(error =>{
                     console.log(error);
