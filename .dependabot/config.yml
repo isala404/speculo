@@ -48,9 +48,9 @@ update_configs:
       - "dependabot"
       - "security"
 
-  ## image comparator
+  ## image facecomparator
   - package_manager: "python"
-    directory: "models/comparator/"
+    directory: "models/facecomparator/"
     update_schedule: "live"
     default_assignees:
       - "mrsupiri"

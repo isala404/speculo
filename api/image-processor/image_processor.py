@@ -92,7 +92,7 @@ class ImageProcessor:
 		return data['predictions']
 	
 	async def _get_comparison(self, fingerprint) -> dict:
-		"""Consumes the comparator service and receives the closes matching face to the given fingerprint
+		"""Consumes the facecomparator service and receives the closes matching face to the given fingerprint
 
 		:param fingerprint: The fingerprint of the current face
 		:type fingerprint: list

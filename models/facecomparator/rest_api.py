@@ -17,7 +17,7 @@ async def predict(request):
             return web.Response(body=json.dumps({'error': 'instances-required'}),
                                 status=400, content_type='application/json')
 
-        fingerprint = np.array(data['instances'])
+        fingerprint = np.array(data['instances'])  # TODO: Check model Incoming shape matches with the intended shape
 
         output = await comparator.get_best_match(fingerprint)
 
@@ -57,6 +57,6 @@ async def add_new_face(request):
 
 
 app = web.Application()
-app.add_routes([web.post('/v1/models/comparator:predict', predict)])
-app.add_routes([web.post('/v1/models/comparator:addFace', add_new_face)])
+app.add_routes([web.post('/v1/models/facecomparator:predict', predict)])
+app.add_routes([web.post('/v1/models/facecomparator:addFace', add_new_face)])
 web.run_app(app, port=8080)
