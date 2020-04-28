@@ -96,7 +96,13 @@ export class Register extends React.Component {
                         //console.log(response)
                     })
                     .catch(error => {
-                        console.log(error)
+                        console.log(error);
+                        if(error.message=='Request failed with status code 409'){
+                            alert("Account details already exists");
+                        }
+                        if(error.message=='Request failed with status code 500'){
+                            alert("Error in server, please try again later");
+                        }
                     })
 
             } else {
@@ -167,7 +173,13 @@ export class Register extends React.Component {
                         //console.log(response)
                     })
                     .catch(error => {
-                        console.log(error)
+                        console.log(error);
+                        if(error.message=='Request failed with status code 409'){
+                            alert("Account details already exists");
+                        }
+                        if(error.message=='Request failed with status code 500'){
+                            alert("Error in server, please try again later");
+                        }
                     })
             } else {
                 if (!expression.test(String(this.state.email).toLowerCase())) {
