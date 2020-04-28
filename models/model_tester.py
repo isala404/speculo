@@ -77,11 +77,21 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
             predicted_name = best_match(face_encoding)
             if predicted_name == "unknown":
                 unknown_predictions += 1
+                known_face_encodings.append(face_encoding)
+                known_face_names.append(image[:8])
+                n_faces = len(set(known_face_names))
+                neigh = KNeighborsClassifier(n_neighbors=n_faces)
+                neigh.fit(known_face_encodings, known_face_names)
             else:
                 total_samples += 1
                 if image[:8] == predicted_name:
                     correct_predictions += 1
                 else:
+                    known_face_encodings.append(face_encoding)
+                    known_face_names.append(image[:8])
+                    n_faces = len(set(known_face_names))
+                    neigh = KNeighborsClassifier(n_neighbors=n_faces)
+                    neigh.fit(known_face_encodings, known_face_names)
                     f.write(f"{img_path}\n")
             if total_samples == 0:
                 accuracy = 100
