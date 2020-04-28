@@ -43,6 +43,8 @@ def get_finger_print(path, debug=True):
 def best_match(f_encoding):
     distance, face_idx = neigh.kneighbors(
         [f_encoding], n_neighbors=n_faces, return_distance=True)
+    if distance.tolist()[0][0] >= 5000000:
+        return "unknown"
     return known_face_names[face_idx.tolist()[0][0]]
 
 
@@ -60,7 +62,8 @@ neigh = KNeighborsClassifier(n_neighbors=n_faces)
 neigh.fit(known_face_encodings, known_face_names)
 total_samples = 0
 correct_predictions = 0
-f = open("badimages-with-decoder.txt", "w")
+unknown_predictions = 0
+f = open("badimages.txt", "w")
 print("Start Predicting .... ")
 for person_dir in sorted(os.listdir("dataset_evaluate")):
     if person_dir == "Front":
@@ -71,16 +74,24 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
         img_path = os.path.join("dataset_evaluate", person_dir, image)
         face_encoding = get_finger_print(img_path, debug=False)
         if face_encoding is not None:
-            total_samples += 1
             predicted_name = best_match(face_encoding)
-            if image[:8] == predicted_name:
-                correct_predictions += 1
+            if predicted_name == "unknown":
+                unknown_predictions += 1
             else:
-                f.write(f"{img_path}\n")
+                total_samples += 1
+                if image[:8] == predicted_name:
+                    correct_predictions += 1
+                else:
+                    f.write(f"{img_path}\n")
+            if total_samples == 0:
+                accuracy = 100
+            else:
+                accuracy = (correct_predictions / total_samples) * 100
             print("current_samples", total_samples, "correct_predictions", correct_predictions,
-                  "accuracy:", (correct_predictions / total_samples) * 100)
+                  "unknown_predictions", unknown_predictions, "accuracy:", accuracy)
 
 print("total_samples:", total_samples)
 print("correct_predictions:", correct_predictions)
+print("unknown_predictions:", unknown_predictions)
 print("accuracy:", (correct_predictions / total_samples) * 100)
 f.close()

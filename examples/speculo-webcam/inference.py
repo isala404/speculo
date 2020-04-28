@@ -71,8 +71,8 @@ def add_new_face(f_encoding, user_face):
 def best_match(f_encoding):
     distance, face_idx = neigh.kneighbors([f_encoding], n_neighbors=1, return_distance=True)
     print(known_face_names[face_idx.tolist()[0][0]], distance.tolist()[0][0])
-    # if distance.tolist()[0][0] >= 30:
-    #     return "Unknown"
+    if distance.tolist()[0][0] >= 5000000:
+        return "Unknown"
 
     return known_face_names[face_idx.tolist()[0][0]]
 
