@@ -38,29 +38,48 @@ class UploadFaces extends Component {
         allFiles.forEach(f => f.remove());
       };
 
-      const getFilesFromEvent = e => {
-        return new Promise(resolve => {
-          getDroppedOrSelectedFiles(e).then(chosenFiles => {
-            resolve(chosenFiles.map(f => f.fileObject));
-          });
+    const getFilesFromEvent = e => {
+      return new Promise(resolve => {
+        getDroppedOrSelectedFiles(e).then(chosenFiles => {
+          resolve(chosenFiles.map(f => f.fileObject));
         });
-      };
+      });
+    };
 
-      // called every time a file's `status` changes
-      const handleChangeStatus = ({ meta, file }, status) => {
-        console.log(status, meta, file);
-      };
+    // called every time a file's `status` changes
+    const handleChangeStatus = ({ meta, file }, status) => {
+      console.log(status, meta, file);
+    };
+
+    // specify upload params and url for files
+    const getUploadParams = ({ meta }) => {
+
+      let token = null;
+      if (localStorage.getItem("token") != null) {
+          token = localStorage.getItem("token")
+      } else{
+          console.log("token not found");
+      }
+
+      const headers = {
+        'x-access-token': token,
+        'Access-Control-Allow-Origin': '*',
+      }
+      
+      return { url: facesUploadEndpoint, headers }
+    }
+
 
       return (
         <div>
           <Dropzone
-            getUploadParams={() => ({ url: facesUploadEndpoint })}
-            onSubmit={handleSubmit}
+            getUploadParams = { getUploadParams }
+            onSubmit = { handleSubmit }
             // InputComponent={Input}
-            inputContent={"Drag image files or Click to browse"}
-            getFilesFromEvent={getFilesFromEvent}
-            onChangeStatus={handleChangeStatus}
-            accept="image/*"
+            inputContent = { "Drag image files or Click to browse" }
+            getFilesFromEvent = { getFilesFromEvent }
+            onChangeStatus = { handleChangeStatus }
+            accept = "image/*"
           />
         </div>
       );
