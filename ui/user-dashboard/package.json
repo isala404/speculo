@@ -30,7 +30,7 @@
     "react-webcam": "^5.0.1",
     "video-snapshot": "^1.0.3",
     "video.js": "^7.6.6",
-    "react-player": "^2.0.0",
+    "react-player": "^2.0.1",
     "styled-components": "^5.1.0"
   },
   "scripts": {
