@@ -17,7 +17,7 @@ services:
     ports:
       - 8501:8501
     volumes:
-      - ./models/fingerprinter/models/11:/models/fingerprinter/1
+      - ./models/fingerprinter/models/13:/models/fingerprinter/1
     environment:
       - MODEL_NAME=fingerprinter
 #    device_requests:
@@ -47,10 +47,9 @@ services:
       - 8503:3000
     environment:
       - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/api/v1/fingerprint
+      - COMPARATOR_URL=http://comparator:8080/v1/models/comparator:addFace
     env_file:
       - database_config.env
-    depends_on:
-      - imageprocessor
   gateway:
     build:
       context: api/gateway/
@@ -60,7 +59,7 @@ services:
       - 8504:3000
     environment:
       - FACE_SERVICE_URL=http://faceservice:3000/
-      - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/
+      - VIDEO_DOWNSCALER_URL=http://videodownscaler:8080/
     env_file:
       - database_config.env
   videodownscaler:
@@ -80,8 +79,8 @@ services:
     environment:
       - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
-      - COMPARATOR_PREDICT_URL=http://comparator:8080/v1/models/comparator:predict
-      - COMPARATOR_ADD_URL=http://comparator:8080/v1/models/comparator:addFace
+      - COMPARATOR_URL=http://comparator:8080/v1/models/comparator:predict
+      - FACE_SERVICE_URL=http://faceservice:3000/api/v1/faces
     depends_on:
       - facedetector
       - fingerprinter

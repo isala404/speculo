@@ -428,3 +428,4 @@ database_config.env
 /api/face-service/dist
 **/images/
 /api/face-service/images/
+models/dataset_evaluate

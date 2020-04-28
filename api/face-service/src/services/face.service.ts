@@ -4,8 +4,7 @@ import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
 import {Error, MongooseDocument} from "mongoose";
-import {IMAGE_PROCESSOR_URL} from "../constants/face.constants";
-
+import {IMAGE_PROCESSOR_URL, COMPARATOR_URL} from "../constants/face.constants";
 
 export class FaceService {
 
@@ -27,14 +26,19 @@ export class FaceService {
 			}
 		}
 
+		let id = '';
+		let fingerprint = Array();
+
 		axios.post(IMAGE_PROCESSOR_URL, form, config)
 			.then(function (response) {
-				// get the label of the face from the filename
+
 				let label = file.originalname.split('.')[0];
+				fingerprint = response['data']['data']
+
 				const face = new Face({
 					'label': label,
 					'blacklisted': false,
-					'fingerprints': [response['data']['data']],
+					'fingerprints': [fingerprint],
 					'createdAt': Date.now(),
 					'lastUpdated': Date.now()
 				});
@@ -44,8 +48,96 @@ export class FaceService {
 						res.status(500).json({'error': error.message});
 					}
 
+					id = face._id;
+					console.log(`[DATABASE] Face saved successfully`);
+
 					res.status(201).json({"id": face._id});
+
+					let data = {
+						'id': id,
+						'fingerprint': fingerprint
+					}
+
+					axios.post(COMPARATOR_URL, data).then(function (response) {
+						console.log(`[COMPARATOR] Face saved successfully`);
+					}).catch(function (error) {
+						console.log(`[COMPARATOR] Error in saving ${error.message}`);
+					});
 				});
+			})
+			.catch(function (error) {
+				console.log(error.message);
+				res.sendStatus(500).json({"error": error.message});
+			});
+		//  delete the file after the request
+		fs.unlinkSync(file.path)
+	}
+
+	/** This method will add a face to an existing face by adding it's finerprint to the database */
+	public appendFace(req: Request, res: Response) {
+		let id = req.params.id;
+		let file = req.file;
+
+		// open the file in memory
+		let fileBuffer = new Buffer(fs.readFileSync(file.path));
+
+		let form = new FormData();
+
+		// append the file to the form data object
+		form.append('image', fileBuffer, file.originalname)
+
+		const config = {
+			headers: {
+				'content-type': `multipart/form-data; boundary=${form.getBoundary()}`
+			}
+		}
+
+
+		axios.post(IMAGE_PROCESSOR_URL, form, config)
+			.then(function (response) {
+
+				Face.findById({_id: id}, (error, face) => {
+					if (error) {
+						res.status(500).json({'error': error.message});
+					}
+
+					if (!face) {
+						return res.status(404).json({"error": "Invalid ID provided"})
+					}
+
+					let fingerprints = face.get('fingerprints')
+
+					let fingerprint = response['data']['data']
+					fingerprints.push(fingerprint);
+
+
+					let updateQuery = {
+						fingerprints: fingerprints
+					}
+
+					Face.updateOne({_id: id}, updateQuery, err => {
+						if (err) {
+							res.status(500).json({"error": "There is an error"});
+						} else {
+							console.log(`[DATABASE] New face added to existing face successfully`);
+							res.status(200).json({"error": "Successfully added face fingerprint to face."});
+						}
+					});
+
+					let data = {
+						'id': id,
+						'fingerprint': fingerprint
+					}
+
+					axios.post(COMPARATOR_URL, data).then(function (response) {
+						console.log(`[COMPARATOR] Face successfully saved`)
+					}).catch(function (error) {
+						console.log(error.message);
+					});
+
+				})
+
+
 			})
 			.catch(function (error) {
 				console.log(error.message);
@@ -69,8 +161,10 @@ export class FaceService {
 			}
 
 			if (faces.length === 0) {
-				res.status(204).json({'data': []});
+				console.log(`[DATABASE] No faces in the database.`);
+				res.status(200).json({'data': []});
 			} else {
+				console.log(`[DATABASE] Retrieved all the faces from the database.`);
 				res.status(200).json({'data': faces});
 			}
 		});
@@ -98,6 +192,7 @@ export class FaceService {
 				return res.status(404).json({"error": "Invalid ID provided"});
 			}
 
+			console.log(`[DATABASE] Retrieved a face by ID from the database.`);
 			res.status(200).json({'data': face});
 		});
 	}
@@ -146,6 +241,7 @@ export class FaceService {
 								res.send(error);
 							}
 
+							console.log(`[DATABASE] Updated a face by ID from the database.`);
 							res.status(201).json({"id": face._id});
 						});
 					}
@@ -165,6 +261,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Deleted all the faces from the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		}));
@@ -183,6 +280,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Deleted a face by ID from the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		}));
@@ -207,6 +305,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Patched face label in the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		});
@@ -229,6 +328,7 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Patched face blacklist status in the database.`);
 				res.status(200).json({"status": "success"})
 			}
 		});
@@ -251,8 +351,31 @@ export class FaceService {
 			if (error) {
 				res.status(500).json({'error': error.message});
 			} else {
+				console.log(`[DATABASE] Patched face whitelist status in the database.`);
 				res.status(200).json({"status": "success"})
 			}
+		});
+	}
+
+	/** This method adds an unknown face to the database */
+	public addUnknownFace(req: Request, res: Response) {
+		let fingerprint = req.body["fingerprint"];
+
+		const face = new Face({
+			'label': "Unknown",
+			'blacklisted': false,
+			'fingerprints': [fingerprint],
+			'createdAt': Date.now(),
+			'lastUpdated': Date.now()
+		});
+
+		// save the face
+		face.save((error: Error, face: MongooseDocument) => {
+			if (error) {
+				res.status(500).json({'error': error.message});
+			}
+			console.log(`[DATABASE] Added unknown face to the database.`);
+			res.status(201).json({"id": face._id});
 		});
 	}
 }
