@@ -18,6 +18,12 @@ router.put(
   multer.any(),
   faceController.update_face
 );
+router.put(
+  "/v1/faces/:id/append",
+  userController.validateUser,
+  multer.any(),
+  faceController.append_face
+);
 router.get(
   "/v1/faces",
   userController.validateUser,
@@ -67,4 +73,12 @@ router.post(
   multer.any(),
   downscaler.downscale
 );
+
+router.post(
+  "/v1/faces/unknown",
+  userController.validateUser,
+  multer.any(),
+  faceController.unknown_face
+);
+
 module.exports = router;
