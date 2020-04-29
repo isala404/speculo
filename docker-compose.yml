@@ -32,8 +32,8 @@ services:
       - 8502:8080
     environment:
       - FACE_SERVICE_URL=http://faceservice:3000/api/v1/faces
-      - FINGERPRINT_THRESHOLD="550"
-      - COMPARATOR_SHAPE="(256,)"
+      - FINGERPRINT_THRESHOLD=550
+      - COMPARATOR_SHAPE=(256,)
     env_file:
       - database_config.env
     depends_on:
