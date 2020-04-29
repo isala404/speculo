@@ -9,63 +9,92 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {
   retrieveAllDetections,
-  deleteFaceFromSystem
+  deleteFaceFromSystem,
+  retrieveAllRecords,
+  editNameInSystem,
+  whitelistPersonInSystem,
+  blacklistPersonInSystem
 } from "../../services/DetectionsManagement";
 import Select from "react-select";
-import Switch from "react-switch";
 
-export const PeopleTable = ({ peopleData, isSwitchToggled, searchValue }) => {
-  const [people, setPeople] = useState(peopleData);
+export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
+  const [people, setPeople] = useState([]);
   //react hooks to access state
-  const [results, setResults] = useState(people);
+  const [results, setResults] = useState([]);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [personToEdit, setPersonToEdit] = useState(-1);
   const [editToggled, setEditToggled] = useState(false);
   const [newPersonName, setNewPersonName] = useState(null);
   const [blackListValue, setBlackListValue] = useState(null);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [response, setResponse] = useState([]);
+
   //updating the state on searchval change
   useEffect(() => {
+    getData();
     var result = search(people, searchValue);
     setResults(result);
-    sortPeople()
-  }, [searchValue, isSwitchToggled]);
+    // sortPeople();
+  }, [searchValue, isSwitchToggled, isDataLoaded]);
 
-
+  //method to invoke request to get all the records
+  const getData = async () => {
+    await retrieveAllRecords().then(res => {
+      setPeople(res);
+      console.log(res);
+      setIsDataLoaded(true);
+    });
+    console.log(people)
+    // people.data.map(p => {
+    //   return console.log(p.blackListed);
+    // });
+  };
   //function to delete a person on delete button press
   const deletePerson = async personIdToDelete => {
     //Delete request to backend
     deleteFaceFromSystem(personIdToDelete);
-    let newDetectionsArray = people.filter(
-      person => person.id != personIdToDelete
+    let newDetectionsArray = people.data.filter(
+      person => person._id != personIdToDelete
     );
     setPeople(newDetectionsArray);
-    setResults(search(newDetectionsArray, searchValue));
+    // setResults(search(newDetectionsArray, searchValue));
   };
 
   //function to update a row
   const updatePerson = async (personIdToUpdate, name, isBlacklisted) => {
     //TODO: add the axios request to update
+    console.log(personIdToUpdate);
     console.log(isBlacklisted);
     var person;
     if (name != null && personIdToUpdate != null) {
-        console.log("inside != null");
-      person = people.find(x => x.id == personIdToUpdate);
+      console.log("inside != null");
+      person = people.data.find(x => x._id == personIdToUpdate);
       if (person) {
-        person.name = name;
+        person.label = name;
         person.blacklisted = isBlacklisted;
+        isBlacklisted
+          ? await blacklistPersonInSystem(personIdToUpdate)
+          : await whitelistPersonInSystem(personIdToUpdate);
       }
       console.log(people);
     } else if (isBlacklisted != null && isBlacklisted != undefined) {
       console.log("inside isblacklisted != null");
-      person = people.find(x => x.id == personIdToUpdate);
+      person = people.data.find(x => x._id == personIdToUpdate);
       if (person) {
         person.blacklisted = isBlacklisted;
+        //updating database to update the values
+        isBlacklisted
+          ? await blacklistPersonInSystem(personIdToUpdate)
+          : await whitelistPersonInSystem(personIdToUpdate);
       }
     } else {
-        console.log("inside else");
-        person = people.find(x => x.id == personIdToUpdate);
-        var person1 = people.find(y => y.id == personIdToUpdate);
-        people.blackListed = person1.blackListed;
+      console.log("inside else");
+      person = people.data.find(x => x._id == personIdToUpdate);
+      var person1 = people.data.find(y => y._id == personIdToUpdate);
+      people.blackListed = person1.blackListed;
+      isBlacklisted
+        ? await blacklistPersonInSystem(personIdToUpdate)
+        : await whitelistPersonInSystem(personIdToUpdate);
     }
   };
 
@@ -82,8 +111,8 @@ export const PeopleTable = ({ peopleData, isSwitchToggled, searchValue }) => {
   };
 
   return (
-    <div style={{ overflowX: "auto"}}>
-    {search}
+    <div style={{ overflowX: "auto" }}>
+      {/* {()=>console.log(peopleData)} */}
       <Table>
         <TableHead>
           <TableRow>
@@ -93,94 +122,89 @@ export const PeopleTable = ({ peopleData, isSwitchToggled, searchValue }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {results.map(person => {
-            return (
-              <Row>
-                <TableData>{person.id}</TableData>
-                <TableData
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setSelectedPerson(person);
-                  }}
-                >
-                  {person.id == personToEdit && editToggled == true ? (
-                    <input
-                      type="text"
-                      placeHolder={person.name}
-                      onChange={x => setNewPersonName(x.target.value)}
-                    />
-                  ) : (
-                    person.name
-                  )}
-                </TableData>
-                <TableData>
-                  <ul>
-                    {person.timestamps.map(timestamp => {
-                      return <li>{timestamp}</li>;
-                    })}
-                  </ul>
-                </TableData>
-                <TableData>
-                  {person.id == personToEdit && editToggled ? (
-                    <Select
-                      options={blacklistValues}
-                      onChange={handleSelectorChange}
-                      defaultValue={getBlacklistValue(person)}
-                    />
-                  ) : (
-                    person.blacklisted.toString()
-                  )}
-                </TableData>
-                <TableData>
-                  <DeleteButton onClick={() => deletePerson(person.id)}>
-                    <FontAwesomeIcon icon={faTrashAlt} />
-                  </DeleteButton>
-                  {/* onpress of edit button */}
-                  <EditButton
-                    onClick={() => {
-                      setPersonToEdit(person.id);
-                      if (editToggled) {
-                        updatePerson(
-                          personToEdit,
-                          newPersonName,
-                          blackListValue
-                        );
-                        setBlackListValue(getBlacklistValue(person));
-                        console.log(getBlacklistValue(person))
-                        setEditToggled(false);
-                      } else {
-                        updatePerson(
-                          personToEdit,
-                          null,
-                          person.blacklisted
-                        );
-                        setEditToggled(true);
-                        sortByProperty();
-                      }
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      icon={
-                        person.id == personToEdit && editToggled
-                          ? faCheck
-                          : faEdit
-                      }
-                    />
-                  </EditButton>
-                  {person.id == personToEdit && editToggled ? (
-                    <CancelButton
+          {isDataLoaded
+            ? people.data.map((person, id) => {
+                return (
+                  <Row>
+                    <TableData>{person._id}</TableData>
+                    <TableData
+                      style={{ cursor: "pointer" }}
                       onClick={() => {
-                        setPersonToEdit(-1);
-                        setEditToggled(false);
+                        setSelectedPerson(person);
                       }}
                     >
-                      <FontAwesomeIcon icon={faTimes} />
-                    </CancelButton>
-                  ) : null}
-                </TableData>
-              </Row>
-            );
-          })}
+                      {person._id == personToEdit && editToggled == true ? (
+                        <input
+                          type="text"
+                          placeHolder={person.label}
+                          onChange={x => setNewPersonName(x.target.value)}
+                        />
+                      ) : (
+                        person.label
+                      )}
+                    </TableData>
+                    <TableData>
+                      {person._id == personToEdit && editToggled ? (
+                        <Select
+                          options={blacklistValues}
+                          onChange={handleSelectorChange}
+                          defaultValue={getBlacklistValue(person)}
+                        />
+                      ) : (
+                        <p>{person.blackListed}</p>
+                      )}
+                    </TableData>
+                    <TableData>
+                      <DeleteButton onClick={() => deletePerson(person._id)}>
+                        <FontAwesomeIcon icon={faTrashAlt} />
+                      </DeleteButton>
+                      {/* onpress of edit button */}
+                      <EditButton
+                        onClick={() => {
+                          setPersonToEdit(person._id);
+                          if (editToggled) {
+                            setBlackListValue(getBlacklistValue(person));
+                            updatePerson(
+                              personToEdit,
+                              newPersonName,
+                              blackListValue
+                            );
+                            // console.log(getBlacklistValue(person))
+                            setEditToggled(false);
+                          } else {
+                            updatePerson(
+                              personToEdit,
+                              null,
+                              person.blacklisted
+                            );
+                            setEditToggled(true);
+                            sortByProperty();
+                          }
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={
+                            person._id == personToEdit && editToggled
+                              ? faCheck
+                              : faEdit
+                          }
+                        />
+                      </EditButton>
+                      {person._id == personToEdit && editToggled ? (
+                        <CancelButton
+                          onClick={() => {
+                            setPersonToEdit(-1);
+                            setEditToggled(false);
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faTimes} />
+                        </CancelButton>
+                      ) : null}
+                    </TableData>
+                  </Row>
+                );
+              })
+            : null}
         </TableBody>
       </Table>
     </div>
@@ -190,16 +214,20 @@ export const PeopleTable = ({ peopleData, isSwitchToggled, searchValue }) => {
 //getting the blacklisted values to display in the select menu
 const getBlacklistValue = person => {
   var value = blacklistValues.find(x => x.value == person.blacklisted);
-console.log(value)
+  // console.log(value);
   return value;
 };
 
 //function used for searching
 const search = (persons, searchVal) => {
   var results = [];
-  for (var x = 0; x < persons.length; x++) {
-    if (persons[x].name.toUpperCase().includes(searchVal.toUpperCase())) {
-      results.push(persons[x]);
+  if (persons != null && persons.length != 0) {
+    for (var x = 0; x < persons.length; x++) {
+      if (
+        persons.data[x].label.toUpperCase().includes(searchVal.toUpperCase())
+      ) {
+        results.push(persons[x]);
+      }
     }
   }
   return results;
@@ -218,7 +246,6 @@ const sortByProperty = property => {
 const headings = [
   { id: 1, heading: "ID" },
   { id: 2, heading: "NAME" },
-  { id: 3, heading: "TIME STAMPS" },
   { id: 4, heading: "BLACKLISTED" },
   { id: 5, heading: "ACTIONS" }
 ];
@@ -236,7 +263,7 @@ const Table = styled.table`
 `;
 
 const TableBody = styled.tbody`
-display: block;
+  display: block;
   width: 100%;
   overflow: auto;
   height: 500px;
@@ -246,17 +273,17 @@ const TableHead = styled.thead`
   width: 100%;
   background: black;
   color: #fff;
-  display:block;
+  display: block;
 `;
 const TableRow = styled.tr`
   display: block;
   background: #333;
-  width: 100%
+  width: 100%;
 `;
 const Row = styled.tr`
   background: #ededed;
   border-bottom: 1px solid #333;
-  width: 100%
+  width: 100%;
 `;
 const TableHeading = styled.th`
   padding: 1em;

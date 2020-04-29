@@ -47,14 +47,15 @@ export async function retrieveAllRecords() {
             'Access-Control-Allow-Origin': '*',
         }
     });
-    return res.data.map(detection => {
-        return {
-            id: detection._id,
-            name: detection.name,
-            blacklisted: detection.blacklisted,
-            timestamps: detection.timestamps
-        };
-    });
+    return res.data
+    // .map(detection => {
+    //     return {
+    //         id: detection._id,
+    //         name: detection.name,
+    //         blacklisted: detec   tion.blacklisted,
+    //         timestamps: detection.timestamps
+    //     };
+    // });
 }
 
 // ------------
@@ -103,7 +104,7 @@ export async function editNameInSystem(personId, newName){
                     'Access-Control-Allow-Origin': '*',
                 }
             })
-
+    console.log(res)
     return res;
 }
 
