@@ -1,7 +1,7 @@
 const apiAdapter = require('../../utils/apiAdapter');
-var FormData = require('form-data');
-var fs = require('fs');
-var del = require('delete');
+var FormData = require('form-data'); // to create multipart/form-data
+var fs = require('fs'); // nodeJS file system module
+var del = require('delete'); 
 
 
 const BASE_URL = process.env.DOWSCALER_SERVICE_URL;
@@ -25,11 +25,11 @@ module.exports = {
         api
         .post('api'+req.path, form, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, responseType: "stream", headers:{'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp=>{
 
-            var w = fs.createWriteStream("video/video.mp4");
+            var w = fs.createWriteStream("video/video.mp4"); // write video to file system
 
             resp.data.pipe(w);
 
-            w.on('finish', function(){
+            w.on('finish', function(){ // wait to finsh createWriteStream
                 
                 const form_data = new FormData();
                 form_data.append('video', fs.createReadStream("video/video.mp4"), 'video.mp4');
@@ -38,7 +38,7 @@ module.exports = {
                     return res.send(resp.data);
                 })
                 .then(resp=>{
-                    del.sync(['video/video.mp4'])
+                    del.sync(['video/video.mp4']) // delete temp video after sending response
                 })
                 .catch(error =>{
                     console.log(error);

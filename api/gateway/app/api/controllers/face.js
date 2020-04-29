@@ -51,6 +51,7 @@ module.exports = {
             form.append('image', element.buffer, element.originalname);
         });
 
+        // set maxContentLength and maxBodyLength set infinity to handle large files
         api
             .put('api' + req.path, form, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
             res.send(resp.data)

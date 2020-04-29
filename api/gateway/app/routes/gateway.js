@@ -1,16 +1,23 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer")();
+const multer = require("multer")(); // for handling multipart/form-data
 const faceController = require("../api/controllers/face");
 const imageProcessorController = require("../api/controllers/imageProcessor");
 const downscaler = require("../api/controllers/downscaler");
 const userController = require("../api/controllers/user");
 
+// face service
 router.post(
   "/v1/faces",
   userController.validateUser,
   multer.any(),
   faceController.add_face
+);
+router.post(
+  "/v1/faces/unknown",
+  userController.validateUser,
+  multer.any(),
+  faceController.unknown_face
 );
 router.put(
   "/v1/faces/:id",
@@ -60,6 +67,7 @@ router.patch(
   faceController.whitelist_face
 );
 
+// pre processor
 router.post(
   "/v1/preprocess",
   userController.validateUser,
@@ -67,6 +75,7 @@ router.post(
   imageProcessorController.upload_footage
 );
 
+// downscaler
 router.post(
   "/v1/downscale",
   userController.validateUser,
@@ -74,11 +83,6 @@ router.post(
   downscaler.downscale
 );
 
-router.post(
-  "/v1/faces/unknown",
-  userController.validateUser,
-  multer.any(),
-  faceController.unknown_face
-);
+
 
 module.exports = router;
