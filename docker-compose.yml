@@ -84,7 +84,7 @@ services:
     depends_on:
       - facedetector
       - fingerprinter
-      - comparator
+      - facecomparator
   dashboard:
     build:
       context: ui/user-dashboard

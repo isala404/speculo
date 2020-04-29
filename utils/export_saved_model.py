@@ -1,12 +1,12 @@
 import os
 import tensorflow as tf
-from tensorflow_core.python.keras import Model
+from tensorflow.keras.models import Model, load_model
 
 version = 12
 encoder_only = False
 
 MODEL_DIR = "../models/fingerprinter/models"
-model = tf.keras.models.load_model(f"../models/fingerprinter/models/{version}/Model-v{version}.h5")
+model = load_model(f"../models/fingerprinter/models/{version}/Model-v{version}.h5")
 
 if encoder_only:
     model = Model(inputs=model.input, outputs=model.get_layer("latent_space").output)
