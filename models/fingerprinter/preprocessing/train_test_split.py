@@ -1,3 +1,10 @@
+"""train_test_split.py: Train and Test Split Head Pose Image Database"""
+
+__author__ = "Isala Piyarisi"
+__version__ = "0.0.1"
+__email__ = "code@isala.me"
+__status__ = "Deprecated"
+
 import os
 from shutil import copyfile
 from random import shuffle

@@ -17,23 +17,23 @@ services:
     ports:
       - 8501:8501
     volumes:
-      - ./models/fingerprinter/models/13:/models/fingerprinter/1
+      - ./models/fingerprinter/models/12:/models/fingerprinter/1
     environment:
       - MODEL_NAME=fingerprinter
 #    device_requests:
 #      - capabilities:
 #          - "gpu"
-  comparator:
+  facecomparator:
     build:
-      context: models/comparator/
+      context: models/facecomparator/
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - 8502:8080
     environment:
       - FACE_SERVICE_URL=http://faceservice:3000/api/v1/faces
-      - FINGERPRINT_THRESHOLD="1.7"
-      - FINGERPRINT_SHAPE="(64, 64, 1)"
+      - FINGERPRINT_THRESHOLD=550
+      - COMPARATOR_SHAPE=(256,)
     env_file:
       - database_config.env
     depends_on:
@@ -47,7 +47,7 @@ services:
       - 8503:3000
     environment:
       - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/api/v1/fingerprint
-      - COMPARATOR_URL=http://comparator:8080/v1/models/comparator:addFace
+      - COMPARATOR_URL=http://facecomparator:8080/v1/models/facecomparator:addFace
     env_file:
       - database_config.env
   gateway:
@@ -79,12 +79,12 @@ services:
     environment:
       - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
-      - COMPARATOR_URL=http://comparator:8080/v1/models/comparator:predict
+      - COMPARATOR_URL=http://facecomparator:8080/v1/models/facecomparator:predict
       - FACE_SERVICE_URL=http://faceservice:3000/api/v1/faces
     depends_on:
       - facedetector
       - fingerprinter
-      - comparator
+      - facecomparator
   dashboard:
     build:
       context: ui/user-dashboard
