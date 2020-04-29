@@ -66,13 +66,14 @@ class Speculo:
     of fingerprinter model and also can load a model model from given model path
     and visualize model training processes
     """
-    def __init__(self, image_size=(128, 128, 1), model_path=None, visualize=True, batch_size=64):
+    def __init__(self, image_size=(128, 128, 1), model_path=None, visualize=True, batch_size=64, encoder_only=False):
         """
         Class constructor
         @param image_size: Model's Input Size
         @param model_path: Path to saved model (.h5 or .pb file)
         @param visualize: Whether to visualize the training processes
         @param batch_size: Image batch that is taken at once during training
+        @param encoder_only: Whether use only encoder to produce the output
         """
         # optimizer is the algorithm used to update weights of neural network to minimize the loss function
         # adam stands for adaptive moment estimation and it is kinda of a defecto for CNN
@@ -108,6 +109,7 @@ class Speculo:
         self.model_path = model_path
         self.visualize = visualize
         self.batch_size = batch_size
+        self.encoder_only = encoder_only
 
         # this is just a placeholder which get updated when _image_set_generator is called
         # which will hold the size of the dataset
@@ -123,7 +125,12 @@ class Speculo:
 
         self.model_number = f"{model_number}"
 
+        # Place holder to hold the reference to the model object
         self.model = None
+
+        # Load the model if the model path is given
+        if model_path:
+            self.model = self._load_model(encoder_only)
 
     def _build_model(self):
         """Create the structure of Auto Encoder
@@ -424,6 +431,7 @@ class Speculo:
             self.model = self._get_latent_space()
         else:
             self.model = load_model(self.model_path)
+        self.input_shape = self.model.input_shape[1:]
         return self.model
 
     def _get_latent_space(self):
@@ -433,6 +441,7 @@ class Speculo:
         autoencoder = self._load_model()
         encoder = Model(inputs=autoencoder.input,
                         outputs=autoencoder.get_layer("latent_space").output)
+        self.output_shape = autoencoder.get_layer("latent_space").output_shape[1:]
         return encoder
 
     def evaluate(self, title="Model Predictions", file=None):
@@ -457,21 +466,17 @@ class Speculo:
                                  title=title, figsize=(8, 4), save_dir=file,
                                  shapes=[self.input_shape, self.output_shape, self.input_shape, self.output_shape])
 
-    def predict(self, image, preview=False, encoder_only=False):
+    def predict(self, image, preview=False):
         """Predict on the current model
         Predict on the current model in the memory if model is None
         it will load the model from self.model_path and predict from that model
-        @param encoder_only: Whether use only encoder to produce the output
         @param image: Input for model
         @param preview: Whether the predict image should be human readable
         @return: Output from the model as machine readable or human readable
         """
-        # Load model
-        if self.model is None:
-            self._load_model(encoder_only)
         # get the prediction
         output = self.model.predict(np.reshape(image, [1, self.image_size[0], self.image_size[1], self.image_size[2]]))
-        if preview and not encoder_only:
+        if preview and not self.encoder_only:
             # convert to RGB
             output = (output * 255).astype("uint8")
             return np.reshape(output, self.output_shape)

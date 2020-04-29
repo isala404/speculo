@@ -1,7 +1,7 @@
 """facecomparator.py: Base class for facecomparator"""
 
 __author__ = "Isala Piyarisi"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __email__ = "code@isala.me"
 __status__ = "Development"
 
@@ -9,18 +9,18 @@ import asyncio
 import json
 import logging
 import os
-
 import aiohttp
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 
 
 class ImageComparator:
-    def __init__(self, threshold=30, shape=(64, 64, 3), fingerprints=None, labels=None):
-        self.FINGERPRINT_THRESHOLD = threshold
-        self.COMPARATOR_SHAPE = shape
+    def __init__(self, threshold=550, shape=(256,), fingerprints=None, labels=None):
+        self.FINGERPRINT_THRESHOLD = int(os.getenv("FINGERPRINT_THRESHOLD", threshold))
+        self.COMPARATOR_SHAPE = eval(os.getenv("COMPARATOR_SHAPE", shape))
         self._FACE_SERVICE_ENDPOINT = os.getenv('FACE_SERVICE_URL')
-
+        logging.info(f"FINGERPRINT_THRESHOLD : {self.FINGERPRINT_THRESHOLD}")
+        logging.info(f"COMPARATOR_SHAPE : {self.COMPARATOR_SHAPE}")
         # check if fingerprints and labels given
         if labels is None or fingerprints is None:
             # Place holder for fingerprints and names
@@ -72,10 +72,10 @@ class ImageComparator:
         """
         # Get the most closes fingerprint from the memory to the given fingerprint
         distance, face_idx = self.model.kneighbors(
-            [fingerprint], n_neighbors=1, return_distance=True)
-
+            [fingerprint], n_neighbors=len(set(self.known_labels)), return_distance=True)
+        # print(self.known_labels[face_idx.tolist()[0][0]], distance.tolist()[0][0])
         # Check if the distance between fingerprints is greater than FINGERPRINT_THRESHOLD
-        if distance.tolist()[0][0] >= self.FINGERPRINT_THRESHOLD and len(self.known_labels) == 0:
+        if distance.tolist()[0][0] >= self.FINGERPRINT_THRESHOLD or len(self.known_labels) == 0:
             # Save it as unknown face
             if save:
                 return await self._save_unknown_face(fingerprint)

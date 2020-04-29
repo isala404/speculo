@@ -1,3 +1,12 @@
+"""model_tester.py: Script to Calculate the accuracy of the entire system"""
+
+__author__ = "Isala Piyarisi"
+__version__ = "0.0.1"
+__email__ = "code@isala.me"
+__status__ = "Development"
+
+
+import asyncio
 import cv2
 from facedetector.yolo.yolo import YOLO
 from fingerprinter.speculo import Speculo
@@ -5,15 +14,17 @@ from facecomparator.comparator import ImageComparator
 import os
 
 SIZE = 256
-FINGERPRINT_SIZE = (128, 128, 1)
-MODEL_VERSION = 11
+
+MODEL_VERSION = 12
 
 yolo = YOLO(draw=False, debug=False)
 
-speculo = Speculo(model_path=f"fingerprinter/models/{MODEL_VERSION}/Model-v{MODEL_VERSION}.h5",
-                  image_size=FINGERPRINT_SIZE, visualize=False)
-output_shape = (speculo.latent_size,)  # TODO: Read this from the .h5 metadata
-comparator = ImageComparator(threshold=5000000, shape=output_shape, fingerprints=[], labels=[])
+speculo = Speculo(model_path=f"fingerprinter/models/{MODEL_VERSION}/Model-v{MODEL_VERSION}.h5", visualize=False,
+                  encoder_only=True)
+
+FINGERPRINT_SIZE = speculo.input_shape
+
+comparator = ImageComparator(threshold=550, shape=speculo.output_shape, fingerprints=[], labels=[])
 
 
 # Simple function to phrase though the evaluation dataset and get fingerprints for every photo
@@ -30,7 +41,7 @@ def get_finger_print(path, debug=True):
         return None
     if len(boxes) >= 2:
         if debug:
-            print(path, "Found more than one face, skipping .....")
+            print(path, "found more than one face, skipping .....")
         return None
 
     # in this dataset only one image as one person and it's also enforced by the above if blocks
@@ -50,7 +61,7 @@ def get_finger_print(path, debug=True):
         face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
 
     # return to fingerprint from the fingerprinter
-    return speculo.predict(face, encoder_only=True)
+    return speculo.predict(face)
 
 
 print("Processing Target Faces ....")
@@ -84,11 +95,12 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
         # check if there is actual fingerprint, there can be images where face detector didn't find any face
         if face_encoding is not None:
             # get the closed name from the facecomparator
-            predicted_name = comparator.get_best_match(face_encoding, save=False)
+            loop = asyncio.get_event_loop()
+            predicted_name = loop.run_until_complete(comparator.get_best_match(face_encoding, save=False))
 
             # if name is unknown it means model couldn't find the accurate match
             if predicted_name == "unknown":
-                print("Model could not find the proper name for", img_path, "| Correct Name -", image[:8])
+                print("Model could not find the proper name for", img_path, "| Prediction Name -", predicted_name)
                 unknown_predictions += 1
                 # give the correct results for the model so it can be better at future
                 comparator.add_new_face(face_encoding, image[:8])
@@ -99,7 +111,7 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
                 if image[:8] == predicted_name:
                     correct_predictions += 1
                 else:
-                    print("Invalid Prediction -", img_path, "| Correct Name -", image[:8])
+                    print("Invalid Prediction for", img_path, "| Prediction Name -", predicted_name)
                     # give the correct results for the model so it can be better at future
                     comparator.add_new_face(face_encoding, image[:8])
 
