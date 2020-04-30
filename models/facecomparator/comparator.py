@@ -16,8 +16,8 @@ from sklearn.neighbors import KNeighborsClassifier
 
 class ImageComparator:
     def __init__(self, threshold=550, shape=(256,), fingerprints=None, labels=None):
-        self.FINGERPRINT_THRESHOLD = int(os.getenv("FINGERPRINT_THRESHOLD", threshold))
-        self.COMPARATOR_SHAPE = eval(os.getenv("COMPARATOR_SHAPE", shape))
+        self.FINGERPRINT_THRESHOLD = int(os.getenv("FINGERPRINT_THRESHOLD", str(threshold)))
+        self.COMPARATOR_SHAPE = eval(os.getenv("COMPARATOR_SHAPE", str(shape)))
         self._FACE_SERVICE_ENDPOINT = os.getenv('FACE_SERVICE_URL')
         logging.info(f"FINGERPRINT_THRESHOLD : {self.FINGERPRINT_THRESHOLD}")
         logging.info(f"COMPARATOR_SHAPE : {self.COMPARATOR_SHAPE}")

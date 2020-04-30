@@ -81,13 +81,17 @@ unknown_predictions = 0
 print("Start Predicting on the dataset .... ")
 for person_dir in sorted(os.listdir("dataset_evaluate")):
     # this is dir contain only targets
-    if person_dir == "Front":
+    if person_dir == "Front" or person_dir.endswith("txt"):
         continue
 
     # go though every face sample from person dir
     for image in os.listdir(os.path.join("dataset_evaluate", person_dir)):
         # get the relative path
         img_path = os.path.join("dataset_evaluate", person_dir, image)
+
+        # This just metadata file in the dataset we don't need
+        if img_path.endswith("txt"):
+            continue
 
         # crop out the face and get the finger print
         face_encoding = get_finger_print(img_path, debug=False)
@@ -122,6 +126,10 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
                 accuracy = (correct_predictions / total_samples) * 100
             print("current_samples", total_samples, "correct_predictions", correct_predictions,
                   "unknown_predictions", unknown_predictions, "accuracy:", accuracy)
+
+    # if this is execute from CI only process one file
+    if os.getenv("CI"):
+        break
 
 print("total_samples:", total_samples)
 print("correct_predictions:", correct_predictions)
