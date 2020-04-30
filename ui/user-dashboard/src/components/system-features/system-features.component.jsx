@@ -1,15 +1,13 @@
 import React from "react";
 import { Grid, Row, Col } from "react-flexbox-grid";
-import FeaturedDeviceAsset from "../../assets/feature-devices/featured_devices.png";
 import styled from "styled-components";
-import { FeatureItem } from "../features/feature-item.component";
 import { SystemFeatureItem } from "../system-feature-item/system-feature-item.component";
 import { IphoneDevice } from "../../assets/feature-devices/iphone";
 import { GetWindowSize } from "../../helpers/window-size";
 
 export const SystemFeatures = () => {
   //hook to get the current window size
-  const [width, height] = GetWindowSize()
+  const [width] = GetWindowSize()
   return (
     //complete System feature section
     <SystemFeatureDiv>
@@ -61,10 +59,10 @@ const SystemFeatureDiv = styled.div`
   margin: 10%;
 `;
 
-const DeviceImage = styled.img`
-  width: 100%;
-    margin:auto;
-`;
+// const DeviceImage = styled.img`
+//   width: 100%;
+//     margin:auto;
+// `;
 
 var heading = "Lorem ipsum";
 var content =

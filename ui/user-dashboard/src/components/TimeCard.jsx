@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
 export const TimeCard = ({ timestamp, video, ctx, canvas, onSeek }) => {
-  const [image, setImage] = useState(null);
+  // const [image, setImage] = useState(null);
   // useEffect(() => {
   //   console.log("use efffect");
   //   if (image == null) {
@@ -37,7 +37,7 @@ export const TimeCard = ({ timestamp, video, ctx, canvas, onSeek }) => {
   return (
     <CardDiv
       className="card"
-      imgSrc={image}
+      // imgSrc={image}
       id="timeCard"
       onClick={onSeek}
       style={{ cursor: "pointer" }}

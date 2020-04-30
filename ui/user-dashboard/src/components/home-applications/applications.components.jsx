@@ -1,7 +1,6 @@
 import React from "react";
 import { Grid, Row, Col } from "react-flexbox-grid";
 import styled from "styled-components";
-import { BasicButton } from "../button/button.component";
 import ReactPlayer from "react-player";
 import { ApplicationItem } from "../application-item/application-item.component";
 
@@ -33,10 +32,9 @@ export const Applications = () => {
           <Col xs={12} sm={12} md={12} lg={6}>
             <ReactPlayer
               width={"100%"}
-              style={{ borderRadius: 10 }}
+              style={{ borderRadius: 10,  margin: "1em"  }}
               url="https://www.youtube.com/watch?v=0EDF4g7xpEM"
               playing={false}
-              style={{ margin: "1em" }}
             />
           </Col>
         </Row>

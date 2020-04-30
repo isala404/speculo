@@ -3,7 +3,6 @@ import { PeopleTable } from "../components/person-table/table.component";
 import Switch from "react-switch";
 import styled from "styled-components";
 import { Grid, Row, Col } from "react-flexbox-grid";
-import { retrieveAllRecords } from "../services/DetectionsManagement";
 
 export const Admin = () => {
   const [isSwitchToggled, setSwitchToggle] = useState(false);
@@ -16,7 +15,6 @@ export const Admin = () => {
 
   useEffect(() => {}, [searchVal]);
   return (
-    <div>
       <Grid style={{ width: "100%", marginTop: "4em"}}>
         <Row>
           <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: "left" }}>
@@ -34,17 +32,14 @@ export const Admin = () => {
           </Col>
         </Row>
         <Row>
-          <div style={{ margin: "auto" }}>
             {/* {isDataLoaded ? ( */}
             <PeopleTable
               isSwitchToggled={isSwitchToggled}
               searchValue={searchVal}
             />
             {/* ) : null} */}
-          </div>
         </Row>
       </Grid>
-    </div>
   );
 };
 
@@ -60,29 +55,3 @@ const Input = styled.input`
   font-family: "Lexend Deca", sans-serif;
 `;
 
-const people = [
-  {
-    data: [
-      {
-        blacklisted: false,
-        createdAt: "2020-04-26T13:14:18.659Z",
-        lastUpdated: "2020-04-26T13:14:18.659Z",
-        _id: "5ea5892aceb531001b8476a8",
-        label: "Dinuka Piyadigama",
-        __v: 0
-      }
-    ]
-  },
-  {
-    data: [
-      {
-        blacklisted: false,
-        createdAt: "2020-04-26T13:14:18.659Z",
-        lastUpdated: "2020-04-26T13:14:18.659Z",
-        _id: "5ea5892aceb531001b8476a8",
-        label: "Visal Rajapakse",
-        __v: 1
-      }
-    ]
-  }
-];
