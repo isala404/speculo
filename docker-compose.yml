@@ -1,43 +1,93 @@
-version: '3'
+version: "3"
+#version: "3.7"
 services:
   facedetector:
     build:
-      context: facedetector/
+      context: models/facedetector/
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - 8500:8080
+#    device_requests:
+#      - capabilities:
+#          - "gpu"
   fingerprinter:
-    image: tensorflow/serving
+    image: tensorflow/serving:latest-gpu
+    restart: unless-stopped
     ports:
       - 8501:8501
     volumes:
-      - ./fingerprinter/models:/models/fingerprinter
+      - ./models/fingerprinter/models/12:/models/fingerprinter/1
     environment:
       - MODEL_NAME=fingerprinter
-  comparator:
+#    device_requests:
+#      - capabilities:
+#          - "gpu"
+  facecomparator:
     build:
-      context: api/comparator/
+      context: models/facecomparator/
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - 8502:8080
+    environment:
+      - FACE_SERVICE_URL=http://faceservice:3000/api/v1/faces
+      - FINGERPRINT_THRESHOLD=550
+      - COMPARATOR_SHAPE=(256,)
     env_file:
       - database_config.env
-  postprocessor:
+    depends_on:
+      - faceservice
+  faceservice:
     build:
-      context: api/postprocessor/
+      context: api/face-service/
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
-      - 8503:8080
+      - 8503:3000
+    environment:
+      - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/api/v1/fingerprint
+      - COMPARATOR_URL=http://facecomparator:8080/v1/models/facecomparator:addFace
+    env_file:
+      - database_config.env
+  gateway:
+    build:
+      context: api/gateway/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8504:3000
+    environment:
+      - FACE_SERVICE_URL=http://faceservice:3000/
+      - VIDEO_DOWNSCALER_URL=http://videodownscaler:8080/
+    env_file:
+      - database_config.env
+  videodownscaler:
+    build:
+      context: api/video-downscaler/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8505:8080
+  imageprocessor:
+    build:
+      context: api/image-processor/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8506:8080
     environment:
       - FACEDETECTOR_URL=http://facedetector:8080/v1/models/facedetector:predict
       - FINGERPRINTER_URL=http://fingerprinter:8501/v1/models/fingerprinter:predict
-    env_file:
-      - database_config.env
-  listingservice:
+      - COMPARATOR_URL=http://facecomparator:8080/v1/models/facecomparator:predict
+      - FACE_SERVICE_URL=http://faceservice:3000/api/v1/faces
+    depends_on:
+      - facedetector
+      - fingerprinter
+      - facecomparator
+  dashboard:
     build:
-      context: api/listing-service/
+      context: ui/user-dashboard
       dockerfile: Dockerfile
     ports:
-      - 8504:8080
-    env_file:
-      - database_config.env
+      - 4000:80

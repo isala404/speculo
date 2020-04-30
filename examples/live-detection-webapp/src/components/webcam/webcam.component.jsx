@@ -26,30 +26,33 @@ export default class WebCam extends React.Component {
 
   //method to send the image as a POST request to get the details of the face(s) in the image
   getFaceData = () => {
+    console.log("inside get Face Data")
     if (this.state.isRunning) {
       //sending the image every 75microseconds
-      setInterval(() => {
-        var imageSource = this.state.imageSrc;
-        // imageSource = downscaledImage( 648, 432);
-        var truncatedImageSource = this.splitImageValue(imageSource);
-        fetch("http://speculo.isala.me/", {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({
-            image: truncatedImageSource
-          })
-        })
-          .then(response => response.json())
-          .then(data => this.setState({ response: data }, () => {
-            console.log(data)
-          }));
-      }, 750);
+      // setInterval(() => {
+      //   var imageSource = this.state.imageSrc;
+      //   // imageSource = downscaledImage( 648, 432);
+      //   var truncatedImageSource = this.splitImageValue(imageSource);
+      //   fetch("http://speculo.isala.me/", {
+      //     method: "POST",
+      //     mode: "cors",
+      //     body: JSON.stringify({
+      //       image: truncatedImageSource
+      //     })
+      //   })
+      //     .then(response => response.json())
+      //     .then(data => this.setState({ response: data }, () => {
+      //       console.log(data)
+      //     }));
+      // }, 750);
     }
   };
 
   //method used to capture the webcam screenshot
   capture = () => {
+    console.log("inside capture")
     var src = this.webcam.getScreenshot();
+    console.log(src)
     this.setState({
       imageSrc: src
     });

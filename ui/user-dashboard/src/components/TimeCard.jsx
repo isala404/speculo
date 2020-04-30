@@ -1,155 +1,95 @@
-import React from "react";
-import Webcam from "react-webcam";
-import Canvas from "../canvas/canvas.component";
+
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-export default class WebCam extends React.Component {
-  //constructor
-  constructor() {
-    super();
-    this.state = {
-      imageSrc: "",
-      isRunning: false,
-      response: []
-    };
+export const TimeCard = ({ timestamp, video, ctx, canvas, onSeek }) => {
+  const [image, setImage] = useState(null);
+  // useEffect(() => {
+  //   console.log("use efffect");
+  //   if (image == null) {
+  //     console.log("useeffect if");
+  //     var img = updateImg();
+  //     setImage(img);
+  //   }
+  // }, [image]);
 
-    this.canvas = null;
-  }
+  // const updateImg = async () => {
+  //   var time = timestamp;
+  //   var vid = video;
+  //   var context = ctx;
+  //   var canvasElement = canvas;
+  //   var image = await grabVideoFrame(time, vid, context, canvasElement);
+  //   console.log(image);
+  //   setImage(image);
+  //   return image;
+  // };
 
-  componentDidMount(){
-    //initialization of the canvas for downscaling
-    this.canvas = document.createElement("canvas");
-    this.canvas.width = 400;
-    this.canvas.height = 300;
-    this.ctx = this.canvas.getContext("2d");
-  }
+  // //function to get video snapshot of a video frame provided the time
+  // const grabVideoFrame = async (time, video, ctx, canvas) => {
+  //   var vid = video;
+  //   vid.currentTime = await time;
+  //   //drawing the video frame into the canvas
+  //   ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+  //   var dataURI = canvas.toDataURL("image/jpeg");
+  //   //getting the footage snapshot
+  //   return dataURI;
+  // };
 
-  //asynchronous function to get the image from the state and downscale it using the canvas
-  //returns the downscalled bas64 image
-  downscaledImage = async() =>{
-    var image = await this.state.imageSrc
-    var img = new Image();
-    img.src = image;
-    this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
-    var dataURI = this.canvas.toDataURL("image/jpeg");
-    return dataURI;
-  }
-
-  setRef = webcam => {
-    this.webcam = webcam;
-  };
-
-  //method to split the base64 image for processing
-  splitImageValue = imageSrc => {
-    var newImageStringArr = imageSrc.split(",");
-    return newImageStringArr[1];
-  };
-
-  //method to send the image as a POST request to get the details of the face(s) in the image
-  getFaceData = () => {
-    if (this.state.isRunning) {
-      //sending the image every 75microseconds
-      setInterval(() => {
-        //getting the downscaled image and POSTing to get the coordinates of the faces
-        var imageSource = this.downscaledImage();;
-        // imageSource = downscaledImage( 648, 432);
-        var truncatedImageSource = this.splitImageValue(imageSource);
-        fetch("http://speculo.isala.me/", {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({
-            image: truncatedImageSource
-          })
-        })
-          .then(response => response.json())
-          .then(data => this.setState({ response: data }, () => {
-            console.log(data)
-          }));
-      }, 750);
-    }
-  };
-
-  //method used to capture the webcam screenshot
-  capture = () => {
-    var src = this.webcam.getScreenshot();
-    this.setState({
-      imageSrc: src
-    });
-  };
-
-  //capturing a frame every 50 milliseconds
-  getVideo = () => {
-    if (this.state.isRunning) {
-      console.log("inside getvideo()");
-      setInterval(() => {
-        this.capture();
-      }, 50);
-    }
-  };
-
-  render() {
-    const webcamConstraints = {
-      width: 3600,
-      height: 720
-    };
-
-
-    return (
-      <>
-        <div className="webcam-component" style={{ margin: 0 }}>
-          <Webcam
-            audio={false}
-            height={0}
-            ref={this.setRef}
-            screenshotFormat="image/jpeg"
-            width={1080}
-            videoConstraints={webcamConstraints}
-          />
+  return (
+    <CardDiv
+      className="card"
+      imgSrc={image}
+      id="timeCard"
+      onClick={onSeek}
+      style={{ cursor: "pointer" }}
+    >
+      <div style={{ margin: "auto", textAlign: "center", marginTop: 40 }}>
+        <div className="timestamp">
+          Time: {/* The time will be shown here */}
+          <span>{timestamp}s</span>
         </div>
-        <CustomPrimaryButton
-          onClick={() => {
-            if (this.state.isRunning) {
-              this.setState({ isRunning: false });
-            } else {
-              this.setState({ isRunning: true }, () => {
-                this.getVideo();
-                this.getFaceData();
-              });
-            }
-          }}
-        >
-          Start live demo
-        </CustomPrimaryButton>
-        <div className="canvas-component">
-          <Canvas
-            source={this.state.isRunning ? this.state.imageSrc : null}
-            analysedFaceData={this.state.response}
-          />
-        </div>
-      </>
-    );
-  }
-}
+        <TimeProgress></TimeProgress>
+      </div>
+    </CardDiv>
+  );
+};
 
-const CustomPrimaryButton = styled.button`
-  color: #2bba85;
-  font-size: 1em;
-  width: ${props => (props.width != null ? props.width : null)};
-  padding: 0.3em 1em;
-  font-family: "Gilroy-Regular";
-  border: 2px solid #2bba85;
-  border-radius: 3px;
-  box-shadow: ${props =>
-    props.showShadow ? "0px 0px 100px 4px #2bba85" : null};
-  background: #2bba85;
+const TimeProgress = styled.div`
+  position: relative;
+  top: 0px;
+  z-index: 30;
+  width: 100%;
+  height: 5px;
+  margin-top: 20px;
+  border-radius: 10px;
+  background: rgb(0, 154, 217);
+  background: linear-gradient(
+    90deg,
+    rgba(38, 33, 111, 1) 0%,
+    rgba(20, 255, 191, 1) 100%
+  );
+  transition: 0.6s ease-out;
+`;
+
+const CardDiv = styled.div`
+  display: inline-block;
+  background: rgba(12, 22, 43, 1);
+  background-image: url(${props => props.imgSrc});
+  background-size: 400px 300px;
+  margin: 2.5em 0.3em;
+  width: 200px;
+  height: 100px;
   color: #ffffff;
-  z-index: 1;
-  transition: 0.3s;
-  &:hover {
-    background: #1ddd96;
-    color: #ffffff;
-    border: 2px solid #1ddd96;
-    box-shadow: ${props =>
-      props.showShadow ? "0px 0px 200px 10px #1ddd96" : null};
+  border-radius: 10px;
+  box-shadow: 0px 1px 10px #ccc;
+  transition: transform 0.3s;
+  scale: 1;
+  :hover {
+    color: #45dea5;
+    transform: scale(1.02);
+    box-shadow: 3px 2px 15px #333;
+    background: rgb(12, 22, 43);
+    background: rgba(15, 30, 61, 1);
+>>>>>>> 9173da2b73c2e2466610bbf739546032caa97915
   }
 `;

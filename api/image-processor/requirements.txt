@@ -1,0 +1,5 @@
+aiohttp==3.6.2
+numpy==1.18.3
+opencv-python-headless==4.2.0.34
+Pillow==7.1.2
+dnspython==1.16.0
