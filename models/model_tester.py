@@ -81,7 +81,7 @@ unknown_predictions = 0
 print("Start Predicting on the dataset .... ")
 for person_dir in sorted(os.listdir("dataset_evaluate")):
     # this is dir contain only targets
-    if person_dir == "Front":
+    if person_dir == "Front" or person_dir.endswith("txt"):
         continue
 
     # go though every face sample from person dir
