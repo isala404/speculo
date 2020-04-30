@@ -64,10 +64,10 @@ module.exports = {
 
     get_all_faces: function (req, res, next) {
 
-        if (req.query.fingerprint){
+        if (req.query.fingerprint == 'true'){
             var path = 'api' + req.path+'?fingerprint=true';
         }else{
-            var path = 'api' + req.path;
+            var path = 'api' + req.path+'?fingerprint=false';
         }
 
         api
