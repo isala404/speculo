@@ -67,12 +67,24 @@ router.patch(
   faceController.whitelist_face
 );
 
-// pre processor
+// image processor
 router.post(
   "/v1/preprocess",
   userController.validateUser,
   multer.any(),
   imageProcessorController.upload_footage
+);
+router.post(
+  "/v1/coordinates",
+  userController.validateUser,
+  multer.any(),
+  imageProcessorController.get_coordinates
+);
+router.post(
+  "/v1/fingerprint",
+  userController.validateUser,
+  multer.any(),
+  imageProcessorController.generate_fingerprint
 );
 
 // downscaler
