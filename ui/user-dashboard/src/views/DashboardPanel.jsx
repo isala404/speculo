@@ -15,26 +15,26 @@ class DashboardPanel extends Component {
 
 render(){
 
-  const Input = ({ accept, onFiles, files, getFilesFromEvent }) => {
-    const text = files.length > 0 ? "Add more files" : "Choose files";
+  // const Input = ({ accept, onFiles, files, getFilesFromEvent }) => {
+  //   const text = files.length > 0 ? "Add more files" : "Choose files";
 
-    return (
-      <label className="upload-label">
-        {text}
-        <input
-          style={{ display: "none" }}
-          type="file"
-          accept={accept}
-          multiple
-          onChange={e => {
-            getFilesFromEvent(e).then(chosenFiles => {
-              onFiles(chosenFiles);
-            });
-          }}
-        />
-      </label>
-    );
-  };
+  //   return (
+  //     <label className="upload-label">
+  //       {text}
+  //       <input
+  //         style={{ display: "none" }}
+  //         type="file"
+  //         accept={accept}
+  //         multiple
+  //         onChange={e => {
+  //           getFilesFromEvent(e).then(chosenFiles => {
+  //             onFiles(chosenFiles);
+  //           });
+  //         }}
+  //       />
+  //     </label>
+  //   );
+  // };
 
     const MyVideoUploader = () => {         // react-dropzone-uploader
         // specify upload params and url for files
