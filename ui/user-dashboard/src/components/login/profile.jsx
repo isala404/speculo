@@ -110,49 +110,57 @@ export class Profile extends React.Component {
                 </div>
                 <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
 
-                    <div className="header">Profile : {this.state.name}</div>
-                    <div className="content">
+                    <div className="img-container">
+                        <img src="https://i.imgur.com/PFMNraQ.png"
+                            className="cov-img"/>
+                    </div>
 
-                        <div className="image">
+                    <div className="content">
+                        <div className="header">Profile : {this.state.name}</div>
+                        {/* <div className="image">
                             <img src="https://i.imgur.com/e2CCsaP.png" style={{ width: "21em" }} />
-                        </div>
+                        </div> */}
 
                         <div className="form">
 
-                            <div className="form-group">
+                            <div className="form-group" style={{ marginBottom: "5px" }}>
                                 <label htmlFor="username">Username</label>
-                                <input type="text" name="username" placeholder="username" value={this.state.name} onChange={this.handleUsername} />
+                                <input type="text" name="username" placeholder="username" value={this.state.name} onChange={this.handleUsername} 
+                                style={{ marginBottom: "1em" }}/>
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group" style={{ marginBottom: "5px" }}>
                                 <label htmlFor="email">Email</label>
-                                <input type="email" name="email" placeholder="email" value={this.state.email} onChange={this.handleEmail} />
+                                <input type="email" name="email" placeholder="email" value={this.state.email} onChange={this.handleEmail} 
+                                style={{ marginBottom: "1em" }}/>
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group" style={{ marginBottom: "5px" }}>
                                 <label htmlFor="password">Password</label>
-                                <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.handlePassword} />
+                                <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.handlePassword} 
+                                style={{ marginBottom: "1em" }}/>
                             </div>
 
-                            <div className="form-group">
+                            <div className="form-group" style={{ marginBottom: "11px" }}>
                                 <label htmlFor="passwordCon">Re-Enter Password</label>
-                                <input type="password" name="passwordCon" placeholder="Re-enter Password" value={this.state.passwordCon} onChange={this.handlePasswordConR} />
+                                <input type="password" name="passwordCon" placeholder="Re-enter Password" value={this.state.passwordCon} onChange={this.handlePasswordConR} 
+                                style={{ marginBottom: "1em" }}/>
                             </div>
 
                         </div>
 
-                    </div>
-
-                    <div className="footer">
-                        <button type="button" className="btn" onClick={this.handleUpdate}>
-                            Update Details
+                        <div className="footer" style={{ marginTop: "1em" }}>
+                            <button type="button" className="btn" onClick={this.handleUpdate}>
+                                Update Details
                         </button>
 
-                        <button type="button" className="btn" onClick={this.handleLogout}>
-                            Log Out
+                            <button type="button" className="btn" onClick={this.handleLogout}>
+                                Log Out
                         </button>
-                    </div>
+                        </div>
 
+
+                    </div>
 
                 </div>
 

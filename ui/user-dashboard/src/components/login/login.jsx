@@ -71,10 +71,10 @@ export class Login extends React.Component {
                     })
                     .catch(error => {
                         console.log(error);
-                        if(error.message=='Request failed with status code 401'){
+                        if (error.message == 'Request failed with status code 401') {
                             alert("Invalid User Login Details");
                         }
-                        if(error.message=='Request failed with status code 500'){
+                        if (error.message == 'Request failed with status code 500') {
                             alert("Error in server, please try again later");
                         }
                     })
@@ -122,10 +122,10 @@ export class Login extends React.Component {
                     })
                     .catch(error => {
                         console.log(error);
-                        if(error.message=='Request failed with status code 401'){
+                        if (error.message == 'Request failed with status code 401') {
                             alert("Invalid Admin Login Details");
                         }
-                        if(error.message=='Request failed with status code 500'){
+                        if (error.message == 'Request failed with status code 500') {
                             alert("Error in server, please try again later");
                         }
                     })
@@ -147,12 +147,16 @@ export class Login extends React.Component {
                 </div>
                 <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
 
-                    <div className="header">Login</div>
-                    <div className="content">
+                    <div className="img-container">
+                        <img src="https://i.imgur.com/PFMNraQ.png"
+                            className="cov-img"/>
+                    </div>
 
-                        <div className="image">
-                            <img src="https://i.imgur.com/SUfVdmc.png" style={{ width: "21em" }} />
-                        </div>
+                    <div className="content">
+                        <div className="header"><b>Log</b> In</div>
+                        {/* <div className="image">
+                            <img src="https://i.imgur.com/SUfVdmc.png" style={{ width: "23em" }} />
+                        </div> */}
 
                         <div className="form">
 
@@ -168,20 +172,21 @@ export class Login extends React.Component {
 
                             <div className="form-group">
                                 <label htmlFor="password">Password</label>
-                                <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.handlePassword} />
+                                <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.handlePassword} 
+                                style={{ marginBottom: "1.6em" }}/>
                             </div>
 
                         </div>
 
-                    </div>
+                        <div className="footer">
+                            <button type="button" className="btn" onClick={this.handleUserLogin}>
+                                User Login
+                            </button>
+                            <button type="button" className="btn" onClick={this.handleAdminLogin}>
+                                Admin Login
+                            </button>
+                        </div>
 
-                    <div className="footer">
-                        <button type="button" className="btn" onClick={this.handleUserLogin}>
-                            User Login
-                    </button>
-                        <button type="button" className="btn" onClick={this.handleAdminLogin}>
-                            Admin Login
-                    </button>
                     </div>
 
 
