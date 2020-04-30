@@ -8,6 +8,10 @@ export const getAllFacesEndpoint = `${speculoBackend}/api/v1/faces?`;        // 
 
 // post (uploading) endpoints
 export const footageUploadEndpoint = `${speculoBackend}/api/post/footage/`;
+
+//post (getting face coordinates)
+export const coordinatesEndpoint = `${speculoBackend}/api/v1/coordinates/`
+
 // export const footageUploadEndpoint = 'https://httpbin.org/post';         // for testing purposes
 export const facesUploadEndpoint = `${speculoBackend}/api/v1/faces/`;
 

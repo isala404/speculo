@@ -1,5 +1,5 @@
 import axios from "axios";
-import {detectionsEndpoint, getAllFacesEndpoint, deleteFacesEndpoint, editDetailsEndpoint} from "../endpoints";
+import {detectionsEndpoint, getAllFacesEndpoint, deleteFacesEndpoint, editDetailsEndpoint, coordinatesEndpoint} from "../endpoints";
 
 // Get all detections of people in a video
 export async function retrieveAllDetections() {
@@ -153,4 +153,21 @@ export async function whitelistPersonInSystem(personId){
             })
 
     return res;
+}
+
+//function to get data of an appended base64 image
+export async function retrieveAllCoordinates(imageSrc){
+    var bodyFormData = new FormData();
+    bodyFormData.append("image", imageSrc  );
+    console.log(bodyFormData);
+
+    return await axios({
+        method: "POST",
+        url: `${coordinatesEndpoint}`,
+        data: bodyFormData,
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+        }
+    })
 }
