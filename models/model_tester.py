@@ -123,6 +123,10 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
             print("current_samples", total_samples, "correct_predictions", correct_predictions,
                   "unknown_predictions", unknown_predictions, "accuracy:", accuracy)
 
+    # if this is execute from CI only process one file
+    if os.getenv("CI"):
+        break
+
 print("total_samples:", total_samples)
 print("correct_predictions:", correct_predictions)
 print("unknown_predictions:", unknown_predictions)
