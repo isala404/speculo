@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow.keras.models import Model, load_model
 
 version = 12
-encoder_only = False
+encoder_only = True
 
 MODEL_DIR = "../models/fingerprinter/models"
 model = load_model(f"../models/fingerprinter/models/{version}/Model-v{version}.h5")

@@ -29,7 +29,7 @@ async def predict(request):
                                 status=400, content_type='application/json')
 
         output = await comparator.get_best_match(fingerprint)
-
+        
         return web.Response(body=json.dumps({'predictions': output}),
                             status=200, content_type='application/json')
     except Exception as e:
@@ -59,7 +59,9 @@ async def add_new_face(request):
                           f"given shape {fingerprint.shape}"}),
                                 status=400, content_type='application/json')
 
+
         if comparator.add_new_face(fingerprint, data['id']):
+    
             return web.Response(body=json.dumps({'data': 'fingerprint-added'}),
                                 status=200, content_type='application/json')
         else:
