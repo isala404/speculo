@@ -50,7 +50,7 @@ jobs:
           curl -sL http://www-prima.inrialpes.fr/perso/Gourier/Faces/HeadPoseImageDatabase.tar.gz -o dataset_evaluate.tar.gz
           mkdir dataset_evaluate
           tar -xvf dataset_evaluate.tar.gz -C dataset_evaluate
-      - name: Benchmark the model
+      - name: Smoke Testing All 3 Models
         run: python3 model_tester.py
         env:
           CI: true
