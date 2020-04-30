@@ -20,20 +20,21 @@ import Select from "react-select";
 export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [people, setPeople] = useState([]);
   //react hooks to access state
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(people);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [personToEdit, setPersonToEdit] = useState(-1);
   const [editToggled, setEditToggled] = useState(false);
   const [newPersonName, setNewPersonName] = useState(null);
   const [blackListValue, setBlackListValue] = useState(null);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
-  const [response, setResponse] = useState([]);
 
   //updating the state on searchval change
   useEffect(() => {
-    getData();
-    var result = search(people, searchValue);
-    setResults(result);
+    if (!isDataLoaded) {
+      getData();
+    }
+    console.log(results);
+    search(results, searchValue);
     // sortPeople();
   }, [searchValue, isSwitchToggled, isDataLoaded]);
 
@@ -41,14 +42,39 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const getData = async () => {
     await retrieveAllRecords().then(res => {
       setPeople(res);
-      console.log(res);
+      setResults(res);
+      // console.log(people);
       setIsDataLoaded(true);
+      // console.log(res.data);
     });
-    console.log(people)
-    // people.data.map(p => {
-    //   return console.log(p.blackListed);
-    // });
   };
+
+  //function used for searching
+  const search = (p, searchVal) => {
+    console.log(p);
+    console.log(searchVal);
+    for (var obj in p){
+      console.log(obj)
+    }
+
+    // if (persons != null && persons.length != 0) {
+    //   // console.log("search " + JSON.parse(people))
+    //   console.log("inside if")
+    //   console.log(object)
+    //   for (var x = 0; x < persons.length; x++) {
+    //     console.log("inside for")
+    //     // console.log(persons.data[x].label);
+    //     if (
+    //       persons.data[x].label.toUpperCase().includes(searchVal.toUpperCase())
+    //     ) {
+    //       results.push(persons[x]);
+    //     }
+    //   }
+    // }
+    console.log(results);
+    return results;
+  };
+
   //function to delete a person on delete button press
   const deletePerson = async personIdToDelete => {
     //Delete request to backend
@@ -73,8 +99,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
         person.label = name;
         person.blacklisted = isBlacklisted;
         isBlacklisted
-          ? await blacklistPersonInSystem(personIdToUpdate)
-          : await whitelistPersonInSystem(personIdToUpdate);
+          ? await whitelistPersonInSystem(personIdToUpdate)
+          : await blacklistPersonInSystem(personIdToUpdate);
       }
       console.log(people);
     } else if (isBlacklisted != null && isBlacklisted != undefined) {
@@ -151,7 +177,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                           defaultValue={getBlacklistValue(person)}
                         />
                       ) : (
-                        <p>{person.blackListed}</p>
+                        person.blacklisted.toString()
                       )}
                     </TableData>
                     <TableData>
@@ -216,21 +242,6 @@ const getBlacklistValue = person => {
   var value = blacklistValues.find(x => x.value == person.blacklisted);
   // console.log(value);
   return value;
-};
-
-//function used for searching
-const search = (persons, searchVal) => {
-  var results = [];
-  if (persons != null && persons.length != 0) {
-    for (var x = 0; x < persons.length; x++) {
-      if (
-        persons.data[x].label.toUpperCase().includes(searchVal.toUpperCase())
-      ) {
-        results.push(persons[x]);
-      }
-    }
-  }
-  return results;
 };
 
 //function to sort

@@ -23,14 +23,8 @@ export async function retrieveAllDetections() {
       "Access-Control-Allow-Origin": "*"
     }
   });
-  return res.data.map(detection => {
-    return {
-      id: detection._id,
-      name: detection.name,
-      blacklisted: detection.blacklisted,
-      timestamps: detection.timestamps
-    };
-  });
+  console.log(res.data)
+  return res.data;
 }
 
 // ------------
@@ -52,7 +46,10 @@ export async function retrieveAllRecords() {
       "Access-Control-Allow-Origin": "*"
     }
   });
+
   return res.data;
+// console.log(response)
+
 }
 
 // ------------
