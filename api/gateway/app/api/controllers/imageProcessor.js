@@ -26,7 +26,7 @@ module.exports = {
         })
     },
 
-    get_coordinates: function(req, res, next){
+    get_coordinates: function(req, res){
 
       const file = req.files;
 
@@ -45,7 +45,7 @@ module.exports = {
       })
   },
 
-  generate_fingerprint: function(req, res, next){
+  generate_fingerprint: function(req, res){
 
     const file = req.files;
 
