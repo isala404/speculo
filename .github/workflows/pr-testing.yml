@@ -2,7 +2,7 @@ name: Pull Request Testing
 
 on:
   pull_request:
-    types: [assigned, opened, synchronize]
+    types: [assigned, opened]
   pull_request_review:
     types: [submitted, edited]
 
