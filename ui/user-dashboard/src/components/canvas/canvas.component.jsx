@@ -1,9 +1,9 @@
 import React from "react";
 
 export default class Canvas extends React.Component {
-  constructor() {
-    super();
-  }
+  // constructor() {
+  //   super();
+  // }
 
   componentDidMount() {
     this.updateCanvas();
@@ -22,7 +22,7 @@ export default class Canvas extends React.Component {
       ctx.drawImage(image, 0, 0);
     };
     var faceData = this.props.analysedFaceData;
-    if (faceData.length == undefined && faceData.data.length > 0) {
+    if (faceData.length === undefined && faceData.data.length > 0) {
       //resetting the canvas
       ctx.beginPath();
       //using a map function to iterate through all the detected faces

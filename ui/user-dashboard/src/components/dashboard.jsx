@@ -4,12 +4,10 @@ import "video.js/dist/video-js.css";
 import "@videojs/themes/dist/fantasy/index.css";
 import { TimeCard } from "../components/TimeCard";
 import Person from "../components/PersonCard";
-import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
 import "../styles/dashboard.style.scss";
 import styled from "styled-components";
 import "../styles/videojsStyle.scss";
 import VideoSnapshot from "video-snapshot";
-import WireArt from "../assets/wire-art.svg";
 import {
   retrieveAllDetections,
   deleteFaceFromSystem,
@@ -18,7 +16,7 @@ import {
   whitelistPersonInSystem
 } from "../services/DetectionsManagement";
 import { Grid, Row, Col } from "react-flexbox-grid";
-import { GetWindowSize } from "../helpers/window-size";
+// import { GetWindowSize } from "../helpers/window-size";
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -170,10 +168,10 @@ export default class Dashboard extends Component {
   showTimeCards(person) {
     // updating state of selectedPerson
     var selection = this.state.selectedPerson;
-    if (selection == null) {
+    if (selection === null) {
       this.setState({ selectedPerson: person });
     } else {
-      if (selection.id == person.id) {
+      if (selection.id === person.id) {
         this.setState({ selectedPerson: null });
       } else {
         this.setState({ selectedPerson: person });
@@ -278,7 +276,6 @@ async editPersonSave(newPersonDetails) {
                 >
                   <source
                     // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                    // src = {this.state.videoSRC}
                     src = {this.props.videoSRC}
 
                     type="video/mp4"
@@ -350,58 +347,58 @@ async editPersonSave(newPersonDetails) {
   }
 }
 
-const VideoDiv = styled.div`
-  margin-top: 10%;
-  margin-bottom: 10%;
-  width: 90%;
-  height: 90%;
-`;
+// const VideoDiv = styled.div`
+//   margin-top: 10%;
+//   margin-bottom: 10%;
+//   width: 90%;
+//   height: 90%;
+// `;
 
 const PersonDiv = styled.div``;
 
-const people = [
-  // hard coded example
-  {
-    id: 1,
-    name: "Akassh",
-    timestamps: [60, 100, 1200],
-    blacklisted: true
-  },
-  { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
-  {
-    id: 3,
-    name: "Nisal",
-    timestamps: [100, 500, 1200, 1500, 200, 150, 900, 750, 12, 34, 78],
-    blacklisted: true
-  },
-  {
-    id: 4,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 5,
-    name: "UnknownPerson",
-    timestamps: [80, 60],
-    blacklisted: true
-  },
-  {
-    id: 6,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 7,
-    name: "Kushan",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 8,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  }
-];
+// const people = [
+//   // hard coded example
+//   {
+//     id: 1,
+//     name: "Akassh",
+//     timestamps: [60, 100, 1200],
+//     blacklisted: true
+//   },
+//   { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
+//   {
+//     id: 3,
+//     name: "Nisal",
+//     timestamps: [100, 500, 1200, 1500, 200, 150, 900, 750, 12, 34, 78],
+//     blacklisted: true
+//   },
+//   {
+//     id: 4,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 5,
+//     name: "UnknownPerson",
+//     timestamps: [80, 60],
+//     blacklisted: true
+//   },
+//   {
+//     id: 6,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 7,
+//     name: "Kushan",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 8,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   }
+// ];
