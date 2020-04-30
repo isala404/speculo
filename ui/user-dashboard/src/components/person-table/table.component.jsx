@@ -8,10 +8,10 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import {
-  retrieveAllDetections,
+  // retrieveAllDetections,
   deleteFaceFromSystem,
   retrieveAllRecords,
-  editNameInSystem,
+  // editNameInSystem,
   whitelistPersonInSystem,
   blacklistPersonInSystem
 } from "../../services/DetectionsManagement";
@@ -80,7 +80,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
     //Delete request to backend
     deleteFaceFromSystem(personIdToDelete);
     let newDetectionsArray = people.data.filter(
-      person => person._id != personIdToDelete
+      person => person._id !== personIdToDelete
     );
     setPeople(newDetectionsArray);
     // setResults(search(newDetectionsArray, searchValue));
@@ -92,9 +92,9 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
     console.log(personIdToUpdate);
     console.log(isBlacklisted);
     var person;
-    if (name != null && personIdToUpdate != null) {
+    if (name !== null && personIdToUpdate !== null) {
       console.log("inside != null");
-      person = people.data.find(x => x._id == personIdToUpdate);
+      person = people.data.find(x => x._id === personIdToUpdate);
       if (person) {
         person.label = name;
         person.blacklisted = isBlacklisted;
@@ -103,9 +103,9 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
           : await blacklistPersonInSystem(personIdToUpdate);
       }
       console.log(people);
-    } else if (isBlacklisted != null && isBlacklisted != undefined) {
+    } else if (isBlacklisted !== null && isBlacklisted !== undefined) {
       console.log("inside isblacklisted != null");
-      person = people.data.find(x => x._id == personIdToUpdate);
+      person = people.data.find(x => x._id === personIdToUpdate);
       if (person) {
         person.blacklisted = isBlacklisted;
         //updating database to update the values
@@ -115,8 +115,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
       }
     } else {
       console.log("inside else");
-      person = people.data.find(x => x._id == personIdToUpdate);
-      var person1 = people.data.find(y => y._id == personIdToUpdate);
+      person = people.data.find(x => x._id === personIdToUpdate);
+      var person1 = people.data.find(y => y._id === personIdToUpdate);
       people.blackListed = person1.blackListed;
       isBlacklisted
         ? await blacklistPersonInSystem(personIdToUpdate)
@@ -130,11 +130,11 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   };
 
   //sorting people by id and blacklist
-  const sortPeople = () => {
-    isSwitchToggled
-      ? setResults(results.sort(sortByProperty("blacklisted")))
-      : setResults(people.sort(sortByProperty("_id")));
-  };
+  // const sortPeople = () => {
+  //   isSwitchToggled
+  //     ? setResults(results.sort(sortByProperty("blacklisted")))
+  //     : setResults(people.sort(sortByProperty("_id")));
+  // };
 
   return (
     <div style={{ overflowX: "auto" }}>
@@ -159,7 +159,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                         setSelectedPerson(person);
                       }}
                     >
-                      {person._id == personToEdit && editToggled == true ? (
+                      {person._id === personToEdit && editToggled === true ? (
                         <input
                           type="text"
                           placeHolder={person.label}
@@ -170,7 +170,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                       )}
                     </TableData>
                     <TableData>
-                      {person._id == personToEdit && editToggled ? (
+                      {person._id === personToEdit && editToggled ? (
                         <Select
                           options={blacklistValues}
                           onChange={handleSelectorChange}
@@ -210,13 +210,13 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                       >
                         <FontAwesomeIcon
                           icon={
-                            person._id == personToEdit && editToggled
+                            person._id === personToEdit && editToggled
                               ? faCheck
                               : faEdit
                           }
                         />
                       </EditButton>
-                      {person._id == personToEdit && editToggled ? (
+                      {person._id === personToEdit && editToggled ? (
                         <CancelButton
                           onClick={() => {
                             setPersonToEdit(-1);
@@ -239,7 +239,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
 
 //getting the blacklisted values to display in the select menu
 const getBlacklistValue = person => {
-  var value = blacklistValues.find(x => x.value == person.blacklisted);
+  var value = blacklistValues.find(x => x.value === person.blacklisted);
   // console.log(value);
   return value;
 };

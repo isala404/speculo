@@ -3,7 +3,7 @@ import { PeopleTable } from "../components/person-table/table.component";
 import Switch from "react-switch";
 import styled from "styled-components";
 import { Grid, Row, Col } from "react-flexbox-grid";
-import { retrieveAllRecords } from "../services/DetectionsManagement";
+// import { retrieveAllRecords } from "../services/DetectionsManagement";
 
 export const Admin = () => {
   const [isSwitchToggled, setSwitchToggle] = useState(false);
@@ -60,29 +60,29 @@ const Input = styled.input`
   font-family: "Lexend Deca", sans-serif;
 `;
 
-const people = [
-  {
-    data: [
-      {
-        blacklisted: false,
-        createdAt: "2020-04-26T13:14:18.659Z",
-        lastUpdated: "2020-04-26T13:14:18.659Z",
-        _id: "5ea5892aceb531001b8476a8",
-        label: "Dinuka Piyadigama",
-        __v: 0
-      }
-    ]
-  },
-  {
-    data: [
-      {
-        blacklisted: false,
-        createdAt: "2020-04-26T13:14:18.659Z",
-        lastUpdated: "2020-04-26T13:14:18.659Z",
-        _id: "5ea5892aceb531001b8476a8",
-        label: "Visal Rajapakse",
-        __v: 1
-      }
-    ]
-  }
-];
+// const people = [
+//   {
+//     data: [
+//       {
+//         blacklisted: false,
+//         createdAt: "2020-04-26T13:14:18.659Z",
+//         lastUpdated: "2020-04-26T13:14:18.659Z",
+//         _id: "5ea5892aceb531001b8476a8",
+//         label: "Dinuka Piyadigama",
+//         __v: 0
+//       }
+//     ]
+//   },
+//   {
+//     data: [
+//       {
+//         blacklisted: false,
+//         createdAt: "2020-04-26T13:14:18.659Z",
+//         lastUpdated: "2020-04-26T13:14:18.659Z",
+//         _id: "5ea5892aceb531001b8476a8",
+//         label: "Visal Rajapakse",
+//         __v: 1
+//       }
+//     ]
+//   }
+// ];
