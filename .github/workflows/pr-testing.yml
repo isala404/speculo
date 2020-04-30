@@ -1,7 +1,11 @@
 name: Pull Request Testing
 
-on: [pull_request]
-
+on:
+  pull_request:
+    types: [assigned, opened, synchronize]
+  pull_request_review:
+    types: [submitted, edited]
+    
 jobs:
   user-dashboard-testing:
     runs-on: ubuntu-latest
