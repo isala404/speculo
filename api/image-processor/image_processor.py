@@ -33,8 +33,8 @@ class ImageProcessor:
 	"""
 	
 	def __init__(self):
-		self._SIZE = 192
-		self._FINGERPRINT_SIZE = (64, 64, 3)
+		self._SIZE = 256
+		self._FINGERPRINT_SIZE = (128, 128, 1)
 		self._FACEDETECTOR_ENDPOINT = os.getenv('FACEDETECTOR_URL')
 		self._FINGERPRINT_ENDPOINT = os.getenv('FINGERPRINTER_URL')
 		self._COMPARATOR_ENDPOINT = os.getenv('COMPARATOR_URL')
@@ -67,16 +67,16 @@ class ImageProcessor:
 		return data['predictions']
 	
 	async def _get_fingerprint(self, face) -> list:
-		"""Consumes the fingerprinter service and generates a fingerprint for the face
-
+		"""Consumes the fingerprinter service and generates a fingerprint for the faces
 		:param face: The numpy list representation of the face cropped from the frame.
 		:type face: list
 		:returns: the fingerprint generated for the face
 		:rtype: list
 		"""
 		
-		body = {'instances': np.reshape(face, [-1, 64, 64, 3]).tolist()}
-		
+		body = {'instances': np.reshape(face, [-1, self._FINGERPRINT_SIZE[0], self._FINGERPRINT_SIZE[1],
+		                                       self._FINGERPRINT_SIZE[2]]).tolist()}
+				
 		client = aiohttp.ClientSession()
 		
 		response = await client.post(url=self._FINGERPRINT_ENDPOINT, json=body)
@@ -213,11 +213,9 @@ class ImageProcessor:
 					face = frame[top:bottom, left:right]
 					
 					if self._FINGERPRINT_SIZE[2] == 1:
-						face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+						face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
 					
 					face = cv2.resize(face, self._FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
-					
-					cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 					
 					fingerprint = await self._get_fingerprint(face=face)
 					logging.info(f'[PREPROCESS] - Received Fingerprint for Frame #{next_frame_index}')
@@ -239,7 +237,7 @@ class ImageProcessor:
 						timestamps.append(timestamp)
 						entry['timestamps'] = timestamps
 						all_detections[index] = entry
-					
+			
 			except Exception as e:
 				logging.exception(e)
 				logging.info(f"Frame #{next_frame_index} was skipped due to an error.")
@@ -339,7 +337,10 @@ class ImageProcessor:
 			face = im.crop((left, top, right, bottom))
 			
 			# resize the cropped image to the required size
-			face = face.resize((self._FINGERPRINT_SIZE[0], self._FINGERPRINT_SIZE[1]), Image.ANTIALIAS)
+			face = face.resize(self._FINGERPRINT_SIZE[:2], Image.ANTIALIAS)
+			
+			if self._FINGERPRINT_SIZE[2] == 1:
+				face = face.convert('L')
 			
 			fingerprint = await self._get_fingerprint(face=face)
 			logging.info(f'[FINGERPRINT] - Received Fingerprint')
