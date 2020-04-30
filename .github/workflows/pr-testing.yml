@@ -5,7 +5,7 @@ on:
     types: [assigned, opened, synchronize]
   pull_request_review:
     types: [submitted, edited]
-    
+
 jobs:
   user-dashboard-testing:
     runs-on: ubuntu-latest
