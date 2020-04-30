@@ -42,7 +42,7 @@ jobs:
         run: pip install -r fingerprinter/requirements.txt
       - name: Downloading and extracting models
         run: |
-          curl -sL https://cdn.iconicto.com/Speculo/fingerprinter/Model-v12.h5 -o fingerprinter/models/12
+          curl -sL https://cdn.iconicto.com/Speculo/fingerprinter/Model-v12.h5 -o fingerprinter/models/12/Model-v12.h5
           curl -sL https://cdn.iconicto.com/Speculo/facedetector/yoloface/model-weights/YOLO_Face.h5 -o facedetector/model-weights/YOLO_Face.h5
       - name: Downloading and extracting the dataset
         run: |
