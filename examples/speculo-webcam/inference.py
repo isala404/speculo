@@ -1,25 +1,25 @@
+import asyncio
 import pickle
 import cv2
 from models.facedetector.yolo.yolo import YOLO
-# from scipy.spatial import distance
 from models.fingerprinter.speculo import Speculo
+from models.facecomparator.comparator import ImageComparator
 import os
-from sklearn.neighbors import KNeighborsClassifier
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+SIZE = 256
+
+MODEL_VERSION = 12
 
 yolo = YOLO(draw=False, debug=False)
 
-SIZE = 256
-FINGERPRINT_SIZE = (128, 128, 1)
-MODEL_VERSION = 11
-known_face_encodings = []
-known_face_names = []
-speculo = Speculo(
-    model_path=f"../../models/fingerprinter/models/{MODEL_VERSION}/Model-v{MODEL_VERSION}.h5",
-    image_size=FINGERPRINT_SIZE, visualize=False)
+speculo = Speculo(model_path=f"../../models/fingerprinter/models/{MODEL_VERSION}/Model-v{MODEL_VERSION}.h5", visualize=False,
+                  encoder_only=True)
 
-rebuild_cache = False
+FINGERPRINT_SIZE = speculo.input_shape
+
+comparator = ImageComparator(threshold=550, shape=speculo.output_shape, fingerprints=[], labels=[])
+
+rebuild_cache = True
 
 if os.path.isfile("faces_cache.pkl") and not rebuild_cache:
     print("Loading from the cache")
@@ -34,56 +34,23 @@ else:
             im = cv2.resize(im, (512, 512), interpolation=cv2.INTER_AREA)
             boxes = yolo.detect_image_fast(im)
             if len(boxes) == 0:
-                print(os.path.join("faces", person_dir, image),
-                      "no face found, skipping .....")
+                print(os.path.join("faces", person_dir, image), "no face found, skipping .....")
                 continue
             if len(boxes) >= 2:
-                print(os.path.join("faces", person_dir, image),
-                      "Found more than one face, skipping .....")
+                print(os.path.join("faces", person_dir, image), "Found more than one face, skipping .....")
                 continue
             top, left, bottom, right = boxes[0]
             face = im[int(top):int(bottom), int(left):int(right)]
             if FINGERPRINT_SIZE[2] == 1:
                 face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-            face = cv2.resize(
-                face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
+            face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
             face_encoding = speculo.predict(face)
-            known_face_encodings.append(face_encoding)
-            known_face_names.append(person_dir.title())
-            del im, face, face_encoding
-    print("caching faces")
-    file = open("faces_cache.pkl", 'wb')
-    pickle.dump([known_face_encodings, known_face_names], file)
-    file.close()
+            comparator.add_new_face(face_encoding, person_dir.title())
 
-n_faces = len(set(known_face_names))
-neigh = KNeighborsClassifier(n_neighbors=n_faces)
-neigh.fit(known_face_encodings, known_face_names)
-
-
-def add_new_face(f_encoding, user_face):
-    global n_faces, neigh
-    print("Adding a face", n_faces)
-    name = f"unknown_{n_faces}"
-    known_face_encodings.append(f_encoding)
-    known_face_names.append(name.title())
-    n_faces = len(set(known_face_names))
-    neigh = KNeighborsClassifier(n_neighbors=n_faces)
-    neigh.fit(known_face_encodings, known_face_names)
-    cv2.imwrite(f"faces/{name}.jpg", user_face)
-    return name
-
-
-def best_match(f_encoding, user_face):
-    distance, face_idx = neigh.kneighbors(
-        [f_encoding], n_neighbors=1, return_distance=True)
-    # print(distance, face_idx)
-    # if distance.tolist()[0][0] >= 1.7:
-    #     return "Unknown"
-    # return add_new_face(f_encoding, user_face)
-
-    return known_face_names[face_idx.tolist()[0][0]]
-
+    # print("caching faces")
+    # file = open("faces_cache.pkl", 'wb')
+    # pickle.dump([known_face_encodings, known_face_names], file)
+    # file.close()
 
 print("Start Detecting .... ")
 video_capture = cv2.VideoCapture(0)
@@ -92,7 +59,6 @@ while True:
     ret, frame = video_capture.read()
     height, width, _ = frame.shape
     small_frame = cv2.resize(frame, (SIZE, SIZE))
-    # api this
     boxes = yolo.detect_image_fast(small_frame)
     for top, left, bottom, right in boxes:
         top = int(top * height / SIZE)
@@ -105,18 +71,15 @@ while True:
             continue
         if FINGERPRINT_SIZE[2] == 1:
             face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-        face = cv2.resize(
-            face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
+        face = cv2.resize(face, FINGERPRINT_SIZE[:2], interpolation=cv2.INTER_AREA)
 
         font = cv2.FONT_HERSHEY_DUPLEX
-
         face_encoding = speculo.predict(face)
-        face_name = best_match(face_encoding, frame.copy())
-        # face_name = neigh.predict([face_encoding])[0]
-        cv2.putText(frame, face_name, (left + 6, bottom - 6),
-                    font, 1.0, (255, 255, 255), 1)
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+        loop = asyncio.get_event_loop()
+        face_name = loop.run_until_complete(comparator.get_best_match(face_encoding, save=False))
 
+        cv2.putText(frame, face_name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
     cv2.imshow('Video', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

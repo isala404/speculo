@@ -1,3 +1,10 @@
+"""head_pose_parser.py: Preprocess Head Pose Image Database to for fingerprinter's usage"""
+
+__author__ = "Isala Piyarisi"
+__version__ = "0.0.1"
+__email__ = "code@isala.me"
+__status__ = "Development"
+
 import os
 from PIL import Image
 from tqdm import tqdm
@@ -13,6 +20,7 @@ os.chdir("../dataset_processed")
 yolo = YOLO(draw=False, debug=False)
 
 
+# Crop Faces using YOLO Model
 def crop_face(read, write):
     im = Image.open(read)
     boxes = yolo.detect_image_fast(np.array(im))

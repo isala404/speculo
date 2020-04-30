@@ -23,7 +23,7 @@ export async function retrieveAllDetections() {
       "Access-Control-Allow-Origin": "*"
     }
   });
-  console.log(res.data)
+  console.log(res.data);
   return res.data;
 }
 
@@ -48,8 +48,6 @@ export async function retrieveAllRecords() {
   });
 
   return res.data;
-// console.log(response)
-
 }
 
 // ------------
@@ -90,7 +88,7 @@ export async function editNameInSystem(personId, newName) {
   }
 
   const res = await axios.patch(
-    editDetailsEndpoint / `${personId}/label`,
+    editDetailsEndpoint + `${personId}/label`,
     postBody,
     {
       headers: {
@@ -100,7 +98,7 @@ export async function editNameInSystem(personId, newName) {
       }
     }
   );
-  console.log(res);
+
   return res;
 }
 
@@ -108,7 +106,7 @@ export async function editNameInSystem(personId, newName) {
 
 // blacklist a person in the system
 export async function blacklistPersonInSystem(personId) {
-    console.log("inside blacklist person")
+  console.log("inside blacklist person");
   let token = null;
   if (localStorage.getItem("token") != null) {
     token = localStorage.getItem("token");
@@ -116,21 +114,30 @@ export async function blacklistPersonInSystem(personId) {
     console.log("token not found");
   }
 
-  fetch(`http://speculo.isala.me/api/v1/faces/${personId}/blacklist`, {
-    method: "PATCH",
+  // fetch(`http://speculo.isala.me/api/v1/faces/${personId}/blacklist`, {
+  //   method: "PATCH",
+  //   headers: {
+  //     "Content-type": "application/json; charset=UTF-8",
+  //     "Access-Control-Allow-Origin": "*",
+  //     "x-access-token": token
+  //   }
+
+  const res = await axios.patch(editDetailsEndpoint + `${personId}/blacklist`, {
     headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      "Access-Control-Allow-Origin": "*",
-      "x-access-token": token
+      "x-access-token": token,
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
     }
   });
+
+  return res;
 }
 
 // ------------
 
 // whitelist a person in the system
 export async function whitelistPersonInSystem(personId) {
-    console.log("inside whitelist person")
+  console.log("inside whitelist person");
   let token = null;
   if (localStorage.getItem("token") != null) {
     token = localStorage.getItem("token");
@@ -138,12 +145,21 @@ export async function whitelistPersonInSystem(personId) {
     console.log("token not found");
   }
 
-  fetch(`http://speculo.isala.me/api/v1/faces/${personId}/whitelist`, {
-    method: "PATCH",
+  // fetch(`http://speculo.isala.me/api/v1/faces/${personId}/whitelist`, {
+  //   method: "PATCH",
+  //   headers: {
+  //     "Content-type": "application/json; charset=UTF-8",
+  //     "Access-Control-Allow-Origin": "*",
+  //     "x-access-token": token
+  //   }
+
+  const res = await axios.patch(editDetailsEndpoint + `${personId}/whitelist`, {
     headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      "Access-Control-Allow-Origin": "*",
-      "x-access-token": token
+      "x-access-token": token,
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
     }
   });
+
+  return res;
 }

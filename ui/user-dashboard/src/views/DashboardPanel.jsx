@@ -49,7 +49,6 @@ render(){
 
           const headers = {
             'x-access-token': token,
-            'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
           }
           

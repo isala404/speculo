@@ -7,6 +7,7 @@ from comparator import ImageComparator
 logging.basicConfig(filename='app.log', filemode='w',
                     format='%(name)s - %(levelname)s - %(message)s')
 
+logging.info(f"Starting ImageComparator")
 comparator = ImageComparator()
 
 
@@ -18,6 +19,14 @@ async def predict(request):
                                 status=400, content_type='application/json')
 
         fingerprint = np.array(data['instances'])
+
+        if fingerprint.shape != comparator.COMPARATOR_SHAPE:
+            logging.debug(f"error: client send mismatched input, intended shape {comparator.COMPARATOR_SHAPE}, "
+                          f"given shape {fingerprint.shape}")
+            return web.Response(body=json.dumps(
+                {'error': f"input shape mismatched, intended shape {comparator.COMPARATOR_SHAPE}, "
+                          f"given shape {fingerprint.shape}"}),
+                                status=400, content_type='application/json')
 
         output = await comparator.get_best_match(fingerprint)
 
@@ -42,6 +51,13 @@ async def add_new_face(request):
                                 status=400, content_type='application/json')
 
         fingerprint = np.array(data['fingerprint'])
+        if fingerprint.shape != comparator.COMPARATOR_SHAPE:
+            logging.debug(f"error: client send mismatched input, intended shape {comparator.COMPARATOR_SHAPE}, "
+                          f"given shape {fingerprint.shape}")
+            return web.Response(body=json.dumps(
+                {'error': f"input shape mismatched, intended shape {comparator.COMPARATOR_SHAPE}, "
+                          f"given shape {fingerprint.shape}"}),
+                                status=400, content_type='application/json')
 
         if comparator.add_new_face(fingerprint, data['id']):
             return web.Response(body=json.dumps({'data': 'fingerprint-added'}),
@@ -55,8 +71,8 @@ async def add_new_face(request):
         return web.Response(body=json.dumps({'error': str(e)}),
                             status=500, content_type='application/json')
 
-
+logging.info(f"Image Comparator running on localhost:8080")
 app = web.Application()
-app.add_routes([web.post('/v1/models/comparator:predict', predict)])
-app.add_routes([web.post('/v1/models/comparator:addFace', add_new_face)])
+app.add_routes([web.post('/v1/models/facecomparator:predict', predict)])
+app.add_routes([web.post('/v1/models/facecomparator:addFace', add_new_face)])
 web.run_app(app, port=8080)

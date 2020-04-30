@@ -1,12 +1,12 @@
 // imports
-require('dotenv').config();
+require('dotenv').config(); // loads environment variables from a .env file into process.env
 const express = require("express");
 const logger = require("morgan");
 const gateway = require('./app/routes/gateway');
 const user = require("./app/routes/user");
 const bodyParser = require("body-parser");
 const mongoose = require("./config/database"); //database configuration
-var jwt = require("jsonwebtoken");
+var cors = require('cors')
 
 const app = express(); // express
 app.set("secretKey", "nodeRestApi"); // jwt secret token
@@ -17,14 +17,9 @@ mongoose.connection.on(
     console.error.bind(console, "MongoDB connection error:")
 );
 
-app.use(logger("dev"));
-app.use(bodyParser.json());
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-})
+app.use(logger("dev"));  // HTTP request logger middleware
+app.use(bodyParser.json()); // accept JSON requests
+app.use(cors()) // enable cors
 
 app.get("/", function (req, res) {
     res.send("Welcome to Speculo Gateway");
