@@ -53,8 +53,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const search = (p, searchVal) => {
     console.log(p);
     console.log(searchVal);
-    for (var obj in p){
-      console.log(obj)
+    for (var obj in p) {
+      console.log(obj);
     }
 
     // if (persons != null && persons.length != 0) {
@@ -268,12 +268,14 @@ const blacklistValues = [
 
 const Table = styled.table`
   min-width: 600px;
-  margin:10em;
-  width:1000px;
+  margin: 10em;
+  width: 1000px;
   table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
   margin: 0 10em;
+  border-radius: 10px;
+  overflow: hidden;
 `;
 
 const TableBody = styled.tbody`
@@ -285,19 +287,20 @@ const TableBody = styled.tbody`
 
 const TableHead = styled.thead`
   width: 100%;
-  background: black;
   color: #fff;
   display: block;
-`;
+  `;
 const TableRow = styled.tr`
   display: block;
-  background: #333;
+  background: rgba(15,30,61,1);
   width: 100%;
 `;
 const Row = styled.tr`
-  background: #ededed;
-  border-bottom: 1px solid #333;
   width: 100%;
+  :nth-child(even){
+    background:#ededed;
+    /* background:#e6fff5; */
+  }
 `;
 const TableHeading = styled.th`
   padding: 1em;
