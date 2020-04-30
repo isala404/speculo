@@ -5,9 +5,10 @@ on: [pull_request]
 jobs:
   user-dashboard-testing:
     runs-on: ubuntu-latest
-    env:
-      working-directory: ui/user-dashboard
-
+    defaults:
+      run:
+        shell: bash
+        working-directory: ui/user-dashboard
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
@@ -21,9 +22,10 @@ jobs:
         CI: true
   data-science-testing:
     runs-on: ubuntu-latest
-    env:
-      working-directory: models
-
+    defaults:
+      run:
+        shell: bash
+        working-directory: models
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
