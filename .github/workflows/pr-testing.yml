@@ -46,7 +46,7 @@ jobs:
           mkdir -p facedetector/model-weights/
           curl -sL https://cdn.iconicto.com/Speculo/facedetector/yoloface/model-weights/YOLO_Face.h5 -o facedetector/model-weights/YOLO_Face.h5
 
-      - name: Caching Evaluation data set
+      - name: Cache evaluation data set
         uses: actions/cache@v1
         env:
           cache-name: evaluation-data-set
@@ -61,7 +61,15 @@ jobs:
           curl -sL http://www-prima.inrialpes.fr/perso/Gourier/Faces/HeadPoseImageDatabase.tar.gz -o dataset_evaluate.tar.gz
           mkdir dataset_evaluate
           tar -xvf dataset_evaluate.tar.gz -C dataset_evaluate
-      - name: Smoke Testing All 3 Models
+      - name: Testing All 3 Models
         run: python3 model_tester.py
         env:
           CI: true
+  smoke-testing:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Exporting secrets
+      run: echo ${{secrets.database_config}} >> database_config.env
+    - name: Building Containers
+      run: docker-compose build --pull
