@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import DashboardPanel from "./DashboardPanel";
 import UploadFaces from "../components/upload-face-footage/upload-faces/UploadFaces";
 import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
 import { BasicButton } from "../components/button/button.component";
