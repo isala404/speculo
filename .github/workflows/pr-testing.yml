@@ -45,6 +45,17 @@ jobs:
           curl -sL https://cdn.iconicto.com/Speculo/fingerprinter/Model-v12.h5 -o fingerprinter/models/12/Model-v12.h5
           mkdir -p facedetector/model-weights/
           curl -sL https://cdn.iconicto.com/Speculo/facedetector/yoloface/model-weights/YOLO_Face.h5 -o facedetector/model-weights/YOLO_Face.h5
+
+      - name: Caching Evaluation data set
+        uses: actions/cache@v1
+        env:
+          cache-name: evaluation-data-set
+        with:
+          path: ./dataset_evaluate
+          key: evaluation-data-set-cache
+          restore-keys: |
+            evaluation-data-set-cache
+
       - name: Downloading and extracting the dataset
         run: |
           curl -sL http://www-prima.inrialpes.fr/perso/Gourier/Faces/HeadPoseImageDatabase.tar.gz -o dataset_evaluate.tar.gz

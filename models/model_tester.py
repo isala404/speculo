@@ -89,6 +89,10 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
         # get the relative path
         img_path = os.path.join("dataset_evaluate", person_dir, image)
 
+        # This just metadata file in the dataset we don't need
+        if img_path.endswith("txt"):
+            continue
+
         # crop out the face and get the finger print
         face_encoding = get_finger_print(img_path, debug=False)
 
