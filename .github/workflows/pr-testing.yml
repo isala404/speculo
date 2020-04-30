@@ -33,13 +33,13 @@ jobs:
         with:
           python-version: '3.8'
       - name: Install python package manager
-        run: python -m pip install --upgrade
+        run: python -m pip install --upgrade pip
       - name: Install facecomparator dependencies
-        run: pip -r facecomparator/requirements.txt
+        run: pip install -r facecomparator/requirements.txt
       - name: Install facedetector dependencies
-        run: pip -r facedetector/requirements.txt
+        run: pip install -r facedetector/requirements.txt
       - name: Install fingerprinter dependencies
-        run: pip -r fingerprinter/requirements.txt
+        run: pip install -r fingerprinter/requirements.txt
       - name: Downloading and extracting models
         run: |
           curl -sL https://cdn.iconicto.com/Speculo/fingerprinter/Model-v12.h5 -o fingerprinter/models/12
