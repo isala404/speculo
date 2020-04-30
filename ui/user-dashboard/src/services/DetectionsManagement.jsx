@@ -40,7 +40,7 @@ export async function retrieveAllRecords() {
         console.log("token not found");
     }
 
-    const res = await axios.get(getAllFacesEndpoint+'false', {
+    const res = await axios.get(getAllFacesEndpoint + 'false', {
         headers: {
             'x-access-token': token,
             'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export async function deleteFaceFromSystem(personId){
         console.log("token not found");
     }
     
-    const res = await axios.delete(deleteFacesEndpoint+personId, {
+    const res = await axios.delete(deleteFacesEndpoint + personId, {
         headers: {
             'x-access-token': token,
             'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ export async function editNameInSystem(personId, newName){
     }
 
     const res = await axios
-        .patch(editDetailsEndpoint/`${personId}/label`, postBody,
+        .patch(editDetailsEndpoint + `${personId}/label`, postBody,
             {
                 headers: {
                     'x-access-token': token,
@@ -119,7 +119,7 @@ export async function blacklistPersonInSystem(personId){
     }
 
     const res = await axios
-        .patch(editDetailsEndpoint/`${personId}/blacklist`,
+        .patch(editDetailsEndpoint + `${personId}/blacklist`,
             {
                 headers: {
                     'x-access-token': token,
@@ -143,7 +143,7 @@ export async function whitelistPersonInSystem(personId){
     }
 
     const res = await axios
-        .patch(editDetailsEndpoint/`${personId}/whitelist`,
+        .patch(editDetailsEndpoint + `${personId}/whitelist`,
             {
                 headers: {
                     'x-access-token': token,
