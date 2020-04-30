@@ -17,7 +17,7 @@ export const Admin = () => {
   useEffect(() => {}, [searchVal]);
   return (
     <div>
-      <Grid style={{ width: "100%", margin: "10%" }}>
+      <Grid style={{ width: "100%", marginTop: "4em"}}>
         <Row>
           <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: "left" }}>
             <span>Sort with ID and blacklist state</span>

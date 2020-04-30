@@ -132,8 +132,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   //sorting people by id and blacklist
   const sortPeople = () => {
     isSwitchToggled
-      ? setResults(people.sort(sortByProperty("blacklisted")))
-      : setResults(people.sort(sortByProperty("id")));
+      ? setResults(results.sort(sortByProperty("blacklisted")))
+      : setResults(people.sort(sortByProperty("_id")));
   };
 
   return (
@@ -267,10 +267,13 @@ const blacklistValues = [
 ];
 
 const Table = styled.table`
-  min-width: 1500px;
+  min-width: 600px;
+  margin:10em;
+  width:1000px;
   table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
+  margin: 0 10em;
 `;
 
 const TableBody = styled.tbody`
@@ -299,11 +302,12 @@ const Row = styled.tr`
 const TableHeading = styled.th`
   padding: 1em;
   text-align: left;
+  width: 250px;
 `;
 const TableData = styled.td`
   padding: 1em;
   text-align: left;
-  width: 10%;
+  width: 22.5%;
 `;
 
 const DeleteButton = styled.button`
