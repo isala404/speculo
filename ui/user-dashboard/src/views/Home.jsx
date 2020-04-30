@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
+// import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
 import { Header } from "../components/home-header/header.component";
 import { Features } from "../components/home-features/home-features.component";
 import { Applications } from "../components/home-applications/applications.components";
