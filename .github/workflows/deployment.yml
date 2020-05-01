@@ -191,6 +191,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [face-service, gateway, image-processor, video-downscaler, facecomparator, facedetector, fingerprinter, user-dashboard]
+    name: Deploying to GKE
     steps:
       - uses: actions/checkout@master
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
