@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-processor-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: image-processor
+  template:
+    metadata:
+      labels:
+        component: image-processor
+        tier: datascience
+    spec:
+      containers:
+        - name: image-processor
+          image: docker.pkg.github.com/mrsupiri/speculo/image-processor:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

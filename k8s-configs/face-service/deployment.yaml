@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: face-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: face-service
+  template:
+    metadata:
+      labels:
+        component: face-service
+        tier: datascience
+    spec:
+      containers:
+        - name: face-service
+          image: docker.pkg.github.com/mrsupiri/speculo/face-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
