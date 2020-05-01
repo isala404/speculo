@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { Grid, Col } from "react-flexbox-grid";
 import { Row } from "react-bootstrap";
 import FacebookIcon from "../../assets/footer-icons/facebook_color.png";
-import GoogleIcon from "../../assets/footer-icons/google_color.png";
-import TwitterIcon from "../../assets/footer-icons/twitter_color.png";
-import LinkedinIcon from "../../assets/footer-icons/linkedin_color.png";
+// import GoogleIcon from "../../assets/footer-icons/google_color.png";
+// import TwitterIcon from "../../assets/footer-icons/twitter_color.png";
+// import LinkedinIcon from "../../assets/footer-icons/linkedin_color.png";
 import { BasicButton } from "../button/button.component";
 
 export const AlliedCompanies = () => (

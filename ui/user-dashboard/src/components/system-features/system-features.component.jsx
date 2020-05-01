@@ -7,7 +7,7 @@ import { GetWindowSize } from "../../helpers/window-size";
 
 export const SystemFeatures = () => {
   //hook to get the current window size
-  const [width] = GetWindowSize()
+  const [ width ] = GetWindowSize()
   return (
     //complete System feature section
     <SystemFeatureDiv>

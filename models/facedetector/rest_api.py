@@ -31,6 +31,6 @@ async def predict(request):
                             status=500, content_type='application/json')
 
 
-app = web.Application()
+app = web.Application(client_max_size=10000000000)
 app.add_routes([web.post('/v1/models/facedetector:predict', predict)])
 web.run_app(app, port=8080)
