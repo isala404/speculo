@@ -374,49 +374,49 @@ const PersonDiv = styled.div`
   height: 100;
 `;
 
-const people = [
-  // hard coded example
-  {
-    id: 1,
-    name: "Akassh",
-    timestamps: [60, 100, 1200],
-    blacklisted: true
-  },
-  { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
-  {
-    id: 3,
-    name: "Nisal",
-    timestamps: [100, 500, 1200, 1500, 200, 150, 900, 750, 12, 34, 78],
-    blacklisted: true
-  },
-  {
-    id: 4,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 5,
-    name: "UnknownPerson",
-    timestamps: [80, 60],
-    blacklisted: true
-  },
-  {
-    id: 6,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 7,
-    name: "Kushan",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 8,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  }
-];
+// const people = [
+//   // hard coded example
+//   {
+//     id: 1,
+//     name: "Akassh",
+//     timestamps: [60, 100, 1200],
+//     blacklisted: true
+//   },
+//   { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
+//   {
+//     id: 3,
+//     name: "Nisal",
+//     timestamps: [100, 500, 1200, 1500, 200, 150, 900, 750, 12, 34, 78],
+//     blacklisted: true
+//   },
+//   {
+//     id: 4,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 5,
+//     name: "UnknownPerson",
+//     timestamps: [80, 60],
+//     blacklisted: true
+//   },
+//   {
+//     id: 6,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 7,
+//     name: "Kushan",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 8,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   }
+// ];
