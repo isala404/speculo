@@ -3,7 +3,7 @@ import FormData from 'form-data';
 import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
-import {Error, MongooseDocument} from "mongoose";
+import {Error, MongooseDocument, Types} from "mongoose";
 import {IMAGE_PROCESSOR_URL, COMPARATOR_URL} from "../constants/face.constants";
 import {ImageProcessorService} from "./imageProcessorService";
 
@@ -13,14 +13,75 @@ export class FaceService {
 	public async addFace(req: Request, res: Response) {
 		let file = req.file;
 
-		console.log("[ADD FACE] - Successfully received file")
+		// split the file name into label and format
+		let fileValues = file.originalname.split('.')
 
-		let fingerprint = []
+		let format = fileValues[1]
+
+		// ignore any file that isn't a png or jpg
+		if (format != 'png' && format != 'jpg' && format != 'jpeg') {
+			return res.status(500).json({'error': "Invalid image format! It must either be JPG or PNG."})
+		}
+
+		console.log("Passed format")
+
+		let fingerprint: number[];
+
 		try {
 			fingerprint = await new ImageProcessorService().getFingerprint(file)
 		} catch (error) {
 			console.error(`There was an error in generating the fingerprint. | ${error}`)
 			return res.status(500).json({error: "There was an error in generating the fingerprint for this image."})
+		}
+
+		let label = fileValues[0]
+
+		console.log("Passed label " + label)
+
+		let face = new Face({
+			'label': label,
+			'fingerprints': [fingerprint],
+			'blacklisted': false
+		});
+
+		try {
+			face = await face.save()
+		} catch (error) {
+			console.log(`There was an error saving the face to the database. | ${error}`);
+			return res.status(500).json({error: "There was an error in saving the face to the database."})
+		}
+
+		console.log("Successfully saved face to the database.")
+
+		res.status(200).json({id: face._id})
+
+		new ImageProcessorService().sendFaceData(face._id, fingerprint)
+
+		fs.unlinkSync(file.path)
+	}
+
+
+	/** This method will add a face to an existing face by adding it's finerprint to the database */
+	public async appendFace(req: Request, res: Response) {
+		let id = req.params.id;
+		let unknownFaceId = req.query['id'].toString();
+		let file = req.file;
+
+		console.log(`${id} | ${unknownFaceId} | ${file.originalname}`)
+
+		if (!id.match("^[0-9a-fA-F]{24}$")) {
+			console.log("Invalid ID provided.")
+			return res.status(500).json({'error': "Invalid ID provided!"})
+		}
+
+		if (!unknownFaceId.match("^[0-9a-fA-F]{24}$")) {
+			console.log("Invalid ID provided for Unknown Face!")
+			return res.status(500).json({'error': "Invalid ID provided for the Unknown Face!"})
+		}
+
+		if (!file) {
+			console.log("No image file provided!")
+			return res.status(500).json({'error': "No image file provided!"})
 		}
 
 		let fileValues = file.originalname.split('.')
@@ -31,101 +92,64 @@ export class FaceService {
 			return res.status(500).json({'error': "Invalid image format! It must either be JPG or PNG."})
 		}
 
-		let label = fileValues[0]
+		let face;
 
-		const face = new Face({
-			'label': label,
-			'fingerprints': [fingerprint],
-			'blacklisted': false
+		face = await Face.findById({_id: id}).exec().catch((error) => {
+			console.log(`There was an error in retrieving the face by ID [${id}] | ${error}`)
+			return res.status(500).json({error: "There was an error in retrieving the face by ID"})
 		});
 
-		await face.save((error, face) => {
-			if (error) {
-				console.log(`There was an error saving the face to the database. | ${error}`);
-				return res.status(500).json({error: "There was an error in saving the face to the database."})
-			}
-			console.log("Successfully saved face to the database.")
-
-			res.status(200).json({id: face._id})
-
-			new ImageProcessorService().sendFaceData(face._id, face.get("fingerprints")[0])
-		})
-
-		fs.unlinkSync(file.path)
-	}
-
-
-	/** This method will add a face to an existing face by adding it's finerprint to the database */
-	public appendFace(req: Request, res: Response) {
-		let id = req.params.id;
-		let file = req.file;
-
-		// open the file in memory
-		let fileBuffer = new Buffer(fs.readFileSync(file.path));
-
-		let form = new FormData();
-
-		// append the file to the form data object
-		form.append('image', fileBuffer, file.originalname)
-
-		const config = {
-			headers: {
-				'content-type': `multipart/form-data; boundary=${form.getBoundary()}`
-			}
+		if (!face) {
+			console.log("The ID provided does not match any faces in the database!")
+			return res.status(404).json({error: "The ID provided does not match any faces in the database!"})
 		}
 
+		let unknownFace;
 
-		axios.post(IMAGE_PROCESSOR_URL, form, config)
-			.then(function (response) {
+		unknownFace = await Face.findById({_id: unknownFaceId}).exec().catch((error) => {
+			console.log(`There was an error in retrieving the unknown face by ID [${unknownFaceId}] | ${error}`)
+			return res.status(500).json({error: "There was an error in retrieving the unknown face by ID"})
+		});
 
-				Face.findById({_id: id}, (error, face) => {
-					if (error) {
-						res.status(500).json({'error': error.message});
-					}
+		if (!unknownFace) {
+			console.log("The ID provided does not match any unknown faces in the database!")
+			return res.status(404).json({"error": "The ID provided does not match any unknown faces in the database!"})
+		}
 
-					if (!face) {
-						return res.status(404).json({"error": "Invalid ID provided"})
-					}
+		let fingerprint: number[];
 
-					let fingerprints = face.get('fingerprints')
+		try {
+			fingerprint = await new ImageProcessorService().getFingerprint(file)
+		} catch (error) {
+			console.error(`There was an error in generating the fingerprint. | ${error}`)
+			return res.status(500).json({error: "There was an error in generating the fingerprint for this image."})
+		}
 
-					let fingerprint = response['data']['data']
-					fingerprints.push(fingerprint);
+		let fingerprints = face.get('fingerprints');
+		fingerprints.push(fingerprint)
 
+		face.set("fingerprints", fingerprints)
 
-					let updateQuery = {
-						fingerprints: fingerprints
-					}
+		Face.updateOne({_id: id}, face, err => {
+			if (err) {
+				console.log(`There was an error when updating the face | ${err}`)
+				return res.status(500).json({"error": "There was an error when updating the face"});
+			}
 
-					Face.updateOne({_id: id}, updateQuery, err => {
-						if (err) {
-							res.status(500).json({"error": "There is an error"});
-						} else {
-							console.log(`[DATABASE] New face added to existing face successfully`);
-							res.status(200).json({"error": "Successfully added face fingerprint to face."});
-						}
-					});
+			console.log(`Successfully added the unknown face added to existing face!`);
+			res.status(200).json({message: "Successfully added the unknown face added to existing face successfully!"});
+		});
 
-					let data = {
-						'id': id,
-						'fingerprint': fingerprint
-					}
+		Face.deleteOne({_id: unknownFaceId}, err => {
+			if (err) {
+				console.log(`There was an error in deleting the unknown face [${unknownFaceId}] | ${err}`)
+			} else {
+				console.log("Successfully deleted the unknown face from the database!")
+			}
+		});
 
-					axios.post(COMPARATOR_URL, data).then(function (response) {
-						console.log(`[COMPARATOR] Face successfully saved`)
-					}).catch(function (error) {
-						console.log(error.message);
-					});
+		new ImageProcessorService().sendFaceData(id, fingerprint)
 
-				})
-
-
-			})
-			.catch(function (error) {
-				console.log(error.message);
-				res.sendStatus(500).json({"error": error.message});
-			});
-		//  delete the file after the request
 		fs.unlinkSync(file.path)
 	}
 
