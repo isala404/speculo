@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker build $IMAGE_NAME .
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
@@ -104,7 +104,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: api/facecomparator
+        working-directory: models/facecomparator
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
@@ -127,7 +127,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: api/facedetector
+        working-directory: models/facedetector
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
