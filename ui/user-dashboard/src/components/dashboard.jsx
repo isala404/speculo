@@ -3,7 +3,7 @@ import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "@videojs/themes/dist/fantasy/index.css";
 import { TimeCard } from "../components/TimeCard";
-import Person from "../components/PersonCard";
+import Person from "./person-card/PersonCard";
 import "../styles/dashboard.style.scss";
 import styled from "styled-components";
 import "../styles/videojsStyle.scss";
@@ -142,9 +142,9 @@ export default class Dashboard extends Component {
   }
   
   // for testing purposes
-//   timeout = (ms) => { 
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
+  timeout = (ms) => { 
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
   //function to get the width and height of the viewport dynamically
@@ -183,11 +183,11 @@ export default class Dashboard extends Component {
   // Get all detected people with detected timestamps in a video
   async getAllDetections() {
     try { 
-        const res = await retrieveAllDetections();
-        this.setState({processing:false , allDetections: res});
+        // const res = await retrieveAllDetections();
+        // this.setState({processing:false , allDetections: res});
 
-        // await this.timeout(10000);     // tester
-        // this.setState({processing:false , allDetections: people});
+        await this.timeout(5000);     // tester
+        this.setState({processing:false , allDetections: people});
     } catch (e) {
         console.log(e);
     }
@@ -356,49 +356,49 @@ async editPersonSave(newPersonDetails) {
 
 const PersonDiv = styled.div``;
 
-// const people = [
-//   // hard coded example
-//   {
-//     id: 1,
-//     name: "Akassh",
-//     timestamps: [60, 100, 1200],
-//     blacklisted: true
-//   },
-//   { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
-//   {
-//     id: 3,
-//     name: "Nisal",
-//     timestamps: [100, 500, 1200, 1500, 200, 150, 900, 750, 12, 34, 78],
-//     blacklisted: true
-//   },
-//   {
-//     id: 4,
-//     name: "UnknownPerson",
-//     timestamps: [100, 500],
-//     blacklisted: true
-//   },
-//   {
-//     id: 5,
-//     name: "UnknownPerson",
-//     timestamps: [80, 60],
-//     blacklisted: true
-//   },
-//   {
-//     id: 6,
-//     name: "UnknownPerson",
-//     timestamps: [100, 500],
-//     blacklisted: true
-//   },
-//   {
-//     id: 7,
-//     name: "Kushan",
-//     timestamps: [100, 500],
-//     blacklisted: true
-//   },
-//   {
-//     id: 8,
-//     name: "UnknownPerson",
-//     timestamps: [100, 500],
-//     blacklisted: true
-//   }
-// ];
+const people = [
+  // hard coded example
+  {
+    id: 1,
+    name: "Akassh",
+    timestamps: [60, 100, 1200],
+    blacklisted: true
+  },
+  { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
+  {
+    id: 3,
+    name: "Nisal",
+    timestamps: [100, 500, 1200, 1500, 200, 150, 900, 750, 12, 34, 78],
+    blacklisted: true
+  },
+  {
+    id: 4,
+    name: "UnknownPerson",
+    timestamps: [100, 500],
+    blacklisted: true
+  },
+  {
+    id: 5,
+    name: "UnknownPerson",
+    timestamps: [80, 60],
+    blacklisted: true
+  },
+  {
+    id: 6,
+    name: "UnknownPerson",
+    timestamps: [100, 500],
+    blacklisted: true
+  },
+  {
+    id: 7,
+    name: "Kushan",
+    timestamps: [100, 500],
+    blacklisted: true
+  },
+  {
+    id: 8,
+    name: "UnknownPerson",
+    timestamps: [100, 500],
+    blacklisted: true
+  }
+];

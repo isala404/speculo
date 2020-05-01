@@ -40,6 +40,7 @@ const publicRoutes = [
     { name: 'Home', path: '/', Component: Home },
     //{ name: 'Unknown', path: '*', Component: Unknown },
     // {name: 'Dashboard', path:'/dashboard', Component:Dashboard},
+    { name: 'Dashboard Panel', path: '/dashboard-panel', Component: DashboardPanel },
     { name: 'Login', path: '/login', Component: Login },
     { name: 'Register', path: '/sign-up', Component: Register }
 ];
