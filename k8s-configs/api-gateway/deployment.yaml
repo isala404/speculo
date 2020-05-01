@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: api-gateway
+  template:
+    metadata:
+      labels:
+        component: api-gateway
+        tier: datascience
+    spec:
+      containers:
+        - name: api-gateway
+          image: docker.pkg.github.com/mrsupiri/speculo/api-gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: FACE_SERVICE_URL
+              value: http://face-service-cluster-ip-service:80/
+            - name: VIDEO_DOWNSCALER_URL
+              value: http://video-downscaler-cluster-ip-service:80/
