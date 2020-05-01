@@ -3,6 +3,8 @@ import { PeopleTable } from "../components/person-table/table.component";
 import Switch from "react-switch";
 import styled from "styled-components";
 import { Grid, Row, Col } from "react-flexbox-grid";
+import "../styles/admin.style.scss"
+import { GetWindowSize } from "../helpers/window-size";
 
 export const Admin = () => {
   const [isSwitchToggled, setSwitchToggle] = useState(false);
@@ -14,24 +16,26 @@ export const Admin = () => {
   };
 
   useEffect(() => {}, [searchVal]);
+  
+  const [width] = GetWindowSize();
   return (
       <Grid style={{ width: "100%", marginTop: "4em"}}>
-        <Row>
-          <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: "left" }}>
-            <span>Sort with ID and blacklist state</span>
+        <Row className="rows">
+          <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: "left", padding: "0em 4em" }}>
             <Switch onChange={handleSwitchChange} checked={isSwitchToggled} />
+            <span>Sorted by {isSwitchToggled ? "Name" : "Blacklist value"}</span>
           </Col>
-          <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: "right" }}>
+          <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: `${width < 768 ? "left" : "right"}` , padding: "0em 4.8em" }}>
             <Input
               type={"text"}
-              placeholder={"Select a person to Search for"}
+              placeholder={"Enter a name to search"}
               onChange={e => {
                 setSearchVal(e.target.value);
               }}
             />
           </Col>
         </Row>
-        <Row>
+        <Row className="rows">
             {/* {isDataLoaded ? ( */}
             <PeopleTable
               isSwitchToggled={isSwitchToggled}

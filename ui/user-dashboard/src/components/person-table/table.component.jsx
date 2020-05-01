@@ -19,7 +19,7 @@ import Select from "react-select";
 export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [people, setPeople] = useState([]);
   //react hooks to access state
-  const [results, setResults] = useState(people);
+  const [results, setResults] = useState([]);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [personToEdit, setPersonToEdit] = useState(-1);
   const [editToggled, setEditToggled] = useState(false);
@@ -34,53 +34,31 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
     if (!isDataLoaded) {
       getData();
     }
-    console.log(results);
-    search(results, searchValue);
-    // sortPeople();
+    //searching the array of objects
+    if (people.data) {
+      var result = people.data.filter(person => {
+        return person.label.toUpperCase().includes(searchValue.toUpperCase());
+      });
+      var arr = {data: result}
+      setResults(arr);
+    }
+    sortPeople();
   }, [searchValue, isSwitchToggled, isDataLoaded]);
 
   //method to invoke request to get all the records
   const getData = async () => {
     await retrieveAllRecords().then(res => {
-      setPeople(res);
       setResults(res);
-      // console.log(people);
+      setPeople(res);
       setIsDataLoaded(true);
-      // console.log(res.data);
     });
-  };
-
-  //function used for searching
-  const search = (p, searchVal) => {
-    console.log(p);
-    console.log(searchVal);
-    for (var obj in p) {
-      console.log(obj);
-    }
-
-    // if (persons != null && persons.length != 0) {
-    //   // console.log("search " + JSON.parse(people))
-    //   console.log("inside if")
-    //   console.log(object)
-    //   for (var x = 0; x < persons.length; x++) {
-    //     console.log("inside for")
-    //     // console.log(persons.data[x].label);
-    //     if (
-    //       persons.data[x].label.toUpperCase().includes(searchVal.toUpperCase())
-    //     ) {
-    //       results.push(persons[x]);
-    //     }
-    //   }
-    // }
-    // console.log(results);
-    return results;
   };
 
   //function to delete a person on delete button press
   const deletePerson = async personIdToDelete => {
     //Delete request to backend
     deleteFaceFromSystem(personIdToDelete);
-    console.log(people.data)
+    console.log(people.data);
     // let newDetectionsArray = people.data.filter(
     //   person => { console.log(person)}
     // );
@@ -90,13 +68,13 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
 
   const updateName = async name => {
     console.log("patch names");
-    selectedPerson.label = name
+    selectedPerson.label = name;
     editNameInSystem(selectedPerson._id, name);
   };
 
   const updateBlacklistState = async isBlacklisted => {
     console.log("patch BW-list = " + isBlacklisted);
-    console.log(selectedPerson.label)
+    console.log(selectedPerson.label);
     selectedPerson.blacklisted = isBlacklisted;
     isBlacklisted
       ? await blacklistPersonInSystem(selectedPerson._id)
@@ -105,9 +83,9 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
 
   //function that handles and retrieves the value of the select menu
   const handleSelectorChange = selectedOption => {
-    console.log(selectedOption)
+    console.log(selectedOption);
     if (selectedPerson.blacklisted !== selectedOption) {
-      console.log("insidddeee")
+      console.log("insidddeee");
       setIsSelectorClicked(true);
       setBlackListValue(selectedOption.value);
     }
@@ -115,13 +93,17 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
 
   //sorting people by id and blacklist
   const sortPeople = () => {
-    isSwitchToggled
-      ? setResults(results.sort(sortByProperty("blacklisted")))
-      : setResults(people.sort(sortByProperty("_id")));
+    if (results.data) {
+      isSwitchToggled
+        ? setResults(results.data.sort(sortByProperty("blacklisted")))
+        : setResults(results.data.sort(sortByProperty("label")));
+    }
   };
 
+  // const sortByBlackListedValue = (a,b) =>{}
+
   return (
-    <div style={{ overflowX: "auto" }}>
+    <div style={{ overflowX: "auto", margin: "0em 4em" }}>
       {/* {()=>console.log(peopleData)} */}
       <Table>
         <TableHead>
@@ -132,8 +114,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {isDataLoaded
-            ? people.data.map((person, id) => {
+          {results.data
+            ? results.data.map((person, id) => {
                 return (
                   <Row>
                     <TableData>{person._id}</TableData>
@@ -197,15 +179,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                             } else if (isSelectorClicked && !isTyped) {
                               updateBlacklistState(blackListValue);
                             }
-
-                            // console.log(getBlacklistValue(person))
                             setEditToggled(false);
                           } else {
-                            // updatePerson(
-                            //   personToEdit,
-                            //   null,
-                            //   person.blacklisted
-                            // );
                             setEditToggled(true);
                             sortByProperty();
                           }
@@ -252,7 +227,6 @@ const sortByProperty = property => {
   return (a, b) => {
     if (a[property] > b[property]) return 1;
     else if (a[property] < b[property]) return -1;
-
     return 0;
   };
 };
@@ -271,11 +245,10 @@ const blacklistValues = [
 
 const Table = styled.table`
   min-width: 600px;
-  margin: 10em;
+  width: 1000px;
   table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
-  margin: 0 10em;
   border-radius: 10px;
   overflow: hidden;
 `;
@@ -290,7 +263,7 @@ const TableBody = styled.tbody`
 const TableHead = styled.thead`
   width: 100%;
   color: #fff;
-  display: block;
+  display: table-header-group;
 `;
 const TableRow = styled.tr`
   display: block;
@@ -307,21 +280,22 @@ const Row = styled.tr`
 const TableHeading = styled.th`
   padding: 1em;
   text-align: left;
-  width: 350px;
+  width: 250px;
 `;
 const TableData = styled.td`
   padding: 1em;
   text-align: left;
-  width: 350px;
+  width: 250px;
 `;
 
 const DeleteButton = styled.button`
   color: #c21807;
-  background-color: white;
-  border: 2px solid #a0ffdc;
+  background-color: transparent;
+  border: none;
   border-radius: 6px;
   outline: none;
   transition: 0.3s;
+  margin-right: 1em;
 
   &:hover {
     color: white;
@@ -331,8 +305,8 @@ const DeleteButton = styled.button`
 
 const EditButton = styled.button`
   color: #2bba85;
-  background-color: inherit;
-  border: 2px solid #a0ffdc;
+  background-color: transparent;
+  border: none;
   border-radius: 6px;
   outline: none;
   transition: 0.3s;
