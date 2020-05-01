@@ -19,3 +19,8 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
+          env:
+            - name: FACE_SERVICE_URL
+              value: http://face-service-cluster-ip-service:80/
+            - name: VIDEO_DOWNSCALER_URL
+              value: http://video-downscaler-cluster-ip-service:80/

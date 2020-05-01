@@ -19,3 +19,12 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          env:
+            - name: FACE_SERVICE_URL
+              value: http://face-service-cluster-ip-service:80/
+            - name: COMPARATOR_URL
+              value: http://facecomparator-cluster-ip-service:80/
+            - name: FACEDETECTOR_URL
+              value: http://facedetector-cluster-ip-service:80/
+            - name: FINGERPRINTER_URL
+              value: http://fingerprinter-cluster-ip-service:80/

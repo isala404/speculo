@@ -19,3 +19,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          env:
+            - name: MODEL_NAME
+              value: fingerprinter
