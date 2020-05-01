@@ -10,7 +10,7 @@ import styled from "styled-components";
 import "../styles/videojsStyle.scss";
 import VideoSnapshot from "video-snapshot";
 import {
-  retrieveAllDetections,
+  // retrieveAllDetections,
   deleteFaceFromSystem,
   editNameInSystem,
   blacklistPersonInSystem,
@@ -187,7 +187,7 @@ export default class Dashboard extends Component {
         // const res = await retrieveAllDetections();
         // this.setState({processing:false , allDetections: res});
 
-        await this.timeout(5000);     // tester
+        await this.timeout(10000);     // tester
         this.setState({processing:false , allDetections: people});
     } catch (e) {
         console.log(e);
