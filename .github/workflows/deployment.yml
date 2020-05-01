@@ -9,11 +9,15 @@ jobs:
   face-service:
     name: Building face service
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api/face-service
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker build -f api/face-service/DockerFile -t $IMAGE_NAME .
+          docker build $IMAGE_NAME .
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
@@ -28,11 +32,15 @@ jobs:
   gateway:
     name: Building API gateway
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api/gateway
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker build -f api/gateway/DockerFile -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
@@ -47,11 +55,15 @@ jobs:
   image-processor:
     name: Building image processor service
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api/image-processor
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker build -f api/image-processor/DockerFile -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
@@ -66,11 +78,15 @@ jobs:
   video-downscaler:
     name: Building video downscaler service
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api/video-downscaler
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker build -f api/video-downscaler/DockerFile -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
@@ -85,11 +101,15 @@ jobs:
   facecomparator:
     name: Building face comparator service
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api/facecomparator
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker build -f models/facecomparator/DockerFile -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
@@ -104,11 +124,15 @@ jobs:
   facedetector:
     name: Building face detector service
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api/facedetector
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker build -f models/facedetector/DockerFile -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
@@ -127,7 +151,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker run -d --name serving_base tensorflow/serving
+          docker run -d --name serving_base tensorflow/serving:latest-gpu
           docker cp models/fingerprinter/models/12 serving_base:/models/1
           docker commit --change "ENV MODEL_NAME fingerprinter" serving_base $IMAGE_NAME
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
@@ -144,11 +168,15 @@ jobs:
   user-dashboard:
     name: Building user dashboard
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ui/user-dashboard
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
         run: |
-          docker build -f ui/user-dashboard/Dockerfile -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME .
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
