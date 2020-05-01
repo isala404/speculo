@@ -10,13 +10,14 @@ import styled from "styled-components";
 import "../styles/videojsStyle.scss";
 import VideoSnapshot from "video-snapshot";
 import {
-  // retrieveAllDetections,
+  retrieveAllDetections,
   deleteFaceFromSystem,
   editNameInSystem,
   blacklistPersonInSystem,
   whitelistPersonInSystem
 } from "../services/DetectionsManagement";
 import { Grid, Row, Col } from "react-flexbox-grid";
+import FadeIn from "react-fade-in";
 // import { GetWindowSize } from "../helpers/window-size";
 
 export default class Dashboard extends Component {
@@ -143,9 +144,9 @@ export default class Dashboard extends Component {
   }
   
   // for testing purposes
-  timeout = (ms) => { 
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+//   timeout = (ms) => { 
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 
   //function to get the width and height of the viewport dynamically
@@ -184,11 +185,11 @@ export default class Dashboard extends Component {
   // Get all detected people with detected timestamps in a video
   async getAllDetections() {
     try { 
-        // const res = await retrieveAllDetections();
-        // this.setState({processing:false , allDetections: res});
+        const res = await retrieveAllDetections();
+        this.setState({processing:false , allDetections: res});
 
-        await this.timeout(10000);     // tester
-        this.setState({processing:false , allDetections: people});
+        // await this.timeout(10000);     // tester
+        // this.setState({processing:false , allDetections: people});
     } catch (e) {
         console.log(e);
     }
@@ -300,30 +301,29 @@ async editPersonSave(newPersonDetails) {
                   </>
                 }
 
-
                   {/* display all the names of the people recognized */}
                   {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
-                      <Person
-                        key={index}
-                        id={person.id}
-                        name={person.name}
-                        blacklisted={person.blacklisted}
-                        timestamps={person.timestamps} // taking all the timestamps of the relevant person
-                        onChoose={() => this.showTimeCards(person)} // display timestamps of the person
-                        onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
-                        onSaveEdit={personDetails =>
-                          this.editPersonSave(personDetails)
-                        } // save the new details pf the person
-                        onDelete={() => this.deletePerson(person.id)} // delete the person from the db
-                      />
+                      <FadeIn>
+                        <Person
+                          key={index}
+                          id={person.id}
+                          name={person.name}
+                          blacklisted={person.blacklisted}
+                          timestamps={person.timestamps} // taking all the timestamps of the relevant person
+                          onChoose={() => this.showTimeCards(person)} // display timestamps of the person
+                          onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
+                          onSaveEdit={personDetails =>
+                            this.editPersonSave(personDetails)
+                          } // save the new details pf the person
+                          onDelete={() => this.deletePerson(person.id)} // delete the person from the db
+                        />
+                      </FadeIn>
                     </div>
                   ))}
 
-                  
 
-
-                  <div style={{ height: 100 }}></div>
+                  {/* <div style={{ height: 100 }}></div> */}
                 </PersonDiv>
                 <div className="fadeout" />
               </div>
@@ -370,7 +370,9 @@ async editPersonSave(newPersonDetails) {
 //   height: 90%;
 // `;
 
-const PersonDiv = styled.div``;
+const PersonDiv = styled.div`
+  height: 100;
+`;
 
 const people = [
   // hard coded example
