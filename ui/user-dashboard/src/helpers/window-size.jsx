@@ -1,4 +1,3 @@
-// import React , {useLayoutEffect, useState} from "react"
 import {useLayoutEffect, useState} from "react"
 
 //function with the useLayoutEffect hook to get the current width of the context window

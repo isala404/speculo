@@ -37,7 +37,7 @@ export const TimeCard = ({ timestamp, video, ctx, canvas, onSeek }) => {
   return (
     <CardDiv
       className="card"
-      imgSrc={image}
+      // imgSrc={image}
       id="timeCard"
       onClick={onSeek}
       style={{ cursor: "pointer" }}

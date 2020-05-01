@@ -15,9 +15,9 @@ export const AlliedCompanies = () => (
         <Col xs={12} sm={12} md={12} lg={12}>
           <div>
             <CompanyLogo src={FacebookIcon} />
-            <CompanyLogo src={FacebookIcon} />
-            <CompanyLogo src={FacebookIcon} />
-            <CompanyLogo src={FacebookIcon} />
+            <CompanyLogo src={GoogleIcon} />
+            <CompanyLogo src={TwitterIcon} />
+            <CompanyLogo src={LinkedinIcon} />
           </div>
           <div>
             <CompanyDivHeading>Lorem Ipsum</CompanyDivHeading>

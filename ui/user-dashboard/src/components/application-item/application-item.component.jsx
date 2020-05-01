@@ -1,7 +1,8 @@
 import React from "react"
 import {BasicButton} from "../button/button.component"
 import styled from "styled-components"
-import { Row } from "react-flexbox-grid";
+import {Row} from "react-flexbox-grid";
+
 
 export const ApplicationItem =({appName, appContent, buttonOnclick, isFinalElement}) =>{
     return(

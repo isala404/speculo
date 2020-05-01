@@ -1,5 +1,4 @@
 import { Home } from "./views/Home.jsx";
-// import Dashboard from "./components/dashboard.jsx";
 import WebCam from "./components/webcam/webcam.component"
 import { Admin } from "./views/Admin.jsx";
 import { Login, Register, Profile } from "./components/login/index";
@@ -7,7 +6,6 @@ import DashboardPanel from "./views/DashboardPanel.jsx";
 import { Upload } from "./views/Upload.jsx";
 //import { Auth } from "./Auth";
 import FilterResults from "./views/FilterResults.jsx";
-// import {Unknown} from "./components/unknown/unknown"
 
 
 // data object to make code simpler

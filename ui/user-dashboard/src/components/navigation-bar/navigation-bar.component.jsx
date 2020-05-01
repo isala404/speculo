@@ -2,9 +2,6 @@ import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import { Logo } from "../../assets/speculo-logo";
 import { BasicButton } from "../button/button.component";
-// import { Link } from "react-router-dom";
-// import styled from "styled-components";
-// import Routes from "../../Routes";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./navigation-bar.style.scss";
 

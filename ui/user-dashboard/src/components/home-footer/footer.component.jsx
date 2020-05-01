@@ -13,7 +13,6 @@ const links = ["apple", "bear", "canopy", "doctor", "elephant", "fan", "golem"];
 
 export const Footer = () => {
   //getting windowsize
-  // const [width, height] = GetWindowSize();
   const [ width ] = GetWindowSize();
   return (
     <FooterDiv>

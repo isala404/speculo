@@ -8,12 +8,14 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import {
+
   // retrieveAllDetections,
   deleteFaceFromSystem,
   retrieveAllRecords,
   // editNameInSystem,
   whitelistPersonInSystem,
-  blacklistPersonInSystem
+  blacklistPersonInSystem,
+  editNameInSystem
 } from "../../services/DetectionsManagement";
 import Select from "react-select";
 
@@ -27,6 +29,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [newPersonName, setNewPersonName] = useState(null);
   const [blackListValue, setBlackListValue] = useState(null);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isTyped, setIsTyped] = useState(false);
+  const [isSelectorClicked, setIsSelectorClicked] = useState(false);
 
   //updating the state on searchval change
   useEffect(() => {
@@ -71,7 +75,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
     //     }
     //   }
     // }
-    console.log(results);
+    // console.log(results);
     return results;
   };
 
@@ -79,54 +83,37 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const deletePerson = async personIdToDelete => {
     //Delete request to backend
     deleteFaceFromSystem(personIdToDelete);
-    let newDetectionsArray = people.data.filter(
-      person => person._id !== personIdToDelete
-    );
-    setPeople(newDetectionsArray);
+    console.log(people.data)
+    // let newDetectionsArray = people.data.filter(
+    //   person => { console.log(person)}
+    // );
+    // setPeople(newDetectionsArray);
     // setResults(search(newDetectionsArray, searchValue));
   };
 
-  //function to update a row
-  const updatePerson = async (personIdToUpdate, name, isBlacklisted) => {
-    //TODO: add the axios request to update
-    console.log(personIdToUpdate);
-    console.log(isBlacklisted);
-    var person;
-    if (name !== null && personIdToUpdate !== null) {
-      console.log("inside != null");
-      person = people.data.find(x => x._id === personIdToUpdate);
-      if (person) {
-        person.label = name;
-        person.blacklisted = isBlacklisted;
-        isBlacklisted
-          ? await whitelistPersonInSystem(personIdToUpdate)
-          : await blacklistPersonInSystem(personIdToUpdate);
-      }
-      console.log(people);
-    } else if (isBlacklisted !== null && isBlacklisted !== undefined) {
-      console.log("inside isblacklisted != null");
-      person = people.data.find(x => x._id === personIdToUpdate);
-      if (person) {
-        person.blacklisted = isBlacklisted;
-        //updating database to update the values
-        isBlacklisted
-          ? await blacklistPersonInSystem(personIdToUpdate)
-          : await whitelistPersonInSystem(personIdToUpdate);
-      }
-    } else {
-      console.log("inside else");
-      person = people.data.find(x => x._id === personIdToUpdate);
-      var person1 = people.data.find(y => y._id === personIdToUpdate);
-      people.blackListed = person1.blackListed;
-      isBlacklisted
-        ? await blacklistPersonInSystem(personIdToUpdate)
-        : await whitelistPersonInSystem(personIdToUpdate);
-    }
+  const updateName = async name => {
+    console.log("patch names");
+    selectedPerson.label = name
+    editNameInSystem(selectedPerson._id, name);
+  };
+
+  const updateBlacklistState = async isBlacklisted => {
+    console.log("patch BW-list = " + isBlacklisted);
+    console.log(selectedPerson.label)
+    selectedPerson.blacklisted = isBlacklisted;
+    isBlacklisted
+      ? await blacklistPersonInSystem(selectedPerson._id)
+      : await whitelistPersonInSystem(selectedPerson._id);
   };
 
   //function that handles and retrieves the value of the select menu
   const handleSelectorChange = selectedOption => {
-    setBlackListValue(selectedOption.value);
+    console.log(selectedOption)
+    if (selectedPerson.blacklisted !== selectedOption) {
+      console.log("insidddeee")
+      setIsSelectorClicked(true);
+      setBlackListValue(selectedOption.value);
+    }
   };
 
   //sorting people by id and blacklist
@@ -162,8 +149,17 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                       {person._id === personToEdit && editToggled === true ? (
                         <input
                           type="text"
-                          placeHolder={person.label}
-                          onChange={x => setNewPersonName(x.target.value)}
+                          placeholder={person.label}
+                          onChange={x => {
+                            var charSeq = x.target.value;
+                            if (charSeq !== "" && charSeq != null) {
+                              setIsTyped(true);
+                              setNewPersonName(x.target.value);
+                            } else {
+                              setIsTyped(false);
+                            }
+                            console.log(isTyped);
+                          }}
                         />
                       ) : (
                         person.label
@@ -181,28 +177,38 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                       )}
                     </TableData>
                     <TableData>
-                      <DeleteButton onClick={() => deletePerson(person._id)}>
+                      <DeleteButton
+                        onClick={() => {
+                          console.log("del");
+                          setSelectedPerson(person);
+                          deletePerson(person._id);
+                        }}
+                      >
                         <FontAwesomeIcon icon={faTrashAlt} />
                       </DeleteButton>
                       {/* onpress of edit button */}
                       <EditButton
                         onClick={() => {
                           setPersonToEdit(person._id);
+                          setSelectedPerson(person);
                           if (editToggled) {
-                            setBlackListValue(getBlacklistValue(person));
-                            updatePerson(
-                              personToEdit,
-                              newPersonName,
-                              blackListValue
-                            );
+                            if (isTyped && isSelectorClicked) {
+                              updateName(newPersonName);
+                              updateBlacklistState(blackListValue);
+                            } else if (isTyped && !isSelectorClicked) {
+                              updateName(newPersonName);
+                            } else if (isSelectorClicked && !isTyped) {
+                              updateBlacklistState(blackListValue);
+                            }
+
                             // console.log(getBlacklistValue(person))
                             setEditToggled(false);
                           } else {
-                            updatePerson(
-                              personToEdit,
-                              null,
-                              person.blacklisted
-                            );
+                            // updatePerson(
+                            //   personToEdit,
+                            //   null,
+                            //   person.blacklisted
+                            // );
                             setEditToggled(true);
                             sortByProperty();
                           }
@@ -269,7 +275,6 @@ const blacklistValues = [
 const Table = styled.table`
   min-width: 600px;
   margin: 10em;
-  width: 1000px;
   table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
@@ -289,28 +294,28 @@ const TableHead = styled.thead`
   width: 100%;
   color: #fff;
   display: block;
-  `;
+`;
 const TableRow = styled.tr`
   display: block;
-  background: rgba(15,30,61,1);
+  background: rgba(15, 30, 61, 1);
   width: 100%;
 `;
 const Row = styled.tr`
   width: 100%;
-  :nth-child(even){
-    background:#ededed;
+  :nth-child(even) {
+    background: #ededed;
     /* background:#e6fff5; */
   }
 `;
 const TableHeading = styled.th`
   padding: 1em;
   text-align: left;
-  width: 250px;
+  width: 350px;
 `;
 const TableData = styled.td`
   padding: 1em;
   text-align: left;
-  width: 22.5%;
+  width: 350px;
 `;
 
 const DeleteButton = styled.button`

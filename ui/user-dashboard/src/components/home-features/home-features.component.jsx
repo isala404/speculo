@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Row } from "react-flexbox-grid";
+import { Grid, Row} from "react-flexbox-grid";
 import MaterialBolt from "../../assets/feature-icons/material_bolt.png";
 import MaterialApproval from "../../assets/feature-icons/material_approval.png";
 import MaterialSupport from "../../assets/feature-icons/material_support.png";
