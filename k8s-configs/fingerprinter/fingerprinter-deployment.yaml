@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: facecomparator-deployment
+  name: fingerprinter-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: facecomparator
+      component: fingerprinter
   template:
     metadata:
       labels:
-        component: facecomparator
+        component: fingerprinter
         tier: datascience
     spec:
       containers:
-        - name: facecomparator
-          image: docker.pkg.github.com/mrsupiri/speculo/facecomparator:latest
+        - name: fingerprinter
+          image: docker.pkg.github.com/mrsupiri/speculo/fingerprinter:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

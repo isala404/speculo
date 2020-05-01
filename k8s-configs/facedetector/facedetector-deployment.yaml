@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         component: facedetector
-        tier: data-science
+        tier: datascience
     spec:
       containers:
         - name: facedetector
