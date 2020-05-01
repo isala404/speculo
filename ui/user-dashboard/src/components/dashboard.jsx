@@ -4,6 +4,7 @@ import "video.js/dist/video-js.css";
 import "@videojs/themes/dist/fantasy/index.css";
 import { TimeCard } from "../components/TimeCard";
 import Person from "./person-card/PersonCard";
+import PersonLoader from "./person-card/PersonLoader";
 import "../styles/dashboard.style.scss";
 import styled from "styled-components";
 import "../styles/videojsStyle.scss";
@@ -289,6 +290,17 @@ async editPersonSave(newPersonDetails) {
                 <PersonDiv
                   style={{ height: this.state.videoHeight, overflowY: "auto" }}
                 >
+                
+                {this.state.processing &&
+                  <>
+                    <PersonLoader />
+                    <PersonLoader />
+                    <PersonLoader />
+                    <PersonLoader />
+                  </>
+                }
+
+
                   {/* display all the names of the people recognized */}
                   {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
@@ -307,6 +319,10 @@ async editPersonSave(newPersonDetails) {
                       />
                     </div>
                   ))}
+
+                  
+
+
                   <div style={{ height: 100 }}></div>
                 </PersonDiv>
                 <div className="fadeout" />
