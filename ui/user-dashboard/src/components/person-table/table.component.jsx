@@ -40,9 +40,10 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
         return person.label.toUpperCase().includes(searchValue.toUpperCase());
       });
       var arr = {data: result}
+      console.log(arr)
+      sortPeople(arr);
       setResults(arr);
     }
-    sortPeople();
   }, [searchValue, isSwitchToggled, isDataLoaded]);
 
   //method to invoke request to get all the records
@@ -58,12 +59,16 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const deletePerson = async personIdToDelete => {
     //Delete request to backend
     deleteFaceFromSystem(personIdToDelete);
-    console.log(people.data);
-    // let newDetectionsArray = people.data.filter(
-    //   person => { console.log(person)}
-    // );
-    // setPeople(newDetectionsArray);
-    // setResults(search(newDetectionsArray, searchValue));
+    if(results.data){
+      var newArr = people.data.filter(person =>{
+        return person._id !== personIdToDelete
+      })
+      var arr = {
+        data: newArr
+      }
+
+      setResults(arr)
+    }
   };
 
   const updateName = async name => {
@@ -92,15 +97,33 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   };
 
   //sorting people by id and blacklist
-  const sortPeople = () => {
-    if (results.data) {
+  const sortPeople = (arr) => {
+    if (arr.data) {
       isSwitchToggled
-        ? setResults(results.data.sort(sortByProperty("blacklisted")))
-        : setResults(results.data.sort(sortByProperty("label")));
+        ? setResults({data:arr.data.sort(sortByLabel("label"))})
+        : setResults({data:arr.data.sort(sortByBlackListedValue("blacklisted"))});
     }
   };
+  //getting the blacklisted values to display in the select menu
+const getBlacklistValue = person => {
+  var value = blacklistValues.find(x => x.value === person.blacklisted);
+  // console.log(value);
+  return value;
+};
 
-  // const sortByBlackListedValue = (a,b) =>{}
+//function to sort according to label
+const sortByLabel = (property) => {
+  return (a, b) => {
+    if (a[property] > b[property]) return 1;
+    else if (a[property] < b[property]) return -1;
+    return 0;
+  };
+};
+
+//function to sort by blacklist value
+const sortByBlackListedValue = (property) => {
+  return (a, b) => b[property] - a[property]
+};
 
   return (
     <div style={{ overflowX: "auto", margin: "0em 4em" }}>
@@ -182,7 +205,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                             setEditToggled(false);
                           } else {
                             setEditToggled(true);
-                            sortByProperty();
+                            sortPeople(results);
                           }
                         }}
                       >
@@ -213,22 +236,6 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
       </Table>
     </div>
   );
-};
-
-//getting the blacklisted values to display in the select menu
-const getBlacklistValue = person => {
-  var value = blacklistValues.find(x => x.value === person.blacklisted);
-  // console.log(value);
-  return value;
-};
-
-//function to sort
-const sortByProperty = property => {
-  return (a, b) => {
-    if (a[property] > b[property]) return 1;
-    else if (a[property] < b[property]) return -1;
-    return 0;
-  };
 };
 
 const headings = [

@@ -3,7 +3,7 @@ import { PeopleTable } from "../components/person-table/table.component";
 import Switch from "react-switch";
 import styled from "styled-components";
 import { Grid, Row, Col } from "react-flexbox-grid";
-import "../styles/admin.style.scss"
+import "../styles/admin.style.scss";
 import { GetWindowSize } from "../helpers/window-size";
 
 export const Admin = () => {
@@ -16,34 +16,61 @@ export const Admin = () => {
   };
 
   useEffect(() => {}, [searchVal]);
-  
+
   const [width] = GetWindowSize();
   return (
-      <Grid style={{ width: "100%", marginTop: "4em"}}>
-        <Row className="rows">
-          <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: "left", padding: "0em 4em" }}>
-            <Switch onChange={handleSwitchChange} checked={isSwitchToggled} />
-            <span>Sorted by {isSwitchToggled ? "Name" : "Blacklist value"}</span>
-          </Col>
-          <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: `${width < 768 ? "left" : "right"}` , padding: "0em 4.8em" }}>
-            <Input
-              type={"text"}
-              placeholder={"Enter a name to search"}
-              onChange={e => {
-                setSearchVal(e.target.value);
-              }}
-            />
-          </Col>
-        </Row>
-        <Row className="rows">
-            {/* {isDataLoaded ? ( */}
-            <PeopleTable
-              isSwitchToggled={isSwitchToggled}
-              searchValue={searchVal}
-            />
-            {/* ) : null} */}
-        </Row>
-      </Grid>
+    <Grid style={{ width: "100%", marginTop: "4em" }}>
+      <Row className="rows">
+        <Col
+          xs={12}
+          sm={12}
+          md={6}
+          lg={6}
+          style={{ textAlign: "left", padding: "0em 4em" }}
+        >
+          <Switch
+            onChange={handleSwitchChange}
+            checked={isSwitchToggled}
+            uncheckedIcon={false}
+            checkedIcon={false}
+            offColor="#2BBA85"
+            onColor="#44DEA5"
+          />
+          <span style={{ marginLeft: 10 }}>
+            Sorted by{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {isSwitchToggled ? "Name" : "Blacklist value"}
+            </span>
+          </span>
+        </Col>
+        <Col
+          xs={12}
+          sm={12}
+          md={6}
+          lg={6}
+          style={{
+            textAlign: `${width < 768 ? "left" : "right"}`,
+            padding: "0em 4.8em"
+          }}
+        >
+          <Input
+            type={"text"}
+            placeholder={"Enter a name to search"}
+            onChange={e => {
+              setSearchVal(e.target.value);
+            }}
+          />
+        </Col>
+      </Row>
+      <Row className="rows">
+        {/* {isDataLoaded ? ( */}
+        <PeopleTable
+          isSwitchToggled={isSwitchToggled}
+          searchValue={searchVal}
+        />
+        {/* ) : null} */}
+      </Row>
+    </Grid>
   );
 };
 
@@ -58,4 +85,3 @@ const Input = styled.input`
   transition: 0.3s;
   font-family: "Lexend Deca", sans-serif;
 `;
-
