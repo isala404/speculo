@@ -8,7 +8,6 @@ import { Upload } from "./views/Upload.jsx";
 import FilterResults from "./views/FilterResults.jsx";
 
 
-
 // data object to make code simpler
 
 // All the routes in the application are defined here
@@ -57,7 +56,7 @@ function updateRoutes() {
             return privateRoutes;
         };
 
-        if (localStorage.getItem('type') == null) {
+        if (localStorage.getItem('type') === null) {
             return publicRoutes;
         };
 }

@@ -1,9 +1,7 @@
 import React from "react";
 import { Nav, Navbar } from "react-bootstrap";
 import { Logo } from "../../assets/speculo-logo";
-import {BasicButton } from "../button/button.component";
-// import { Link } from "react-router-dom";
-// import styled from "styled-components";
+import { BasicButton } from "../button/button.component";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./navigation-bar.style.scss";
 
@@ -39,7 +37,7 @@ export const NavigationMenu = () => {
               null}
 
 
-              {localStorage.getItem('token') == null ?
+              {localStorage.getItem('token') === null ?
                 [
                   <Nav.Link href="login" style={linkStyle}><span id="navbar-login-button">Log In</span></Nav.Link>,
                   <Nav.Link href="sign-up" style={linkStyle}><BasicButton buttonTitle="Sign Up" /></Nav.Link>

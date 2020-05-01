@@ -8,8 +8,11 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import {
+
+  // retrieveAllDetections,
   deleteFaceFromSystem,
   retrieveAllRecords,
+  // editNameInSystem,
   whitelistPersonInSystem,
   blacklistPersonInSystem,
   editNameInSystem
@@ -114,11 +117,11 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   };
 
   //sorting people by id and blacklist
-  const sortPeople = () => {
-    isSwitchToggled
-      ? setResults(results.sort(sortByProperty("blacklisted")))
-      : setResults(people.sort(sortByProperty("_id")));
-  };
+  // const sortPeople = () => {
+  //   isSwitchToggled
+  //     ? setResults(results.sort(sortByProperty("blacklisted")))
+  //     : setResults(people.sort(sortByProperty("_id")));
+  // };
 
   return (
     <div style={{ overflowX: "auto" }}>

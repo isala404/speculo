@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 export const TimeCard = ({ timestamp, video, ctx, canvas, onSeek }) => {
-  // const [image, setImage] = useState(null);
+  const [image] = useState(null);
   // useEffect(() => {
   //   console.log("use efffect");
   //   if (image == null) {

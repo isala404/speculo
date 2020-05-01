@@ -46,7 +46,7 @@ export function TimeFilterer(allDetections, timeGapSensitivity, filterOperation,
         }
         break;
       case "equal":
-        if (totalTime == totalExpectedTime){
+        if (totalTime === totalExpectedTime){
           allChosenPeople.push(person.id);
           allDetectionTimes.push(totalTime);
         }
