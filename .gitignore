@@ -429,3 +429,4 @@ database_config.env
 **/images/
 /api/face-service/images/
 models/dataset_evaluate
+/api/face-service/dev_database_config.env

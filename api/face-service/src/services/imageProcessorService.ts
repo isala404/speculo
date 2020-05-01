@@ -24,9 +24,12 @@ export class ImageProcessorService {
 				}
 			}
 
+			console.log(file.originalname)
+
 			axios.post(IMAGE_PROCESSOR_URL, form, config).then(function (response) {
 				resolve(response['data']['data']);
 			}).catch(function (error) {
+				console.log(error)
 				reject(error)
 			});
 		});

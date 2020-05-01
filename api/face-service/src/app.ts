@@ -5,6 +5,7 @@ import {FaceController} from "./face.controller";
 import mongoose from 'mongoose';
 import logger from 'morgan';
 import {MONGO_URI} from "./constants/face.constants";
+import {Mockgoose} from "mockgoose";
 
 /** Express Application */
 class App {
@@ -15,8 +16,14 @@ class App {
 		this.app = express();
 		// configure base express app
 		this.setConfig();
-		// configure mongo db connection
-		App.setMongoConfig();
+
+		if (process.env.NODE_ENV === 'test') {
+			// configure mock database for testing
+			this.setTestMockgooseConfig()
+		} else {
+			// configure mongo db connection
+			this.setMongoConfig();
+		}
 
 		this.faceController = new FaceController(this.app);
 	}
@@ -35,11 +42,35 @@ class App {
 		this.app.use(logger("dev"));
 	}
 
-	private static setMongoConfig() {
+	private setTestMockgooseConfig() {
+		const mockgoose = new Mockgoose(mongoose);
+
+		mockgoose.prepareStorage().then(() => {
+			mongoose.Promise = global.Promise;
+
+			mongoose.connect(MONGO_URI, {
+				useNewUrlParser: true,
+			}).then(r => {
+				console.log(`app.setMongoConfig -> Connected to database`)
+			}).catch(error => {
+				if (error) {
+					console.log(`app.setMongoConfig -> There was an error connecting to the database! | ${error}`)
+				}
+			})
+		})
+	}
+
+	private setMongoConfig() {
 		mongoose.Promise = global.Promise;
 
 		mongoose.connect(MONGO_URI, {
 			useNewUrlParser: true,
+		}).then(r => {
+			console.log(`app.setMongoConfig -> Connected to database`)
+		}).catch(error => {
+			if (error) {
+				console.log(`app.setMongoConfig -> There was an error connecting to the database! | ${error}`)
+			}
 		});
 	}
 }
