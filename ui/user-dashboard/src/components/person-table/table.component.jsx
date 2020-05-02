@@ -8,21 +8,21 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import {
-
-  // retrieveAllDetections,
   deleteFaceFromSystem,
   retrieveAllRecords,
-  // editNameInSystem,
   whitelistPersonInSystem,
   blacklistPersonInSystem,
   editNameInSystem
 } from "../../services/DetectionsManagement";
 import Select from "react-select";
+import "./table.style.scss"
+import Skeleton from 'react-loading-skeleton';
+
 
 export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [people, setPeople] = useState([]);
   //react hooks to access state
-  const [results, setResults] = useState(people);
+  const [results, setResults] = useState([]);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [personToEdit, setPersonToEdit] = useState(-1);
   const [editToggled, setEditToggled] = useState(false);
@@ -31,76 +31,63 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isTyped, setIsTyped] = useState(false);
   const [isSelectorClicked, setIsSelectorClicked] = useState(false);
+  const[deletedKey, setDeletedKey] = useState(-1);
 
   //updating the state on searchval change
   useEffect(() => {
     if (!isDataLoaded) {
       getData();
     }
-    console.log(results);
-    search(results, searchValue);
-    // sortPeople();
+    //searching the array of objects
+    if (people.data) {
+      var result = people.data.filter(person => {
+        return person.label.toUpperCase().includes(searchValue.toUpperCase());
+      });
+      var arr = {data: result}
+      console.log(arr)
+      sortPeople(arr);
+      setResults(arr);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue, isSwitchToggled, isDataLoaded]);
 
   //method to invoke request to get all the records
   const getData = async () => {
     await retrieveAllRecords().then(res => {
-      setPeople(res);
       setResults(res);
-      // console.log(people);
+      setPeople(res);
       setIsDataLoaded(true);
-      // console.log(res.data);
     });
-  };
-
-  //function used for searching
-  const search = (p, searchVal) => {
-    console.log(p);
-    console.log(searchVal);
-    for (var obj in p) {
-      console.log(obj);
-    }
-
-    // if (persons != null && persons.length != 0) {
-    //   // console.log("search " + JSON.parse(people))
-    //   console.log("inside if")
-    //   console.log(object)
-    //   for (var x = 0; x < persons.length; x++) {
-    //     console.log("inside for")
-    //     // console.log(persons.data[x].label);
-    //     if (
-    //       persons.data[x].label.toUpperCase().includes(searchVal.toUpperCase())
-    //     ) {
-    //       results.push(persons[x]);
-    //     }
-    //   }
-    // }
-    // console.log(results);
-    return results;
   };
 
   //function to delete a person on delete button press
   const deletePerson = async personIdToDelete => {
     //Delete request to backend
     deleteFaceFromSystem(personIdToDelete);
-    console.log(people.data)
-    // let newDetectionsArray = people.data.filter(
-    //   person => { console.log(person)}
-    // );
-    // setPeople(newDetectionsArray);
-    // setResults(search(newDetectionsArray, searchValue));
+    if(results.data){
+      var newArr = people.data.filter(person =>{
+        return person._id !== personIdToDelete
+      })
+      var arr = {
+        data: newArr
+      }
+      setTimeout(()=>{
+        sortPeople(arr)
+        setResults(arr)
+        setDeletedKey(-1)
+      }, 400)
+    }
   };
 
+  //function to patch label of a face 
   const updateName = async name => {
-    console.log("patch names");
-    selectedPerson.label = name
+    selectedPerson.label = name;
     editNameInSystem(selectedPerson._id, name);
   };
 
+  //function to patch blacklisted value of a face
   const updateBlacklistState = async isBlacklisted => {
-    console.log("patch BW-list = " + isBlacklisted);
-    console.log(selectedPerson.label)
+    console.log(selectedPerson.label);
     selectedPerson.blacklisted = isBlacklisted;
     isBlacklisted
       ? await blacklistPersonInSystem(selectedPerson._id)
@@ -109,23 +96,45 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
 
   //function that handles and retrieves the value of the select menu
   const handleSelectorChange = selectedOption => {
-    console.log(selectedOption)
+    console.log(selectedOption);
     if (selectedPerson.blacklisted !== selectedOption) {
-      console.log("insidddeee")
+      console.log("insidddeee");
       setIsSelectorClicked(true);
       setBlackListValue(selectedOption.value);
     }
   };
 
   //sorting people by id and blacklist
-  // const sortPeople = () => {
-  //   isSwitchToggled
-  //     ? setResults(results.sort(sortByProperty("blacklisted")))
-  //     : setResults(people.sort(sortByProperty("_id")));
-  // };
+  const sortPeople = (arr) => {
+    if (arr.data) {
+      isSwitchToggled
+        ? setResults({data:arr.data.sort(sortByLabel("label"))})
+        : setResults({data:arr.data.sort(sortByBlackListedValue("blacklisted"))});
+    }
+  };
+  //getting the blacklisted values to display in the select menu
+const getBlacklistValue = person => {
+  var value = blacklistValues.find(x => x.value === person.blacklisted);
+  // console.log(value);
+  return value;
+};
+
+//function to sort according to label
+const sortByLabel = (property) => {
+  return (a, b) => {
+    if (a[property] > b[property]) return 1;
+    else if (a[property] < b[property]) return -1;
+    return 0;
+  };
+};
+
+//function to sort by blacklist value
+const sortByBlackListedValue = (property) => {
+  return (a, b) => b[property] - a[property]
+};
 
   return (
-    <div style={{ overflowX: "auto" }}>
+    <div style={{ overflowX: "auto", margin: "0em 4em" }}>
       {/* {()=>console.log(peopleData)} */}
       <Table>
         <TableHead>
@@ -135,14 +144,14 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
             })}
           </TableRow>
         </TableHead>
-        <TableBody>
-          {isDataLoaded
-            ? people.data.map((person, id) => {
+        <TableBody scrollable= {isDataLoaded}>
+          {results.data
+            ? results.data.map((person, index) => {
                 return (
-                  <Row>
+                  <Row key={index} deleted={index===deletedKey ? true: false}>
                     <TableData>{person._id}</TableData>
                     <TableData
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", overflow: "hidden", whiteSpace:"nowrap" }}
                       onClick={() => {
                         setSelectedPerson(person);
                       }}
@@ -163,7 +172,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                           }}
                         />
                       ) : (
-                        person.label
+                        <div className="label" style={{width: 200, overflowX:"auto"}}>{person.label}</div>
                       )}
                     </TableData>
                     <TableData>
@@ -178,15 +187,6 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                       )}
                     </TableData>
                     <TableData>
-                      <DeleteButton
-                        onClick={() => {
-                          console.log("del");
-                          setSelectedPerson(person);
-                          deletePerson(person._id);
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faTrashAlt} />
-                      </DeleteButton>
                       {/* onpress of edit button */}
                       <EditButton
                         onClick={() => {
@@ -201,17 +201,11 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                             } else if (isSelectorClicked && !isTyped) {
                               updateBlacklistState(blackListValue);
                             }
-
-                            // console.log(getBlacklistValue(person))
                             setEditToggled(false);
+                            sortPeople(results);
                           } else {
-                            // updatePerson(
-                            //   personToEdit,
-                            //   null,
-                            //   person.blacklisted
-                            // );
                             setEditToggled(true);
-                            sortByProperty();
+                            sortPeople(results);
                           }
                         }}
                       >
@@ -233,33 +227,51 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
                           <FontAwesomeIcon icon={faTimes} />
                         </CancelButton>
                       ) : null}
+
+                      <DeleteButton
+                        onClick={() => {
+                          console.log("del");
+                          setSelectedPerson(person);
+                          setDeletedKey(index)
+                          deletePerson(person._id);
+                        
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faTrashAlt} />
+                      </DeleteButton>
                     </TableData>
                   </Row>
                 );
               })
-            : null}
+            : loadingAnimation()}
         </TableBody>
       </Table>
     </div>
   );
 };
 
-//getting the blacklisted values to display in the select menu
-const getBlacklistValue = person => {
-  var value = blacklistValues.find(x => x.value === person.blacklisted);
-  // console.log(value);
-  return value;
-};
-
-//function to sort
-const sortByProperty = property => {
-  return (a, b) => {
-    if (a[property] > b[property]) return 1;
-    else if (a[property] < b[property]) return -1;
-
-    return 0;
-  };
-};
+const loadingAnimation = () =>{
+  var skeletons = []
+  for (var i =0; i < 10; i++){
+    skeletons.push(
+      <Row>
+              <TableData>
+                <Skeleton/>
+              </TableData>
+              <TableData>
+                <Skeleton/>
+              </TableData>
+              <TableData>
+                <Skeleton/>
+              </TableData>
+              <TableData>
+                <Skeleton/>
+              </TableData>
+            </Row>
+    )
+  }
+  return skeletons;
+}
 
 const headings = [
   { id: 1, heading: "ID" },
@@ -275,11 +287,10 @@ const blacklistValues = [
 
 const Table = styled.table`
   min-width: 600px;
-  margin: 10em;
+  width: 1000px;
   table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
-  margin: 0 10em;
   border-radius: 10px;
   overflow: hidden;
 `;
@@ -287,14 +298,14 @@ const Table = styled.table`
 const TableBody = styled.tbody`
   display: block;
   width: 100%;
-  overflow: auto;
+  overflow: ${props => props.scrollable? "auto": "hidden"};
   height: 500px;
 `;
 
 const TableHead = styled.thead`
   width: 100%;
   color: #fff;
-  display: block;
+  display: table-header-group;
 `;
 const TableRow = styled.tr`
   display: block;
@@ -303,29 +314,55 @@ const TableRow = styled.tr`
 `;
 const Row = styled.tr`
   width: 100%;
+  animation: ${props => !props.deleted ? "0.4s ease-out 0s 1 appear" : "0.4s ease-out 0s 1 delete"};
   :nth-child(even) {
     background: #ededed;
-    /* background:#e6fff5; */
+    transition: 0.1s;
+    opacity: 1;
   }
+
+  /* https://stackoverflow.com/questions/6805482/css3-transition-animation-on-load */
+  @keyframes appear {
+  0% {
+    opacity:0
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@keyframes delete {
+  0% {
+    transform: translateX(0%);
+    opacity:1
+  }
+  100% {
+    transform: translateX(100%);
+    opacity:0;
+  }
+}
 `;
+
+
 const TableHeading = styled.th`
   padding: 1em;
   text-align: left;
-  width: 350px;
+  width: 250px;
 `;
 const TableData = styled.td`
   padding: 1em;
   text-align: left;
-  width: 350px;
+  width: 250px;
 `;
 
 const DeleteButton = styled.button`
   color: #c21807;
-  background-color: white;
-  border: 2px solid #a0ffdc;
+  background-color: transparent;
+  border: none;
   border-radius: 6px;
   outline: none;
   transition: 0.3s;
+  margin-left: 1em;
 
   &:hover {
     color: white;
@@ -335,8 +372,8 @@ const DeleteButton = styled.button`
 
 const EditButton = styled.button`
   color: #2bba85;
-  background-color: inherit;
-  border: 2px solid #a0ffdc;
+  background-color: transparent;
+  border: none;
   border-radius: 6px;
   outline: none;
   transition: 0.3s;
