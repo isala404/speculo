@@ -8,17 +8,16 @@ import {
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import {
-
-  // retrieveAllDetections,
   deleteFaceFromSystem,
   retrieveAllRecords,
-  // editNameInSystem,
   whitelistPersonInSystem,
   blacklistPersonInSystem,
   editNameInSystem
 } from "../../services/DetectionsManagement";
 import Select from "react-select";
 import "./table.style.scss"
+import Skeleton from 'react-loading-skeleton';
+
 
 export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [people, setPeople] = useState([]);
@@ -32,7 +31,6 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isTyped, setIsTyped] = useState(false);
   const [isSelectorClicked, setIsSelectorClicked] = useState(false);
-  const [isDeleted, setIsDeleted]= useState(true);
   const[deletedKey, setDeletedKey] = useState(-1);
 
   //updating the state on searchval change
@@ -145,7 +143,7 @@ const sortByBlackListedValue = (property) => {
             })}
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody scrollable= {isDataLoaded}>
           {results.data
             ? results.data.map((person, index) => {
                 return (
@@ -244,12 +242,35 @@ const sortByBlackListedValue = (property) => {
                   </Row>
                 );
               })
-            : null}
+            : loadingAnimation()}
         </TableBody>
       </Table>
     </div>
   );
 };
+
+const loadingAnimation = () =>{
+  var skeletons = []
+  for (var i =0; i < 10; i++){
+    skeletons.push(
+      <Row>
+              <TableData>
+                <Skeleton/>
+              </TableData>
+              <TableData>
+                <Skeleton/>
+              </TableData>
+              <TableData>
+                <Skeleton/>
+              </TableData>
+              <TableData>
+                <Skeleton/>
+              </TableData>
+            </Row>
+    )
+  }
+  return skeletons;
+}
 
 const headings = [
   { id: 1, heading: "ID" },
@@ -276,7 +297,7 @@ const Table = styled.table`
 const TableBody = styled.tbody`
   display: block;
   width: 100%;
-  overflow: auto;
+  overflow: ${props => props.scrollable? "auto": "hidden"};
   height: 500px;
 `;
 
