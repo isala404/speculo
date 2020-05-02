@@ -5,10 +5,16 @@ import styled from "styled-components";
 import { Grid, Row, Col } from "react-flexbox-grid";
 import "../styles/admin.style.scss";
 import { GetWindowSize } from "../helpers/window-size";
+import { BasicButton } from "../components/button/button.component";
+import { useHistory } from "react-router-dom";
+
 
 export const Admin = () => {
   const [isSwitchToggled, setSwitchToggle] = useState(false);
   const [searchVal, setSearchVal] = useState("");
+
+  const history = useHistory();
+  const goUpload = () => history.push('upload');    // used to go to upload faces route
 
   //function that handles and retrieve the value of the switch
   const handleSwitchChange = checked => {
@@ -19,7 +25,11 @@ export const Admin = () => {
 
   const [width] = GetWindowSize();
   return (
-    <Grid style={{ width: "100%", marginTop: "4em" }}>
+    <Grid style={{ width: "100%", marginTop: "2em" }}>
+      <BasicButton 
+        buttonTitle = "Upload Faces"
+        onClick = {goUpload}
+      />
       <Row className="rows">
         <Col
           xs={12}
