@@ -8,7 +8,7 @@ import { Profile } from './components/login/profile';
 import { Home } from "./views/Home.jsx";
 import DashboardPanel from "./views/DashboardPanel.jsx";
 import WebCam from "./components/webcam/webcam.component"
-import { Upload } from "./views/upload.jsx";
+import { Upload } from "./views/Upload.jsx";
 import { Admin } from "./views/Admin.jsx";
 
 import Enzyme, { shallow, mount } from 'enzyme';
