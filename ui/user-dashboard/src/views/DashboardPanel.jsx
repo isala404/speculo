@@ -64,10 +64,10 @@ render(){
           console.log(status, meta, file)
 
           if (status === 'done') {
-            console.log(xhr.response);
+            // console.log(xhr.response);
 
             this.setState({
-              responseDetections: xhr.response,
+              responseDetections: JSON.parse(xhr.response).data,
               video: URL.createObjectURL(file)
             });
 
@@ -116,10 +116,11 @@ render(){
         {/* show processing gif with person card loading templates here, untill displaying video */}
 {/* use loader screen for entire Dashboard component???? */}
 
-{/* use the timeoutfunction to set the detections in the backend */}
+{/* set the detections in the backend */}
             {this.state.video && 
             <Dashboard 
-              videoSRC = {this.state.video}
+              videoSRC = { this.state.video }
+              allDetections = { this.state.responseDetections}
             />
             }
 

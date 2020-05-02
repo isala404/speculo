@@ -4,13 +4,13 @@ import "video.js/dist/video-js.css";
 import "@videojs/themes/dist/fantasy/index.css";
 import { TimeCard } from "../components/TimeCard";
 import Person from "./person-card/PersonCard";
-import PersonLoader from "./person-card/PersonLoader";
+// import PersonLoader from "./person-card/PersonLoader";
 import "../styles/dashboard.style.scss";
 import styled from "styled-components";
 import "../styles/videojsStyle.scss";
 import VideoSnapshot from "video-snapshot";
 import {
-  retrieveAllDetections,
+  // retrieveAllDetections,
   deleteFaceFromSystem,
   editNameInSystem,
   blacklistPersonInSystem,
@@ -28,9 +28,10 @@ export default class Dashboard extends Component {
     this.editPersonSave = this.editPersonSave.bind(this);
 
     this.state = {
-      allDetections: [],           // stores all the detected faces with the timestamps
-      processing: true,           // processing status of video - to handle displaying detections once received
+      // allDetections: [],           // stores all the detected faces with the timestamps
       // allDetections: people,
+      allDetections: this.props.allDetections,           // stores all the detected faces with the timestamps
+      // processing: true,           // processing status of video - to handle displaying detections once received
       selectedPerson: null,
       seekTime: 0,
       chosenIndexToEdit: 0,
@@ -84,21 +85,21 @@ export default class Dashboard extends Component {
         return;
     }
 
-    if (sessionStorage.getItem('videoURL') != null){
-        // Get saved data from sessionStorage
-        let data = JSON.parse(sessionStorage.getItem('videoURL'));
-        console.log(data);
-        this.videoNode.src = data.src;
-        this.videoNode.type = data.type;
-        this.videoNode.load();
-        this.videoNode.onloadeddata = function() {
-        this.videoNode.play();
-    }
-        this.setState({videoSRC: data});
+    // if (sessionStorage.getItem('videoURL') != null){
+    //     // Get saved data from sessionStorage
+    //     let data = JSON.parse(sessionStorage.getItem('videoURL'));
+    //     console.log(data);
+    //     this.videoNode.src = data.src;
+    //     this.videoNode.type = data.type;
+    //     this.videoNode.load();
+    //     this.videoNode.onloadeddata = function() {
+    //     this.videoNode.play();
+    // }
+    //     this.setState({videoSRC: data});
 
-    } else{
-        // redirect back to uploading footage? / show message that video isn't available
-    }
+    // } else{
+    //     // redirect back to uploading footage? / show message that video isn't available
+    // }
 
     
     this.video.src ="../../demo.mp4";
@@ -128,7 +129,8 @@ export default class Dashboard extends Component {
     
 
     // get detected faces with timestamps from the backend
-    this.getAllDetections();
+    // this.getAllDetections();
+    // console.log(this.props.allDetections);
 
   }
   
@@ -183,17 +185,18 @@ export default class Dashboard extends Component {
 
 
   // Get all detected people with detected timestamps in a video
-  async getAllDetections() {
-    try { 
-        const res = await retrieveAllDetections();
-        this.setState({processing:false , allDetections: res});
+//   async getAllDetections() {
+//     try { 
+//         const res = await retrieveAllDetections();
+//         // const res = this.props.allDetections;
+//         this.setState({processing:false , allDetections: res});
 
-        // await this.timeout(10000);     // tester
-        // this.setState({processing:false , allDetections: people});
-    } catch (e) {
-        console.log(e);
-    }
-}
+//         // await this.timeout(10000);     // tester
+//         // this.setState({processing:false , allDetections: people});
+//     } catch (e) {
+//         console.log(e);
+//     }
+// }
 
 
   // Edit name/ black-list status of a person in the system db & display in UI
@@ -292,24 +295,26 @@ async editPersonSave(newPersonDetails) {
                   style={{ height: this.state.videoHeight, overflowY: "auto" }}
                 >
                 
-                {this.state.processing &&
+                {/* {this.state.processing &&
                   <>
                     <PersonLoader />
                     <PersonLoader />
                     <PersonLoader />
                     <PersonLoader />
                   </>
-                }
+                } */}
 
                   {/* display all the names of the people recognized */}
-                  {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
+                  {/* {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received */}
+                  {this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
                       <FadeIn>
                         <Person
                           key={index}
                           id={person.id}
-                          name={person.name}
-                          blacklisted={person.blacklisted}
+                          name={person.label}
+                          // name={person.name}
+                          // blacklisted={person.blacklisted}
                           timestamps={person.timestamps} // taking all the timestamps of the relevant person
                           onChoose={() => this.showTimeCards(person)} // display timestamps of the person
                           onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
