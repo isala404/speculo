@@ -1,9 +1,9 @@
 """image_processor.py: A microservice to process images & videos"""
 
 __author__ = "Akassharjun Shanmugarajah"
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 __email__ = "akassharjun@ieee.org"
-__status__ = "Testing"
+__status__ = "Done"
 
 import logging
 import os
@@ -185,7 +185,7 @@ class ImageProcessor:
 		video_capture = cv2.VideoCapture(path)
 		total_frames = self._count_frames(path)
 		
-		skip_amount = total_frames * 10 / 100
+		skip_amount = total_frames * 5 / 100
 		next_frame_index = 0
 		
 		fps = video_capture.get(cv2.CAP_PROP_FPS)
@@ -199,7 +199,7 @@ class ImageProcessor:
 				height, width, _ = frame.shape
 				resized_frame = cv2.resize(frame, (self._SIZE, self._SIZE))
 				
-				timestamp = round(next_frame_index / fps, 2)
+				timestamp = round(next_frame_index / fps, 3)
 				
 				boxes = await self._get_faces(resized_image=resized_frame)
 				logging.info(f'[PREPROCESS] - Received Face Coordinates for Frame #{round(next_frame_index)}')
