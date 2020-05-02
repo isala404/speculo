@@ -49,7 +49,7 @@ describe('POST /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	});
 
 	it('respond with invalid image provided', (done) => {
@@ -68,7 +68,7 @@ describe('POST /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	});
 
 	it('respond with unacceptable picture', (done) => {
@@ -87,7 +87,7 @@ describe('POST /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	});
 })
 
@@ -101,7 +101,7 @@ describe('GET /faces', () => {
 				expect(res.body['data']).is.instanceOf(Array)
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it('OK getting a face by ID', (done) => {
@@ -125,7 +125,7 @@ describe('GET /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it('getting a face by ID responds with invalid ID provided', (done) => {
@@ -138,7 +138,7 @@ describe('GET /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 })
 
@@ -157,7 +157,7 @@ describe('PUT /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	});
 
 	it('respond with invalid ID provided', (done) => {
@@ -175,7 +175,7 @@ describe('PUT /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	});
 
 	it('respond with invalid image provided', (done) => {
@@ -192,7 +192,7 @@ describe('PUT /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	});
 
 	it('respond with unacceptable picture', (done) => {
@@ -209,7 +209,7 @@ describe('PUT /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	});
 });
 
@@ -225,7 +225,7 @@ describe('PATCH /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it('patch a face label responds with invalid ID provided', (done) => {
@@ -237,7 +237,7 @@ describe('PATCH /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it('OK patch a face blacklist status', (done) => {
@@ -250,7 +250,7 @@ describe('PATCH /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it(' patch a face blacklist status responds with invalid ID provided', (done) => {
@@ -262,7 +262,7 @@ describe('PATCH /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it('OK patch a face whitelist status', (done) => {
@@ -275,7 +275,7 @@ describe('PATCH /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it(' patch a face whitelist status responds with invalid ID provided', (done) => {
@@ -287,7 +287,7 @@ describe('PATCH /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 })
 
@@ -302,7 +302,7 @@ describe('DELETE /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it('deleting a face by ID responds with invalid ID provided', (done) => {
@@ -314,7 +314,7 @@ describe('DELETE /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 
 	it('OK deleting all faces works', (done) => {
@@ -325,6 +325,6 @@ describe('DELETE /faces', () => {
 			.end((err) => {
 				if (err) return done(err);
 				done();
-			});
+			}).timeout(10000);
 	})
 })
