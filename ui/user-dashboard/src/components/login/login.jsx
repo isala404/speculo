@@ -45,7 +45,7 @@ export class Login extends React.Component {
         if (this.state.name !== "" && this.state.password !== "" && this.state.email !== "") {
             if (expression.test(String(this.state.email).toLowerCase())) {
 
-                axios.post('http://speculo.isala.me/api/v1/user/authenticate', this.state)
+                axios.post('https://speculo.isala.me/api/v1/user/authenticate', this.state)
                     .then(response => {
                         const parsedResponse = JSON.parse(JSON.stringify(response));
                         if (parsedResponse.data.status === "success") {
@@ -97,7 +97,7 @@ export class Login extends React.Component {
 
         if (this.state.name !== "" && this.state.password !== "" && this.state.email !== "") {
             if (expression.test(String(this.state.email).toLowerCase())) {
-                axios.post('http://speculo.isala.me/api/v1/admin/authenticate', this.state)
+                axios.post('https://speculo.isala.me/api/v1/admin/authenticate', this.state)
                     .then(response => {
                         const parsedResponse = JSON.parse(JSON.stringify(response));
                         if (parsedResponse.data.status === "success") {

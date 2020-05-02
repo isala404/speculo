@@ -31,7 +31,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isTyped, setIsTyped] = useState(false);
   const [isSelectorClicked, setIsSelectorClicked] = useState(false);
-  const[deletedKey, setDeletedKey] = useState(-1);
+  const [deletedKey, setDeletedKey] = useState(-1);
 
   //updating the state on searchval change
   useEffect(() => {
