@@ -42,6 +42,7 @@ export default class Canvas extends React.Component {
         //rectangle style
         ctx.lineWidth = 5;
         ctx.stroke();
+        return face
       });
     }
   }

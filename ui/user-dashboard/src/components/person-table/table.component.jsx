@@ -40,6 +40,7 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
     console.log(results);
     search(results, searchValue);
     // sortPeople();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue, isSwitchToggled, isDataLoaded]);
 
   //method to invoke request to get all the records
