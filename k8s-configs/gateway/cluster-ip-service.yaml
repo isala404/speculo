@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-gateway-cluster-ip-service
+  name: gateway-cluster-ip-service
 spec:
   type: ClusterIP
   selector:
-    component: api-gateway
+    component: gateway
     tier: datascience
   ports:
     - port: 80
