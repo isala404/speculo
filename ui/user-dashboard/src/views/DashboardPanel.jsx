@@ -120,7 +120,7 @@ render(){
             {this.state.video && 
             <Dashboard 
               videoSRC = { this.state.video }
-              allDetections = { this.state.responseDetections}
+              allDetections = { this.state.responseDetections }
             />
             }
 

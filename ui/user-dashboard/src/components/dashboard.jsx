@@ -8,9 +8,8 @@ import Person from "./person-card/PersonCard";
 import "../styles/dashboard.style.scss";
 import styled from "styled-components";
 import "../styles/videojsStyle.scss";
-import VideoSnapshot from "video-snapshot";
+// import VideoSnapshot from "video-snapshot";
 import {
-  // retrieveAllDetections,
   deleteFaceFromSystem,
   editNameInSystem,
   blacklistPersonInSystem,
@@ -51,39 +50,39 @@ export default class Dashboard extends Component {
     this.result = null;
   }
 
-  onChange = async e => {
-    const snapshoter = new VideoSnapshot(e);
-    const previewSrc = await snapshoter.takeSnapshot();
-    console.log(previewSrc);
-    // const img = document.createElement("img");
+  // onChange = async e => {
+  //   const snapshoter = new VideoSnapshot(e);
+  //   const previewSrc = await snapshoter.takeSnapshot();
+  //   console.log(previewSrc);
+  //   // const img = document.createElement("img");
 
-    // img.src = previewSrc;
+  //   // img.src = previewSrc;
 
-    // document.body.appendChild(img);
-  };
+  //   // document.body.appendChild(img);
+  // };
 
-  snapshot = () => {
-    document
-      .querySelector("#videoPlayer")
-      .addEventListener(
-        "change",
-        this.onChange(
-          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-        )
-      );
-  };
+  // snapshot = () => {
+  //   document
+  //     .querySelector("#videoPlayer")
+  //     .addEventListener(
+  //       "change",
+  //       this.onChange(
+  //         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+  //       )
+  //     );
+  // };
 
   componentDidMount() {
 
-    //for grabbing a screencapture
-    this.container = document.getElementById("videoPlayer");
-    this.video = document.createElement("video");
-    this.video.width = 600;
-    this.canCapture = true;
-    if (!this.video.canPlayType("video/mp4")) {
-        this.canCapture = false;
-        return;
-    }
+    // //for grabbing a screencapture
+    // this.container = document.getElementById("videoPlayer");
+    // this.video = document.createElement("video");
+    // this.video.width = 600;
+    // this.canCapture = true;
+    // if (!this.video.canPlayType("video/mp4")) {
+    //     this.canCapture = false;
+    //     return;
+    // }
 
     // if (sessionStorage.getItem('videoURL') != null){
     //     // Get saved data from sessionStorage
@@ -102,17 +101,17 @@ export default class Dashboard extends Component {
     // }
 
     
-    this.video.src ="../../demo.mp4";
-    this.container.appendChild(this.video);
-    this.video.pause();
-    // this.video.play();
-    this.video.hidden = true;
-    this.video.muted = true;
-    this.canvas = document.createElement("canvas");
-    this.canvas.width = 1600;
-    this.canvas.height = 1000;
-    this.ctx = this.canvas.getContext("2d");
+    // this.video.src ="../../demo.mp4";
+    // this.container.appendChild(this.video);
+    // this.video.pause();
+    // // this.video.play();
     // this.video.hidden = true;
+    // this.video.muted = true;
+    // this.canvas = document.createElement("canvas");
+    // this.canvas.width = 1600;
+    // this.canvas.height = 1000;
+    // this.ctx = this.canvas.getContext("2d");
+    // // this.video.hidden = true;
 
 
     // instantiate Video.js
@@ -306,7 +305,7 @@ async editPersonSave(newPersonDetails) {
 
                   {/* display all the names of the people recognized */}
                   {/* {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received */}
-                  {this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
+                  {this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
                       <FadeIn>
                         <Person
