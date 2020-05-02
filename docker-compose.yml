@@ -60,6 +60,7 @@ services:
     environment:
       - FACE_SERVICE_URL=http://faceservice:3000/
       - VIDEO_DOWNSCALER_URL=http://videodownscaler:8080/
+      - IMAGE_PROCESSOR_URL= http://imageprocessor:8080/
     env_file:
       - database_config.env
   videodownscaler:
