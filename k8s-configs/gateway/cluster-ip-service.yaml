@@ -6,7 +6,7 @@ spec:
   type: ClusterIP
   selector:
     component: gateway
-    tier: datascience
+    tier: backend
   ports:
     - port: 80
       targetPort: 3000
