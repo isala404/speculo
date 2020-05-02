@@ -3,147 +3,156 @@ import FormData from 'form-data';
 import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
-import {Error, MongooseDocument} from "mongoose";
+import {Error, MongooseDocument, Types} from "mongoose";
 import {IMAGE_PROCESSOR_URL, COMPARATOR_URL} from "../constants/face.constants";
+import {ImageProcessorService} from "./imageProcessorService";
 
 export class FaceService {
 
 	/** This method adds a face to the database. */
-	public addFace(req: Request, res: Response) {
+	public async addFace(req: Request, res: Response) {
 		let file = req.file;
 
-		// open the file in memory
-		let fileBuffer = new Buffer(fs.readFileSync(file.path));
-
-		let form = new FormData();
-
-		// append the file to the form data object
-		form.append('image', fileBuffer, file.originalname)
-
-		const config = {
-			headers: {
-				'content-type': `multipart/form-data; boundary=${form.getBoundary()}`
-			}
+		if (!file) {
+			console.debug("FaceService.appendFace -> No image file provided!")
+			return res.status(404).json({error: "No image file provided!"})
 		}
 
-		let id = '';
-		let fingerprint = Array();
+		// split the file name into label and format
+		let fileValues = file.originalname.split('.')
 
-		axios.post(IMAGE_PROCESSOR_URL, form, config)
-			.then(function (response) {
+		let format = fileValues[fileValues.length - 1]
 
-				let label = file.originalname.split('.')[0];
-				fingerprint = response['data']['data']
+		// ignore any file that isn't a png or jpg
+		if (format != 'png' && format != 'jpg' && format != 'jpeg') {
+			console.debug(`FaceService.addFace -> Invalid image provided`)
+			return res.status(500).json({error: "Invalid image file! It must either be JPG or PNG."})
+		}
 
-				const face = new Face({
-					'label': label,
-					'blacklisted': false,
-					'fingerprints': [fingerprint],
-					'createdAt': Date.now(),
-					'lastUpdated': Date.now()
-				});
-				// save the face
-				face.save((error: Error, face: MongooseDocument) => {
-					if (error) {
-						res.status(500).json({'error': error.message});
-					}
+		let fingerprint: number[];
 
-					id = face._id;
-					console.log(`[DATABASE] Face saved successfully`);
+		try {
+			fingerprint = await new ImageProcessorService().getFingerprint(file)
+			// delete the file after it's use
+			fs.unlinkSync(file.path)
+		} catch (error) {
+			console.debug(`FaceService.addFace ->  ${error}`)
+			return res.status(500).json({error: "There was an error in generating the fingerprint for this image."})
+		}
 
-					res.status(201).json({"id": face._id});
+		let label = fileValues[0]
 
-					let data = {
-						'id': id,
-						'fingerprint': fingerprint
-					}
+		let face = new Face({
+			'label': label,
+			'fingerprints': [fingerprint],
+			'blacklisted': false
+		});
 
-					axios.post(COMPARATOR_URL, data).then(function (response) {
-						console.log(`[COMPARATOR] Face saved successfully`);
-					}).catch(function (error) {
-						console.log(`[COMPARATOR] Error in saving ${error.message}`);
-					});
-				});
-			})
-			.catch(function (error) {
-				console.log(error.message);
-				res.sendStatus(500).json({"error": error.message});
-			});
-		//  delete the file after the request
-		fs.unlinkSync(file.path)
+		try {
+			face = await face.save()
+		} catch (error) {
+			console.debug(`FaceService.addFace -> ${error}`);
+			return res.status(500).json({error: "There was an error in saving the face to the database."})
+		}
+
+		console.debug("FaceService.addFace -> Successfully saved face to the database.")
+
+		res.status(201).json({id: face._id})
+
+		new ImageProcessorService().sendFaceData(face._id, fingerprint)
+
 	}
 
-	/** This method will add a face to an existing face by adding it's finerprint to the database */
-	public appendFace(req: Request, res: Response) {
+	/** This method will add a face to an existing face by adding it's fingerprint to the database */
+	public async appendFace(req: Request, res: Response) {
 		let id = req.params.id;
+		let unknownFaceId = req.query['id'].toString();
 		let file = req.file;
 
-		// open the file in memory
-		let fileBuffer = new Buffer(fs.readFileSync(file.path));
-
-		let form = new FormData();
-
-		// append the file to the form data object
-		form.append('image', fileBuffer, file.originalname)
-
-		const config = {
-			headers: {
-				'content-type': `multipart/form-data; boundary=${form.getBoundary()}`
-			}
+		if (!id.match("^[0-9a-fA-F]{24}$")) {
+			console.debug("FaceService.appendFace -> Invalid ID provided.")
+			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
+		if (!unknownFaceId.match("^[0-9a-fA-F]{24}$")) {
+			console.debug("FaceService.appendFace -> Invalid ID provided for Unknown Face!")
+			return res.status(500).json({error: "Invalid ID provided for the Unknown Face!"})
+		}
 
-		axios.post(IMAGE_PROCESSOR_URL, form, config)
-			.then(function (response) {
+		if (!file) {
+			console.debug("FaceService.appendFace -> No image file provided!")
+			return res.status(404).json({error: "No image file provided!"})
+		}
 
-				Face.findById({_id: id}, (error, face) => {
-					if (error) {
-						res.status(500).json({'error': error.message});
-					}
+		let fileValues = file.originalname.split('.')
 
-					if (!face) {
-						return res.status(404).json({"error": "Invalid ID provided"})
-					}
+		let format = fileValues[1]
 
-					let fingerprints = face.get('fingerprints')
+		if (format != 'png' && format != 'jpg') {
+			console.debug(`FaceService.appendFace -> Invalid image provided`)
+			return res.status(500).json({error: "Invalid image format! It must either be JPG or PNG."})
+		}
 
-					let fingerprint = response['data']['data']
-					fingerprints.push(fingerprint);
+		let face;
 
+		face = await Face.findById({_id: id}).exec().catch((error) => {
+			console.debug(`FaceService.appendFace -> ${error}`)
+			return res.status(500).json({error: "There was an error in retrieving the face by ID"})
+		});
 
-					let updateQuery = {
-						fingerprints: fingerprints
-					}
+		if (!face) {
+			console.debug("FaceService.appendFace -> The ID provided does not match any faces in the database!")
+			return res.status(404).json({error: "The ID provided does not match any faces in the database!"})
+		}
 
-					Face.updateOne({_id: id}, updateQuery, err => {
-						if (err) {
-							res.status(500).json({"error": "There is an error"});
-						} else {
-							console.log(`[DATABASE] New face added to existing face successfully`);
-							res.status(200).json({"error": "Successfully added face fingerprint to face."});
-						}
-					});
+		let unknownFace;
 
-					let data = {
-						'id': id,
-						'fingerprint': fingerprint
-					}
+		unknownFace = await Face.findById({_id: unknownFaceId}).exec().catch((error) => {
+			console.debug(`FaceService.appendFace -> ${error}`)
+			return res.status(500).json({error: "There was an error in retrieving the unknown face by ID"})
+		});
 
-					axios.post(COMPARATOR_URL, data).then(function (response) {
-						console.log(`[COMPARATOR] Face successfully saved`)
-					}).catch(function (error) {
-						console.log(error.message);
-					});
+		if (!unknownFace) {
+			console.debug("FaceService.appendFace -> The ID provided does not match any unknown faces in the database!")
+			return res.status(404).json({"error": "The ID provided does not match any unknown faces in the database!"})
+		}
 
-				})
+		let fingerprint: number[];
 
+		try {
+			fingerprint = await new ImageProcessorService().getFingerprint(file)
+			// delete the file after it's use
+			fs.unlinkSync(file.path)
+		} catch (error) {
+			console.debug(`FaceService.appendFace -> ${error}`);
+			return res.status(500).json({error: "There was an error in generating the fingerprint for this image."})
+		}
 
-			})
-			.catch(function (error) {
-				console.log(error.message);
-				res.sendStatus(500).json({"error": error.message});
-			});
-		//  delete the file after the request
+		let fingerprints = face.get('fingerprints');
+		fingerprints.push(fingerprint)
+
+		face.set("fingerprints", fingerprints)
+
+		Face.updateOne({_id: id}, face, error => {
+			if (error) {
+				console.debug(`FaceService.appendFace -> ${error}`);
+				return res.status(500).json({"error": "There was an error when updating the face"});
+			}
+
+			console.debug(`Successfully added the unknown face added to existing face!`);
+			res.status(200).json({message: "Successfully added the unknown face added to existing face successfully!"});
+		});
+
+		Face.deleteOne({_id: unknownFaceId}, error => {
+			if (error) {
+				console.debug(`FaceService.appendFace -> ${error}`);
+			} else {
+				console.debug("Successfully deleted the unknown face from the database!")
+			}
+		});
+
+		new ImageProcessorService().sendFaceData(id, fingerprint)
+
 		fs.unlinkSync(file.path)
 	}
 
@@ -157,14 +166,15 @@ export class FaceService {
 
 		Face.find({}, fingerprintCondition, (error: Error, faces) => {
 			if (error) {
-				res.send(error);
+				console.debug(`FaceService.getAllFaces -> ${error}`);
+				res.status(500).json({error: "There was an error in retrieving the faces from the database."});
 			}
 
 			if (faces.length === 0) {
-				console.log(`[DATABASE] No faces in the database.`);
+				console.debug(`FaceService.getAllFaces -> There are no faces in the database.`);
 				res.status(200).json({'data': []});
 			} else {
-				console.log(`[DATABASE] Retrieved all the faces from the database.`);
+				console.debug(`FaceService.getAllFaces -> Retrieved all the faces from the database.`);
 				res.status(200).json({'data': faces});
 			}
 		});
@@ -178,9 +188,10 @@ export class FaceService {
 
 		let fingerprintCondition = fingerprint ? {} : {fingerprints: 0};
 
-		// checking if the client has sent a valid UUID.
-		if (id.length != 24) {
-			return res.status(404).json({"error": "Invalid ID provided"});
+		// checking if the client has sent a valid ID.
+		if (!id.match("^[0-9a-fA-F]{24}$")) {
+			console.debug("FaceService.getFaceById -> Invalid ID provided.")
+			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
 		Face.findOne({_id: id}, fingerprintCondition, (error: Error, face) => {
@@ -188,69 +199,74 @@ export class FaceService {
 				res.send(error);
 			}
 
-			if (face === null) {
-				return res.status(404).json({"error": "Invalid ID provided"});
+			if (!face) {
+				return res.status(404).json({error: "Face doesn't exist in the database! Invalid ID!"});
 			}
 
-			console.log(`[DATABASE] Retrieved a face by ID from the database.`);
+			console.debug(`FaceService.getFaceById -> Retrieved a face by ID from the database.`);
 			res.status(200).json({'data': face});
 		});
 	}
 
 	/** This method updates a face by id to the database, if it doesn't exist it will create a new entry */
-	public updateFace(req: Request, res: Response) {
+	public async updateFace(req: Request, res: Response) {
 		let id = req.params.id;
-
-		// checking if the client has sent a valid UUID.
-		if (id.length != 24) {
-			return res.status(404).json({"error": "Invalid ID provided"});
-		}
-
 		let file = req.file;
 
-		let fileBuffer = new Buffer(fs.readFileSync(file.path));
-
-		let form = new FormData();
-
-		form.append('image', fileBuffer, file.originalname)
-
-		const config = {
-			headers: {
-				'content-type': `multipart/form-data; boundary=${form.getBoundary()}`
-			}
+		// checking if the client has sent a valid ID.
+		if (!id.match("^[0-9a-fA-F]{24}$")) {
+			console.debug("FaceService.updateFace -> Invalid ID provided.")
+			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
-		axios.post(IMAGE_PROCESSOR_URL, form, config)
-			.then(function (response) {
-				const updateFace = {
-					'label': file.originalname.split('.')[0],
-					'fingerprints': [response['data']['data']],
-					'lastUpdated': Date.now()
-				}
+		if (!file) {
+			console.debug("FaceService.appendFace -> No image file provided!")
+			return res.status(404).json({error: "No image file provided!"})
+		}
 
-				Face.findByIdAndUpdate(id, updateFace, {new: true}, function (err, face) {
-					if (face) {
-						res.status(200).json({"label": face.get("label")});
-					} else {
-						// if the face doesn't exist, it will create a new entry.
-						new Face({
-							'label': updateFace['label'],
-							'fingerprints': updateFace['fingerprints'],
-						}).save((error: Error, face: MongooseDocument) => {
-							if (error) {
-								res.send(error);
-							}
+		let fileValues = file.originalname.split('.')
 
-							console.log(`[DATABASE] Updated a face by ID from the database.`);
-							res.status(201).json({"id": face._id});
-						});
-					}
-				});
+		let format = fileValues[1]
 
-			})
-			.catch(function (error) {
-				res.status(500).json({"status": error.message});
-			});
+		if (format != 'png' && format != 'jpg') {
+			console.debug(`FaceService.appendFace -> Invalid image provided`)
+			return res.status(500).json({error: "Invalid image file! It must either be JPG or PNG."})
+		}
+
+		let fingerprint: number[];
+
+		try {
+			fingerprint = await new ImageProcessorService().getFingerprint(file)
+			// delete the file after it's use
+			fs.unlinkSync(file.path)
+		} catch (error) {
+			console.debug(`FaceService.updateFace -> ${error}`);
+			return res.status(500).json({error: "There was an error in generating the fingerprint for this image."})
+		}
+
+		let label = fileValues[0]
+
+		const updateFace = {
+			'label': label,
+			'fingerprints': [fingerprint],
+			'lastUpdated': Date.now()
+		}
+
+		Face.findByIdAndUpdate(id, updateFace, {
+			new: true,
+		}, function (error, face) {
+			if (error) {
+				console.debug(`FaceService.updateFace -> ${error}`);
+				return res.status(500).json({error: "There was an error in retrieving the face."});
+			}
+			if (face) {
+				console.debug(`FaceService.updateFace -> Face does not exist in the database`);
+				res.status(200).json({message: "Successfully updated face in the database!"})
+			} else {
+				console.debug(`FaceService.updateFace -> Face does not exist in the database`);
+				res.status(404).send({error: "Face does not exist in the database"})
+			}
+		});
 
 		fs.unlinkSync(file.path)
 	}
@@ -259,10 +275,11 @@ export class FaceService {
 	public deleteAllFaces(req: Request, res: Response) {
 		Face.deleteMany({}, (error => {
 			if (error) {
-				res.status(500).json({'error': error.message});
+				console.debug(`FaceService.updateFace -> ${error}`);
+				res.status(500).json({error: "There was an error in deleting all the faces"});
 			} else {
-				console.log(`[DATABASE] Deleted all the faces from the database.`);
-				res.status(200).json({"status": "success"})
+				console.debug(`FaceService.updateFace -> Successfully deleted all the faces in the database!"`);
+				res.status(200).json({message: "Successfully deleted all the faces in the database!"})
 			}
 		}));
 	}
@@ -271,17 +288,19 @@ export class FaceService {
 	public deleteFaceById(req: Request, res: Response) {
 		let id = req.params.id;
 
-		// checking if the client has sent a valid UUID.
-		if (id.length != 24) {
-			return res.status(404).json({"error": "Invalid ID provided"});
+		// checking if the client has sent a valid ID.
+		if (!id.match("^[0-9a-fA-F]{24}$")) {
+			console.debug("FaceService.deleteFaceById -> Invalid ID provided.")
+			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
-		Face.deleteOne({_id: id}, (error => {
+		Face.findByIdAndDelete(id, (error => {
 			if (error) {
-				res.status(500).json({'error': error.message});
+				console.debug(`FaceService.deleteFaceById -> ${error}`);
+				res.status(500).json({error: "There was an error in deleting the face by ID."});
 			} else {
-				console.log(`[DATABASE] Deleted a face by ID from the database.`);
-				res.status(200).json({"status": "success"})
+				console.debug(`FaceService.deleteFaceById -> Successfully deleted the face by ID [${id}] in the database!"`);
+				res.status(200).json({message: `Successfully deleted the face by ID in the database!`})
 			}
 		}));
 	}
@@ -290,9 +309,10 @@ export class FaceService {
 	public patchLabel(req: Request, res: Response) {
 		let id = req.params.id;
 
-		// checking if the client has sent a valid UUID.
-		if (id.length != 24) {
-			return res.status(404).json({"error": "Invalid ID provided"});
+		// checking if the client has sent a valid ID.
+		if (!id.match("^[0-9a-fA-F]{24}$")) {
+			console.debug("FaceService.patchLabel -> Invalid ID provided.")
+			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
 		let label = req.body['label'];
@@ -303,11 +323,11 @@ export class FaceService {
 
 		Face.updateOne({_id: id}, face, error => {
 			if (error) {
-				res.status(500).json({'error': error.message});
-			} else {
-				console.log(`[DATABASE] Patched face label in the database.`);
-				res.status(200).json({"status": "success"})
+				console.debug(`FaceService.patchLabel -> ${error}`);
+				return res.status(500).json({error: error.message});
 			}
+			console.debug(`FaceService.patchLabel -> Successfully updated label!`);
+			return res.status(200).json({message: "Successfully updated label!"})
 		});
 	}
 
@@ -315,9 +335,10 @@ export class FaceService {
 	public patchBlacklist(req: Request, res: Response) {
 		let id = req.params.id;
 
-		// checking if the client has sent a valid UUID.
-		if (id.length != 24) {
-			return res.status(404).json({"error": "Invalid ID provided"});
+		// checking if the client has sent a valid ID.
+		if (!id.match("^[0-9a-fA-F]{24}$")) {
+			console.debug("FaceService.patchBlacklist -> Invalid ID provided.")
+			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
 		let face = {
@@ -326,11 +347,12 @@ export class FaceService {
 
 		Face.updateOne({_id: id}, face, error => {
 			if (error) {
-				res.status(500).json({'error': error.message});
-			} else {
-				console.log(`[DATABASE] Patched face blacklist status in the database.`);
-				res.status(200).json({"status": "success"})
+				console.debug(`FaceService.patchBlacklist -> ${error}`);
+				return res.status(500).json({error: error.message});
 			}
+			console.debug(`FaceService.patchBlacklist -> Successfully patched face blacklist status in the database.`);
+			return res.status(200).json({message: "Successfully patched face blacklist status in the database."})
+
 		});
 	}
 
@@ -338,9 +360,10 @@ export class FaceService {
 	public patchWhitelist(req: Request, res: Response) {
 		let id = req.params.id;
 
-		// checking if the client has sent a valid UUID.
-		if (id.length != 24) {
-			return res.status(404).json({"error": "Invalid ID provided"});
+		// checking if the client has sent a valid ID.
+		if (!id.match("^[0-9a-fA-F]{24}$")) {
+			console.debug("FaceService.patchWhitelist -> Invalid ID provided.")
+			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
 		let face = {
@@ -349,19 +372,19 @@ export class FaceService {
 
 		Face.updateOne({_id: id}, face, error => {
 			if (error) {
-				res.status(500).json({'error': error.message});
-			} else {
-				console.log(`[DATABASE] Patched face whitelist status in the database.`);
-				res.status(200).json({"status": "success"})
+				console.debug(`FaceService.patchWhitelist -> ${error}`);
+				return res.status(500).json({error: error.message});
 			}
+			console.debug(`FaceService.patchWhitelist -> Successfully patched face whitelist status in the database.`);
+			return res.status(200).json({message: "Successfully patched face whitelist status in the database."})
 		});
 	}
 
 	/** This method adds an unknown face to the database */
-	public addUnknownFace(req: Request, res: Response) {
+	public async addUnknownFace(req: Request, res: Response) {
 		let fingerprint = req.body["fingerprint"];
 
-		const face = new Face({
+		let face = new Face({
 			'label': "Unknown",
 			'blacklisted': false,
 			'fingerprints': [fingerprint],
@@ -370,12 +393,14 @@ export class FaceService {
 		});
 
 		// save the face
-		face.save((error: Error, face: MongooseDocument) => {
-			if (error) {
-				res.status(500).json({'error': error.message});
-			}
-			console.log(`[DATABASE] Added unknown face to the database.`);
-			res.status(201).json({"id": face._id});
-		});
+		try {
+			face = await face.save()
+		} catch (error) {
+			console.debug(`FaceService.addUnknownFace -> ${error}`);
+			return res.status(500).json({error: "There was an error when saving the unknown face."});
+		}
+
+		console.debug(`FaceService.addUnknownFace -> Successfully saved unknown face to the database!`);
+		res.status(201).json({"id": face._id});
 	}
 }
