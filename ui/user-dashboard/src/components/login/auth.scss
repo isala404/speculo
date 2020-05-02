@@ -1,8 +1,7 @@
 
 .base-container{
-    width:100%;
+    width:70em;
     display: flex;
-    flex-direction: row;
     align-items: center;
 
     .img-container{
@@ -12,7 +11,7 @@
       background-color: white;
       border-top-left-radius: 10.5px;
       border-bottom-left-radius: 10.5px;
-      margin-left: 23em;
+      //margin-left: 23em;
     }
 
     .cov-img{
