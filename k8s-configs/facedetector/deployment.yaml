@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facedetector-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: facedetector
+  template:
+    metadata:
+      labels:
+        component: facedetector
+        tier: datascience
+    spec:
+      containers:
+        - name: facedetector
+          image: docker.pkg.github.com/mrsupiri/speculo/facedetector:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

@@ -3,13 +3,12 @@ import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "@videojs/themes/dist/fantasy/index.css";
 import { TimeCard } from "../components/TimeCard";
-import Person from "../components/PersonCard";
-import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
+import Person from "./person-card/PersonCard";
+import PersonLoader from "./person-card/PersonLoader";
 import "../styles/dashboard.style.scss";
 import styled from "styled-components";
 import "../styles/videojsStyle.scss";
 import VideoSnapshot from "video-snapshot";
-import WireArt from "../assets/wire-art.svg";
 import {
   retrieveAllDetections,
   deleteFaceFromSystem,
@@ -18,7 +17,8 @@ import {
   whitelistPersonInSystem
 } from "../services/DetectionsManagement";
 import { Grid, Row, Col } from "react-flexbox-grid";
-import { GetWindowSize } from "../helpers/window-size";
+import FadeIn from "react-fade-in";
+// import { GetWindowSize } from "../helpers/window-size";
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -170,10 +170,10 @@ export default class Dashboard extends Component {
   showTimeCards(person) {
     // updating state of selectedPerson
     var selection = this.state.selectedPerson;
-    if (selection == null) {
+    if (selection === null) {
       this.setState({ selectedPerson: person });
     } else {
-      if (selection.id == person.id) {
+      if (selection.id === person.id) {
         this.setState({ selectedPerson: null });
       } else {
         this.setState({ selectedPerson: person });
@@ -278,7 +278,6 @@ async editPersonSave(newPersonDetails) {
                 >
                   <source
                     // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                    // src = {this.state.videoSRC}
                     src = {this.props.videoSRC}
 
                     type="video/mp4"
@@ -292,25 +291,39 @@ async editPersonSave(newPersonDetails) {
                 <PersonDiv
                   style={{ height: this.state.videoHeight, overflowY: "auto" }}
                 >
+                
+                {this.state.processing &&
+                  <>
+                    <PersonLoader />
+                    <PersonLoader />
+                    <PersonLoader />
+                    <PersonLoader />
+                  </>
+                }
+
                   {/* display all the names of the people recognized */}
                   {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
-                      <Person
-                        key={index}
-                        id={person.id}
-                        name={person.name}
-                        blacklisted={person.blacklisted}
-                        timestamps={person.timestamps} // taking all the timestamps of the relevant person
-                        onChoose={() => this.showTimeCards(person)} // display timestamps of the person
-                        onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
-                        onSaveEdit={personDetails =>
-                          this.editPersonSave(personDetails)
-                        } // save the new details pf the person
-                        onDelete={() => this.deletePerson(person.id)} // delete the person from the db
-                      />
+                      <FadeIn>
+                        <Person
+                          key={index}
+                          id={person.id}
+                          name={person.name}
+                          blacklisted={person.blacklisted}
+                          timestamps={person.timestamps} // taking all the timestamps of the relevant person
+                          onChoose={() => this.showTimeCards(person)} // display timestamps of the person
+                          onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
+                          onSaveEdit={personDetails =>
+                            this.editPersonSave(personDetails)
+                          } // save the new details pf the person
+                          onDelete={() => this.deletePerson(person.id)} // delete the person from the db
+                        />
+                      </FadeIn>
                     </div>
                   ))}
-                  <div style={{ height: 100 }}></div>
+
+
+                  {/* <div style={{ height: 100 }}></div> */}
                 </PersonDiv>
                 <div className="fadeout" />
               </div>
@@ -350,58 +363,60 @@ async editPersonSave(newPersonDetails) {
   }
 }
 
-const VideoDiv = styled.div`
-  margin-top: 10%;
-  margin-bottom: 10%;
-  width: 90%;
-  height: 90%;
+// const VideoDiv = styled.div`
+//   margin-top: 10%;
+//   margin-bottom: 10%;
+//   width: 90%;
+//   height: 90%;
+// `;
+
+const PersonDiv = styled.div`
+  height: 100;
 `;
 
-const PersonDiv = styled.div``;
-
-const people = [
-  // hard coded example
-  {
-    id: 1,
-    name: "Akassh",
-    timestamps: [60, 100, 1200],
-    blacklisted: true
-  },
-  { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
-  {
-    id: 3,
-    name: "Nisal",
-    timestamps: [100, 500, 1200, 1500, 200, 150, 900, 750, 12, 34, 78],
-    blacklisted: true
-  },
-  {
-    id: 4,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 5,
-    name: "UnknownPerson",
-    timestamps: [80, 60],
-    blacklisted: true
-  },
-  {
-    id: 6,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 7,
-    name: "Kushan",
-    timestamps: [100, 500],
-    blacklisted: true
-  },
-  {
-    id: 8,
-    name: "UnknownPerson",
-    timestamps: [100, 500],
-    blacklisted: true
-  }
-];
+// const people = [
+//   // hard coded example
+//   {
+//     id: 1,
+//     name: "Akassh",
+//     timestamps: [60, 100, 1200],
+//     blacklisted: true
+//   },
+//   { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
+//   {
+//     id: 3,
+//     name: "Nisal",
+//     timestamps: [100, 500, 1200, 1500, 200, 150, 900, 750, 12, 34, 78],
+//     blacklisted: true
+//   },
+//   {
+//     id: 4,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 5,
+//     name: "UnknownPerson",
+//     timestamps: [80, 60],
+//     blacklisted: true
+//   },
+//   {
+//     id: 6,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 7,
+//     name: "Kushan",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   },
+//   {
+//     id: 8,
+//     name: "UnknownPerson",
+//     timestamps: [100, 500],
+//     blacklisted: true
+//   }
+// ];

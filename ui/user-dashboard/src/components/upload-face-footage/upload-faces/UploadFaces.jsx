@@ -75,7 +75,7 @@ class UploadFaces extends Component {
           <Dropzone
             getUploadParams = { getUploadParams }
             onSubmit = { handleSubmit }
-            // InputComponent={Input}
+            InputComponent={Input}
             inputContent = { "Drag image files or Click to browse" }
             getFilesFromEvent = { getFilesFromEvent }
             onChangeStatus = { handleChangeStatus }

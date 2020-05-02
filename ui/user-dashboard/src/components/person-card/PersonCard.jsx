@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 // import "../styles/dashboard.style.scss";
-import EditPopUp from "./EditPopUp";
+import EditPopUp from "../EditPopUp";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import "../styles/person.style.scss";
+import "../../styles/person.style.scss";
 
 const PersonCard = styled.div`
   /* background-color: ${prop => (prop.blacklisted ? "#FF5A5A" : "#a0ffdc")}; */
