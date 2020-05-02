@@ -15,6 +15,7 @@ export const Admin = () => {
 
   const history = useHistory();
   const goUpload = () => history.push('upload');    // used to go to upload faces route
+  // ref: https://stackoverflow.com/questions/34735580/how-to-do-a-redirect-to-another-route-with-react-router/40380010
 
   //function that handles and retrieve the value of the switch
   const handleSwitchChange = checked => {
