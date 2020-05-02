@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway-deployment
+  name: gateway-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: api-gateway
+      component: gateway
   template:
     metadata:
       labels:
-        component: api-gateway
+        component: gateway
         tier: datascience
     spec:
       containers:
-        - name: api-gateway
+        - name: gateway
           image: docker.pkg.github.com/mrsupiri/speculo/gateway:latest
           imagePullPolicy: Always
           ports:
