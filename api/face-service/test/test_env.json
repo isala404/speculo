@@ -1,0 +1,29 @@
+{
+	"id": "4ce97df2-f7cc-48f5-8f1f-018aebfc8469",
+	"name": "Speculo Face",
+	"values": [
+		{
+			"key": "jwt",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYTY3YTU2ODkzNmUzMWNmYTU4N2UxMCIsImlhdCI6MTU4ODM5MDA1OCwiZXhwIjoxNTg4NDc2NDU4fQ.mcDGwNnjs-a2_zj77lIQldv6u6j0mUEIdGNmwKmKdk0",
+			"enabled": true
+		},
+		{
+			"key": "FACE_ID",
+			"value": "5eac854e47cae4001ad125e3",
+			"enabled": true
+		},
+		{
+			"key": "UNKNOWN_FACE_ID",
+			"value": "5eace9383c7c599bd8c74924",
+			"enabled": true
+		},
+		{
+			"key": "host",
+			"value": "speculo.isala.me",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2020-05-02T08:19:27.341Z",
+	"_postman_exported_using": "Postman/7.21.1"
+}
