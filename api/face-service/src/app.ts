@@ -5,7 +5,9 @@ import {FaceController} from "./face.controller";
 import mongoose from 'mongoose';
 import logger from 'morgan';
 import {MONGO_URI} from "./constants/face.constants";
-import {Mockgoose} from "mockgoose";
+import {Face} from "./models/face";
+
+const {MongoMemoryServer} = require('mongodb-memory-server');
 
 /** Express Application */
 class App {
@@ -17,9 +19,11 @@ class App {
 		// configure base express app
 		this.setConfig();
 
-		if (process.env.NODE_ENV === 'test') {
+		this.setMongoConfig()
+
+		if (process.env.RUN_ENV === 'test') {
 			// configure mock database for testing
-			this.setTestMockgooseConfig()
+			this.setTestMongoConfig();
 		} else {
 			// configure mongo db connection
 			this.setMongoConfig();
@@ -42,22 +46,20 @@ class App {
 		this.app.use(logger("dev"));
 	}
 
-	private setTestMockgooseConfig() {
-		const mockgoose = new Mockgoose(mongoose);
+	private async setTestMongoConfig() {
+		mongoose.Promise = global.Promise;
+		const mongod = new MongoMemoryServer();
 
-		mockgoose.prepareStorage().then(() => {
-			mongoose.Promise = global.Promise;
+		const uri = await mongod.getConnectionString();
 
-			mongoose.connect(MONGO_URI, {
-				useNewUrlParser: true,
-			}).then(r => {
-				console.log(`app.setMongoConfig -> Connected to database`)
-			}).catch(error => {
-				if (error) {
-					console.log(`app.setMongoConfig -> There was an error connecting to the database! | ${error}`)
-				}
-			})
-		})
+		const mongooseOpts = {
+			useNewUrlParser: true,
+			autoReconnect: true,
+			reconnectTries: Number.MAX_VALUE,
+			reconnectInterval: 1000
+		};
+
+		await mongoose.connect(uri, mongooseOpts);
 	}
 
 	private setMongoConfig() {
