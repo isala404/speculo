@@ -149,6 +149,7 @@ export class Login extends React.Component {
                 <div style={{ background: "#000000" }}>
                     <NavigationMenu />
                 </div>
+                <center>
                 <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
 
                     <div className="img-container">
@@ -196,6 +197,7 @@ export class Login extends React.Component {
 
 
                 </div>
+                </center>
 
                 <div className="Footer">
                     <Footer />
