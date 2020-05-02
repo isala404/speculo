@@ -21,9 +21,9 @@ spec:
             - containerPort: 3000
           env:
             - name: IMAGE_PROCESSOR_URL
-              value: http://image-processor-cluster-ip-service:80/
+              value: http://image-processor-cluster-ip-service/api/v1/fingerprint
             - name: COMPARATOR_URL
-              value: http://facecomparator-cluster-ip-service:80/
+              value: http://facecomparator-cluster-ip-service/v1/models/facecomparator:addFace
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
