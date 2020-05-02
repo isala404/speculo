@@ -7,7 +7,7 @@ export const detectionsEndpoint = `${speculoBackend}/api/get/`;         // get a
 export const getAllFacesEndpoint = `${speculoBackend}/api/v1/faces?`;        // get all saved faces with blacklist info from backend
 
 // post (uploading) endpoints
-export const footageUploadEndpoint = `${speculoBackend}/api/post/footage/`;
+export const footageUploadEndpoint = `${speculoBackend}/api/v1/preprocess`;
 // export const footageUploadEndpoint = 'https://httpbin.org/post';         // for testing purposes
 export const facesUploadEndpoint = `${speculoBackend}/api/v1/faces/`;
 
