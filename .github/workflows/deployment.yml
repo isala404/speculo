@@ -161,6 +161,7 @@ jobs:
           curl -sL https://cdn.iconicto.com/Speculo/fingerprinter/Model-v12.h5 -o models/fingerprinter/models/12/Model-v12.h5
           cd utils && python3 export_saved_model.py && cd ..
           docker run -d --name serving_base tensorflow/serving:latest-gpu
+          docker exec -it serving_base mkdir -p /models/fingerprinter/1
           docker cp models/fingerprinter/models/12 serving_base:/models/fingerprinter/1
           docker commit --change "ENV MODEL_NAME fingerprinter" serving_base $IMAGE_NAME
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
