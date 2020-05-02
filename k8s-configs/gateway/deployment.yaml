@@ -24,6 +24,8 @@ spec:
               value: http://face-service-cluster-ip-service/
             - name: VIDEO_DOWNSCALER_URL
               value: http://video-downscaler-cluster-ip-service/
+            - name: IMAGE_PROCESSOR_URL
+              value: http://image-processor-cluster-ip-service/
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
