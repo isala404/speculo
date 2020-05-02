@@ -27,5 +27,5 @@ spec:
         paths:
           - path: /api(/|$)(.*)
             backend:
-              serviceName: api-gateway-cluster-ip-service
+              serviceName: gateway-cluster-ip-service
               servicePort: 80

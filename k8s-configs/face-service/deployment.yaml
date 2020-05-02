@@ -25,22 +25,22 @@ spec:
             - name: COMPARATOR_URL
               value: http://facecomparator-cluster-ip-service:80/
             - name: DB_NAME
-                valueFrom:
-                  secretKeyRef:
-                    name: database-secrets
-                    key: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: DB_NAME
             - name: DB_USERNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: database-secrets
-                    key: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: DB_USERNAME
             - name: DB_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: database-secrets
-                    key: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: DB_PASSWORD
             - name: DB_HOST
-                valueFrom:
-                  secretKeyRef:
-                    name: database-secrets
-                    key: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: DB_HOST
