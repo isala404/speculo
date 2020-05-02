@@ -278,6 +278,9 @@ class ImageProcessor:
 			# Cropped image of above dimension
 			face = im.crop((left, top, right, bottom))
 			
+			if self._FINGERPRINT_SIZE[2] == 1:
+				face = face.convert('L')
+			
 			# resize the cropped image to the required size
 			face = face.resize((self._FINGERPRINT_SIZE[0], self._FINGERPRINT_SIZE[1]), Image.ANTIALIAS)
 			
@@ -325,6 +328,9 @@ class ImageProcessor:
 		resized_im = im.resize((self._SIZE, self._SIZE))
 		
 		boxes = await self._get_faces(resized_image=resized_im)
+		
+		if len(boxes) != 1:
+			return Exception("There cannot be more than one faces in the image.")
 		
 		for top, left, bottom, right in boxes:
 			# Setting the points for cropped image
