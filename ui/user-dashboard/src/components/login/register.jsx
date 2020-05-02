@@ -78,7 +78,7 @@ export class Register extends React.Component {
 
 
                 if (window.confirm("Are you sure to submit?"))
-                    axios.post('http://speculo.isala.me/api/v1/user/register', this.state)
+                    axios.post('https://speculo.isala.me/api/v1/user/register', this.state)
                         .then(response => {
                             console.log(response)
                             const parsedResponse = JSON.parse(JSON.stringify(response));
@@ -157,7 +157,7 @@ export class Register extends React.Component {
 
 
                 if (window.confirm("Are you sure to submit?"))
-                    axios.post('http://speculo.isala.me/api/v1/admin/register', this.state)
+                    axios.post('https://speculo.isala.me/api/v1/admin/register', this.state)
                         .then(response => {
                             console.log(response)
                             const parsedResponse = JSON.parse(JSON.stringify(response));

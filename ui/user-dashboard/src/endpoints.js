@@ -1,4 +1,4 @@
-export const speculoBackend = `http://speculo.isala.me`;           // GCP hosted endpoint
+export const speculoBackend = `https://speculo.isala.me`;           // GCP hosted endpoint
 // export const speculoBackend = process.env.REACT_APP_API_ENDPOINT;           // local hosting endpoint
 
 
