@@ -14,7 +14,7 @@ export class FaceService {
 		let file = req.file;
 
 		if (!file) {
-			//console.debug("FaceService.appendFace -> No image file provided!")
+			console.debug("FaceService.appendFace -> No image file provided!")
 			return res.status(404).json({error: "No image file provided!"})
 		}
 
@@ -25,7 +25,7 @@ export class FaceService {
 
 		// ignore any file that isn't a png or jpg
 		if (format != 'png' && format != 'jpg' && format != 'jpeg') {
-			//console.debug(`FaceService.addFace -> Invalid image provided`)
+			console.debug(`FaceService.addFace -> Invalid image provided`)
 			return res.status(500).json({error: "Invalid image file! It must either be JPG or PNG."})
 		}
 
@@ -36,7 +36,7 @@ export class FaceService {
 			// delete the file after it's use
 			fs.unlinkSync(file.path)
 		} catch (error) {
-			//console.debug(`FaceService.addFace ->  ${error}`)
+			console.debug(`FaceService.addFace ->  ${error}`)
 			return res.status(500).json({error: "There was an error in generating the fingerprint for this image."})
 		}
 
@@ -51,11 +51,11 @@ export class FaceService {
 		try {
 			face = await face.save()
 		} catch (error) {
-			//console.debug(`FaceService.addFace -> ${error}`);
+			console.debug(`FaceService.addFace -> ${error}`);
 			return res.status(500).json({error: "There was an error in saving the face to the database."})
 		}
 
-		//console.debug("FaceService.addFace -> Successfully saved face to the database.")
+		console.debug("FaceService.addFace -> Successfully saved face to the database.")
 
 		res.status(201).json({id: face._id})
 
@@ -70,17 +70,17 @@ export class FaceService {
 		let file = req.file;
 
 		if (!id.match("^[0-9a-fA-F]{24}$")) {
-			//console.debug("FaceService.appendFace -> Invalid ID provided.")
+			console.debug("FaceService.appendFace -> Invalid ID provided.")
 			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
 		if (!unknownFaceId.match("^[0-9a-fA-F]{24}$")) {
-			//console.debug("FaceService.appendFace -> Invalid ID provided for Unknown Face!")
+			console.debug("FaceService.appendFace -> Invalid ID provided for Unknown Face!")
 			return res.status(500).json({error: "Invalid ID provided for the Unknown Face!"})
 		}
 
 		if (!file) {
-			//console.debug("FaceService.appendFace -> No image file provided!")
+			console.debug("FaceService.appendFace -> No image file provided!")
 			return res.status(404).json({error: "No image file provided!"})
 		}
 
@@ -89,31 +89,31 @@ export class FaceService {
 		let format = fileValues[1]
 
 		if (format != 'png' && format != 'jpg') {
-			//console.debug(`FaceService.appendFace -> Invalid image provided`)
+			console.debug(`FaceService.appendFace -> Invalid image provided`)
 			return res.status(500).json({error: "Invalid image format! It must either be JPG or PNG."})
 		}
 
 		let face;
 
 		face = await Face.findById({_id: id}).exec().catch((error) => {
-			//console.debug(`FaceService.appendFace -> ${error}`)
+			console.debug(`FaceService.appendFace -> ${error}`)
 			return res.status(500).json({error: "There was an error in retrieving the face by ID"})
 		});
 
 		if (!face) {
-			//console.debug("FaceService.appendFace -> The ID provided does not match any faces in the database!")
+			console.debug("FaceService.appendFace -> The ID provided does not match any faces in the database!")
 			return res.status(404).json({error: "The ID provided does not match any faces in the database!"})
 		}
 
 		let unknownFace;
 
 		unknownFace = await Face.findById({_id: unknownFaceId}).exec().catch((error) => {
-			//console.debug(`FaceService.appendFace -> ${error}`)
+			console.debug(`FaceService.appendFace -> ${error}`)
 			return res.status(500).json({error: "There was an error in retrieving the unknown face by ID"})
 		});
 
 		if (!unknownFace) {
-			//console.debug("FaceService.appendFace -> The ID provided does not match any unknown faces in the database!")
+			console.debug("FaceService.appendFace -> The ID provided does not match any unknown faces in the database!")
 			return res.status(404).json({"error": "The ID provided does not match any unknown faces in the database!"})
 		}
 
@@ -124,7 +124,7 @@ export class FaceService {
 			// delete the file after it's use
 			fs.unlinkSync(file.path)
 		} catch (error) {
-			//console.debug(`FaceService.appendFace -> ${error}`);
+			console.debug(`FaceService.appendFace -> ${error}`);
 			return res.status(500).json({error: "There was an error in generating the fingerprint for this image."})
 		}
 
@@ -135,19 +135,19 @@ export class FaceService {
 
 		Face.updateOne({_id: id}, face, error => {
 			if (error) {
-				//console.debug(`FaceService.appendFace -> ${error}`);
+				console.debug(`FaceService.appendFace -> ${error}`);
 				return res.status(500).json({"error": "There was an error when updating the face"});
 			}
 
-			//console.debug(`Successfully added the unknown face added to existing face!`);
+			console.debug(`Successfully added the unknown face added to existing face!`);
 			res.status(200).json({message: "Successfully added the unknown face added to existing face successfully!"});
 		});
 
 		Face.deleteOne({_id: unknownFaceId}, error => {
 			if (error) {
-				//console.debug(`FaceService.appendFace -> ${error}`);
+				console.debug(`FaceService.appendFace -> ${error}`);
 			} else {
-				//console.debug("Successfully deleted the unknown face from the database!")
+				console.debug("Successfully deleted the unknown face from the database!")
 			}
 		});
 
@@ -166,15 +166,15 @@ export class FaceService {
 
 		Face.find({}, fingerprintCondition, (error: Error, faces) => {
 			if (error) {
-				//console.debug(`FaceService.getAllFaces -> ${error}`);
+				console.debug(`FaceService.getAllFaces -> ${error}`);
 				res.status(500).json({error: "There was an error in retrieving the faces from the database."});
 			}
 
 			if (faces.length === 0) {
-				//console.debug(`FaceService.getAllFaces -> There are no faces in the database.`);
+				console.debug(`FaceService.getAllFaces -> There are no faces in the database.`);
 				res.status(200).json({'data': []});
 			} else {
-				//console.debug(`FaceService.getAllFaces -> Retrieved all the faces from the database.`);
+				console.debug(`FaceService.getAllFaces -> Retrieved all the faces from the database.`);
 				res.status(200).json({'data': faces});
 			}
 		});
@@ -190,7 +190,7 @@ export class FaceService {
 
 		// checking if the client has sent a valid ID.
 		if (!id.match("^[0-9a-fA-F]{24}$")) {
-			//console.debug("FaceService.getFaceById -> Invalid ID provided.")
+			console.debug("FaceService.getFaceById -> Invalid ID provided.")
 			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
@@ -203,7 +203,7 @@ export class FaceService {
 				return res.status(404).json({error: "Face doesn't exist in the database! Invalid ID!"});
 			}
 
-			//console.debug(`FaceService.getFaceById -> Retrieved a face by ID from the database.`);
+			console.debug(`FaceService.getFaceById -> Retrieved a face by ID from the database.`);
 			res.status(200).json({'data': face});
 		});
 	}
@@ -215,12 +215,12 @@ export class FaceService {
 
 		// checking if the client has sent a valid ID.
 		if (!id.match("^[0-9a-fA-F]{24}$")) {
-			//console.debug("FaceService.updateFace -> Invalid ID provided.")
+			console.debug("FaceService.updateFace -> Invalid ID provided.")
 			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
 		if (!file) {
-			//console.debug("FaceService.appendFace -> No image file provided!")
+			console.debug("FaceService.appendFace -> No image file provided!")
 			return res.status(404).json({error: "No image file provided!"})
 		}
 
@@ -229,7 +229,7 @@ export class FaceService {
 		let format = fileValues[1]
 
 		if (format != 'png' && format != 'jpg') {
-			//console.debug(`FaceService.appendFace -> Invalid image provided`)
+			console.debug(`FaceService.appendFace -> Invalid image provided`)
 			return res.status(500).json({error: "Invalid image file! It must either be JPG or PNG."})
 		}
 
@@ -240,7 +240,7 @@ export class FaceService {
 			// delete the file after it's use
 			fs.unlinkSync(file.path)
 		} catch (error) {
-			//console.debug(`FaceService.updateFace -> ${error}`);
+			console.debug(`FaceService.updateFace -> ${error}`);
 			return res.status(500).json({error: "There was an error in generating the fingerprint for this image."})
 		}
 
@@ -256,14 +256,14 @@ export class FaceService {
 			new: true,
 		}, function (error, face) {
 			if (error) {
-				//console.debug(`FaceService.updateFace -> ${error}`);
+				console.debug(`FaceService.updateFace -> ${error}`);
 				return res.status(500).json({error: "There was an error in retrieving the face."});
 			}
 			if (face) {
-				//console.debug(`FaceService.updateFace -> Face does not exist in the database`);
+				console.debug(`FaceService.updateFace -> Face does not exist in the database`);
 				res.status(200).json({message: "Successfully updated face in the database!"})
 			} else {
-				//console.debug(`FaceService.updateFace -> Face does not exist in the database`);
+				console.debug(`FaceService.updateFace -> Face does not exist in the database`);
 				res.status(404).send({error: "Face does not exist in the database"})
 			}
 		});
@@ -275,10 +275,10 @@ export class FaceService {
 	public deleteAllFaces(req: Request, res: Response) {
 		Face.deleteMany({}, (error => {
 			if (error) {
-				//console.debug(`FaceService.updateFace -> ${error}`);
+				console.debug(`FaceService.updateFace -> ${error}`);
 				res.status(500).json({error: "There was an error in deleting all the faces"});
 			} else {
-				//console.debug(`FaceService.updateFace -> Successfully deleted all the faces in the database!"`);
+				console.debug(`FaceService.updateFace -> Successfully deleted all the faces in the database!"`);
 				res.status(200).json({message: "Successfully deleted all the faces in the database!"})
 			}
 		}));
@@ -290,16 +290,16 @@ export class FaceService {
 
 		// checking if the client has sent a valid ID.
 		if (!id.match("^[0-9a-fA-F]{24}$")) {
-			//console.debug("FaceService.deleteFaceById -> Invalid ID provided.")
+			console.debug("FaceService.deleteFaceById -> Invalid ID provided.")
 			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
 		Face.findByIdAndDelete(id, (error => {
 			if (error) {
-				//console.debug(`FaceService.deleteFaceById -> ${error}`);
+				console.debug(`FaceService.deleteFaceById -> ${error}`);
 				res.status(500).json({error: "There was an error in deleting the face by ID."});
 			} else {
-				//console.debug(`FaceService.deleteFaceById -> Successfully deleted the face by ID [${id}] in the database!"`);
+				console.debug(`FaceService.deleteFaceById -> Successfully deleted the face by ID [${id}] in the database!"`);
 				res.status(200).json({message: `Successfully deleted the face by ID in the database!`})
 			}
 		}));
@@ -311,7 +311,7 @@ export class FaceService {
 
 		// checking if the client has sent a valid ID.
 		if (!id.match("^[0-9a-fA-F]{24}$")) {
-			//console.debug("FaceService.patchLabel -> Invalid ID provided.")
+			console.debug("FaceService.patchLabel -> Invalid ID provided.")
 			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
@@ -323,10 +323,10 @@ export class FaceService {
 
 		Face.updateOne({_id: id}, face, error => {
 			if (error) {
-				//console.debug(`FaceService.patchLabel -> ${error}`);
+				console.debug(`FaceService.patchLabel -> ${error}`);
 				return res.status(500).json({error: error.message});
 			}
-			//console.debug(`FaceService.patchLabel -> Successfully updated label!`);
+			console.debug(`FaceService.patchLabel -> Successfully updated label!`);
 			return res.status(200).json({message: "Successfully updated label!"})
 		});
 	}
@@ -337,7 +337,7 @@ export class FaceService {
 
 		// checking if the client has sent a valid ID.
 		if (!id.match("^[0-9a-fA-F]{24}$")) {
-			//console.debug("FaceService.patchBlacklist -> Invalid ID provided.")
+			console.debug("FaceService.patchBlacklist -> Invalid ID provided.")
 			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
@@ -347,10 +347,10 @@ export class FaceService {
 
 		Face.updateOne({_id: id}, face, error => {
 			if (error) {
-				//console.debug(`FaceService.patchBlacklist -> ${error}`);
+				console.debug(`FaceService.patchBlacklist -> ${error}`);
 				return res.status(500).json({error: error.message});
 			}
-			//console.debug(`FaceService.patchBlacklist -> Successfully patched face blacklist status in the database.`);
+			console.debug(`FaceService.patchBlacklist -> Successfully patched face blacklist status in the database.`);
 			return res.status(200).json({message: "Successfully patched face blacklist status in the database."})
 
 		});
@@ -362,7 +362,7 @@ export class FaceService {
 
 		// checking if the client has sent a valid ID.
 		if (!id.match("^[0-9a-fA-F]{24}$")) {
-			//console.debug("FaceService.patchWhitelist -> Invalid ID provided.")
+			console.debug("FaceService.patchWhitelist -> Invalid ID provided.")
 			return res.status(500).json({error: "Invalid ID provided!"})
 		}
 
@@ -372,10 +372,10 @@ export class FaceService {
 
 		Face.updateOne({_id: id}, face, error => {
 			if (error) {
-				//console.debug(`FaceService.patchWhitelist -> ${error}`);
+				console.debug(`FaceService.patchWhitelist -> ${error}`);
 				return res.status(500).json({error: error.message});
 			}
-			//console.debug(`FaceService.patchWhitelist -> Successfully patched face whitelist status in the database.`);
+			console.debug(`FaceService.patchWhitelist -> Successfully patched face whitelist status in the database.`);
 			return res.status(200).json({message: "Successfully patched face whitelist status in the database."})
 		});
 	}
@@ -396,11 +396,11 @@ export class FaceService {
 		try {
 			face = await face.save()
 		} catch (error) {
-			//console.debug(`FaceService.addUnknownFace -> ${error}`);
+			console.debug(`FaceService.addUnknownFace -> ${error}`);
 			return res.status(500).json({error: "There was an error when saving the unknown face."});
 		}
 
-		//console.debug(`FaceService.addUnknownFace -> Successfully saved unknown face to the database!`);
+		console.debug(`FaceService.addUnknownFace -> Successfully saved unknown face to the database!`);
 		res.status(201).json({"id": face._id});
 	}
 }

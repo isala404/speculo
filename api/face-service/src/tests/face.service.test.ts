@@ -6,6 +6,7 @@ import request from "supertest";
 import FormData from "form-data";
 import '../models/face';
 
+process.env.CI='TRUE'
 process.env.RUN_ENV = 'test'
 process.removeAllListeners('warning');
 
@@ -37,7 +38,7 @@ describe('POST /faces', () => {
 				id = res.body['id']
 
 				done();
-			});
+			}).timeout(10000);
 	});
 
 	it('respond with image file not provided', (done) => {

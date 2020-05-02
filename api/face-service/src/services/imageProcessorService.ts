@@ -24,12 +24,10 @@ export class ImageProcessorService {
 				}
 			}
 
-			//console.log(file.originalname)
-
 			axios.post(IMAGE_PROCESSOR_URL, form, config).then(function (response) {
 				resolve(response['data']['data']);
 			}).catch(function (error) {
-				//console.log(error)
+				console.log(error)
 				reject(error)
 			});
 		});
@@ -43,9 +41,9 @@ export class ImageProcessorService {
 		}
 
 		axios.post(COMPARATOR_URL, data).then(function (response) {
-			//console.log(`Successfully added face data to the face comparator's memory!`);
+			console.log(`Successfully added face data to the face comparator's memory!`);
 		}).catch(function (error) {
-			//console.log(`There was an error in adding the face data to the face comparator's memory. | ${error}`);
+			console.log(`There was an error in adding the face data to the face comparator's memory. | ${error}`);
 		});
 	}
 }

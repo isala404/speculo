@@ -3,18 +3,13 @@
 	"name": "Speculo Face",
 	"values": [
 		{
-			"key": "jwt",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYTY3YTU2ODkzNmUzMWNmYTU4N2UxMCIsImlhdCI6MTU4ODM5MDA1OCwiZXhwIjoxNTg4NDc2NDU4fQ.mcDGwNnjs-a2_zj77lIQldv6u6j0mUEIdGNmwKmKdk0",
-			"enabled": true
-		},
-		{
 			"key": "FACE_ID",
-			"value": "5eac854e47cae4001ad125e3",
+			"value": "5ead62b5f192db001ae476b0",
 			"enabled": true
 		},
 		{
 			"key": "UNKNOWN_FACE_ID",
-			"value": "5eace9383c7c599bd8c74924",
+			"value": "5ead62caf192db001ae476b2",
 			"enabled": true
 		},
 		{
