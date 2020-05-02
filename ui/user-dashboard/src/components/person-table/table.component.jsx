@@ -18,6 +18,7 @@ import {
   editNameInSystem
 } from "../../services/DetectionsManagement";
 import Select from "react-select";
+import "./table.style.scss"
 
 export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [people, setPeople] = useState([]);
@@ -31,6 +32,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isTyped, setIsTyped] = useState(false);
   const [isSelectorClicked, setIsSelectorClicked] = useState(false);
+  const [isDeleted, setIsDeleted]= useState(true);
+  const[deletedKey, setDeletedKey] = useState(-1);
 
   //updating the state on searchval change
   useEffect(() => {
@@ -69,19 +72,22 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
       var arr = {
         data: newArr
       }
-
-      setResults(arr)
+      setTimeout(()=>{
+        sortPeople(arr)
+        setResults(arr)
+        setDeletedKey(-1)
+      }, 400)
     }
   };
 
+  //function to patch label of a face 
   const updateName = async name => {
-    console.log("patch names");
     selectedPerson.label = name;
     editNameInSystem(selectedPerson._id, name);
   };
 
+  //function to patch blacklisted value of a face
   const updateBlacklistState = async isBlacklisted => {
-    console.log("patch BW-list = " + isBlacklisted);
     console.log(selectedPerson.label);
     selectedPerson.blacklisted = isBlacklisted;
     isBlacklisted
@@ -141,12 +147,12 @@ const sortByBlackListedValue = (property) => {
         </TableHead>
         <TableBody>
           {results.data
-            ? results.data.map((person, id) => {
+            ? results.data.map((person, index) => {
                 return (
-                  <Row>
+                  <Row key={index} deleted={index===deletedKey ? true: false}>
                     <TableData>{person._id}</TableData>
                     <TableData
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", overflow: "hidden", whiteSpace:"nowrap" }}
                       onClick={() => {
                         setSelectedPerson(person);
                       }}
@@ -167,7 +173,7 @@ const sortByBlackListedValue = (property) => {
                           }}
                         />
                       ) : (
-                        person.label
+                        <div className="label" style={{width: 200, overflowX:"auto"}}>{person.label}</div>
                       )}
                     </TableData>
                     <TableData>
@@ -182,15 +188,6 @@ const sortByBlackListedValue = (property) => {
                       )}
                     </TableData>
                     <TableData>
-                      <DeleteButton
-                        onClick={() => {
-                          console.log("del");
-                          setSelectedPerson(person);
-                          deletePerson(person._id);
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faTrashAlt} />
-                      </DeleteButton>
                       {/* onpress of edit button */}
                       <EditButton
                         onClick={() => {
@@ -206,6 +203,7 @@ const sortByBlackListedValue = (property) => {
                               updateBlacklistState(blackListValue);
                             }
                             setEditToggled(false);
+                            sortPeople(results);
                           } else {
                             setEditToggled(true);
                             sortPeople(results);
@@ -230,6 +228,18 @@ const sortByBlackListedValue = (property) => {
                           <FontAwesomeIcon icon={faTimes} />
                         </CancelButton>
                       ) : null}
+
+                      <DeleteButton
+                        onClick={() => {
+                          console.log("del");
+                          setSelectedPerson(person);
+                          setDeletedKey(index)
+                          deletePerson(person._id);
+                        
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faTrashAlt} />
+                      </DeleteButton>
                     </TableData>
                   </Row>
                 );
@@ -282,11 +292,36 @@ const TableRow = styled.tr`
 `;
 const Row = styled.tr`
   width: 100%;
+  animation: ${props => !props.deleted ? "0.4s ease-out 0s 1 appear" : "0.4s ease-out 0s 1 delete"};
   :nth-child(even) {
     background: #ededed;
-    /* background:#e6fff5; */
+    transition: 0.1s;
+    opacity: 1;
   }
+
+  /* https://stackoverflow.com/questions/6805482/css3-transition-animation-on-load */
+  @keyframes appear {
+  0% {
+    opacity:0
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@keyframes delete {
+  0% {
+    transform: translateX(0%);
+    opacity:1
+  }
+  100% {
+    transform: translateX(100%);
+    opacity:0;
+  }
+}
 `;
+
+
 const TableHeading = styled.th`
   padding: 1em;
   text-align: left;
@@ -305,7 +340,7 @@ const DeleteButton = styled.button`
   border-radius: 6px;
   outline: none;
   transition: 0.3s;
-  margin-right: 1em;
+  margin-left: 1em;
 
   &:hover {
     color: white;
