@@ -136,3 +136,7 @@ render(){
 }
 
 export default DashboardPanel;
+
+// const PersonDiv = styled.div`
+//   height: 100;
+// `;
