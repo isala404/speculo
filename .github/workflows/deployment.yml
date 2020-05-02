@@ -157,7 +157,7 @@ jobs:
           docker tag $IMAGE_NAME $IMAGE_NAME:commit-${GITHUB_SHA}
           docker tag $IMAGE_NAME $IMAGE_NAME:latest
         env:
-          IMAGE_NAME: docker.pkg.github.com/mrsupiri/speculo/facedetector
+          IMAGE_NAME: docker.pkg.github.com/mrsupiri/speculo/fingerprinter
       - name: Pushing to Docker registry
         run: |
           echo ${{secrets.DOCKER_PASSWORD}} | docker login docker.pkg.github.com -u ${{secrets.DOCKER_USERNAME}} --password-stdin
@@ -203,6 +203,37 @@ jobs:
       - name: Configure docker and kubectl
         run: |
           echo ${{secrets.DOCKER_PASSWORD}} | docker login docker.pkg.github.com -u ${{secrets.DOCKER_USERNAME}} --password-stdin
-          gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
-#      - name: Deploy to Cluster
-#        run: kubectl set image deployment isala-me-deployment isala-website=docker.pkg.github.com/mrsupiri/speculo/isala-website:commit-${GITHUB_SHA}
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} --zone ${{ secrets.GKE_ZONE }} --project ${{ secrets.GCP_PROJECT_ID }}
+      - name: Deploying face service
+        run: kubectl set image deployment $NAME-deployment $NAME=docker.pkg.github.com/mrsupiri/speculo/$NAME:commit-${GITHUB_SHA}
+        env:
+          NAME: face-service
+      - name: Deploying api gateway
+        run: kubectl set image deployment $NAME-deployment $NAME=docker.pkg.github.com/mrsupiri/speculo/$NAME:commit-${GITHUB_SHA}
+        env:
+          NAME: gateway
+      - name: Deploying image processor
+        run: kubectl set image deployment $NAME-deployment $NAME=docker.pkg.github.com/mrsupiri/speculo/$NAME:commit-${GITHUB_SHA}
+        env:
+          NAME: image-processor
+      - name: Deploying video downscaler
+        run: kubectl set image deployment $NAME-deployment $NAME=docker.pkg.github.com/mrsupiri/speculo/$NAME:commit-${GITHUB_SHA}
+        env:
+          NAME: video-downscaler
+      - name: Deploying face comparator
+        run: kubectl set image deployment $NAME-deployment $NAME=docker.pkg.github.com/mrsupiri/speculo/$NAME:commit-${GITHUB_SHA}
+        env:
+          NAME: facecomparator
+      - name: Deploying face detector
+        run: kubectl set image deployment $NAME-deployment $NAME=docker.pkg.github.com/mrsupiri/speculo/$NAME:commit-${GITHUB_SHA}
+        env:
+          NAME: facedetector
+      - name: Deploying fingerprinter
+        run: kubectl set image deployment $NAME-deployment $NAME=docker.pkg.github.com/mrsupiri/speculo/$NAME:commit-${GITHUB_SHA}
+        env:
+          NAME: fingerprinter
+      - name: Deploying user dashboard
+        run: kubectl set image deployment $NAME-deployment $NAME=docker.pkg.github.com/mrsupiri/speculo/$NAME:commit-${GITHUB_SHA}
+        env:
+          NAME: user-dashboard
+
