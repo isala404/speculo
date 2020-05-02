@@ -14,10 +14,7 @@ export const Applications = () => {
               <ApplicationItem isFinalElement={false}
                 path="/dashboard-panel"
                 appName="Speculo"
-                appContent="Nunc porta erat ut lectus posuere molestie. Vestibulum risus
-                  ligula, rhoncus eleifend rhoncus sed, malesuada id metus.
-                  Aenean lorem nibh, varius fermentum viverra vel, efficitur nec
-                  elit."
+                appContent="Speculo is a Web based solution to solve the problem of time consumption when it comes to analysing"
               />
             </Row>
             <Row>

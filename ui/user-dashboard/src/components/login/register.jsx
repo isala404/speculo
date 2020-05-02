@@ -205,10 +205,6 @@ export class Register extends React.Component {
         return (
             <>
                 {/* <Animation /> */}
-                <div style={{ background: "#000000" }}>
-                    <NavigationMenu />
-                </div>
-
                 <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
 
                     <div className="img-container">

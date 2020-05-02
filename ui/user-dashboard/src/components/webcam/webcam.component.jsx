@@ -31,7 +31,8 @@ export default class WebCam extends React.Component {
     var img = new Image();
     img.src = image;
     this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
-    var dataURI = this.canvas.toDataURL("image/jpeg");
+    var dataURI = this.canvas.toDataURL("image/jpg");
+    console.log(dataURI)
     return dataURI;
   }
 
