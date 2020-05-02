@@ -2,9 +2,10 @@ import React from "react"
 import {BasicButton} from "../button/button.component"
 import styled from "styled-components"
 import {Row} from "react-flexbox-grid";
+import {Link} from "react-router-dom"
 
 
-export const ApplicationItem =({appName, appContent, buttonOnclick, isFinalElement}) =>{
+export const ApplicationItem =({appName, appContent, path, isFinalElement}) =>{
     return(
         <ApplicationDiv isFinalElement = {isFinalElement}>
               <Row>
@@ -17,10 +18,12 @@ export const ApplicationItem =({appName, appContent, buttonOnclick, isFinalEleme
               </Row>
               <Row>
                 <ApplicationButtonDiv>
+                <Link to ={path}>
                   <BasicButton
                     buttonTitle="Check it out!"
                     buttonWidth={"60%"}
                   />
+                </Link>
                 </ApplicationButtonDiv>
               </Row>
             </ApplicationDiv>

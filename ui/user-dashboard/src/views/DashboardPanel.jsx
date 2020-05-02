@@ -62,11 +62,11 @@ render(){
         const handleSubmit = (files, allFiles) => {
           const file = files[0].file;
           
-          // console.log(files[0]);
-          // const objURL = URL.createObjectURL(files[0].file);
-          // console.log(objURL);
+          console.log(files[0]);
+          const objURL = URL.createObjectURL(files[0].file);
+          console.log(objURL);
           // Save data to sessionStorage
-          // sessionStorage.setItem('videoURL', JSON.stringify({src: URL.createObjectURL(file), type: file.type}));
+          sessionStorage.setItem('videoURL', JSON.stringify({src: URL.createObjectURL(file), type: file.type}));
 
           this.setState( {video: URL.createObjectURL(file)});
 

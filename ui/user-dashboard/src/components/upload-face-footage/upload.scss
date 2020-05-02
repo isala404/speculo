@@ -19,3 +19,20 @@
   margin: auto;
   border: 2px solid #2bba85
 }
+
+.dzu-previewFileName{
+  font-family: "Lexend Deca", sans-serif
+}
+
+.dzu-dropzone{
+  width: auto;
+  margin: 4em 10%
+}
+
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled){
+  background: #2bba85;
+}
+
+.dzu-dropzone{
+  border: 2px solid #2bba85
+}
