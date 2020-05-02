@@ -4,6 +4,7 @@ on: [pull_request]
 
 jobs:
   user-dashboard-testing:
+    name: Testing user dashboard
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -20,7 +21,26 @@ jobs:
     - run: npm test
       env:
         CI: true
+  face-service-testing:
+    name: Testing face service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api/face-service
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - run: npm install
+    - run: npm run build --if-present
+    - run: npm test
+      env:
+        CI: true
   data-science-testing:
+    name: Testing 3 Models
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -66,6 +86,7 @@ jobs:
         env:
           CI: true
   smoke-testing:
+    name: Smoke Testing the system
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
