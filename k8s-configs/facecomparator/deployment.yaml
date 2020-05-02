@@ -21,7 +21,7 @@ spec:
             - containerPort: 8080
           env:
             - name: FACE_SERVICE_URL
-              value: http://face-service-cluster-ip-service:80/
+              value: http://face-service-cluster-ip-service/api/v1/faces
             - name: FINGERPRINT_THRESHOLD
               value: "570"
             - name: COMPARATOR_SHAPE
