@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Select from "react-select";
-// import {TimeFilterer} from '../services/TimeFilterer.js';
+import {TimeFilterer} from '../services/TimeFilterer.js';
 import {BasicButton} from "../components/button/button.component";
 
 const Input = styled.input`
@@ -59,7 +59,6 @@ const TableData = styled.td`
 
 const FilterResults = ({allDetections}) => {
 
-
     // const [ detections ] = useState (allDetections);
 
     // hard coded example
@@ -71,25 +70,21 @@ const FilterResults = ({allDetections}) => {
     ]
     );
 
-    // useEffect (() => {
-    //     setDetections(props.allDetections);
-    // }, props);
-
     // react hooks to access state
     // const [filteredResults,setFilteredResults] = useState(null);      // hook that contains the array of filtered results
-    const [filteredResults] = useState(detections);      // hook that contains the array of filtered results
-    // const [timeGapSensitivity, setTimeGapSensitivity] = useState(50);       // time gap sensitivity that can be allowed by the user
+    const [filteredResults , setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
 
 
     const [selectedOption, setSelectedOption] = useState("less_than_equal");        // value of the option that was chosen by the user will be hear
     const [timeGap, setTimeGap] = useState(0);        // value of the Time Gap Sensitivity that was chosen by the user will be hear
     const [totalTime, setTotalTime] = useState(0);        // value of the Total Time that was chosen by the user will be hear
 
+
     const headings = [
         { id: 1, headingName: "ID" },
         { id: 2, headingName: "NAME" },
-        { id: 4, headingName: "TOTAL TIME" },
-        { id: 5, headingName: "BLACKLISTED" }
+        { id: 3, headingName: "TOTAL TIME" },
+        { id: 4, headingName: "BLACKLISTED" }
     ];
 
     const conditions = [
@@ -102,15 +97,14 @@ const FilterResults = ({allDetections}) => {
     
 
 
+    //function that handles and retrieves the value of the input Time gap sensitivity
+    const handleTimeGapChange = e => {
+        setTimeGap(e.target.value);      // setting selectedOption's value
+      };
 
     //function that handles and retrieves the value of the select menu
     const handleSelectorChange = e => {
         setSelectedOption(e);      // setting selectedOption's value
-      };
-
-    //function that handles and retrieves the value of the input Time gap sensitivity
-    const handleTimeGapChange = e => {
-        setTimeGap(e.target.value);      // setting selectedOption's value
       };
 
     //function that handles and retrieves the value of the Total time
@@ -122,20 +116,44 @@ const FilterResults = ({allDetections}) => {
      //function that handles and retrieve the value of the switch
     const displayFilteredResults = () => {
 
-        console.log(timeGap);
-        console.log(selectedOption);
-        console.log(totalTime);
+        console.log(timeGap + " : " + selectedOption + " : " + totalTime);
 
-
-        // console.log(TimeFilterer(detections, 400, "less_than", 10));
+        // filter records and retrieve response (object of ids array & total times array)
+        const res = TimeFilterer(detections, 400, "less_than", 10);
+        console.log(res);
 
         // break down the object array into id & total times
+        const allFilteredIDs = res.allChosenPeople;
+        const allTotalDetectionTimes = res.allDetectionTimes;
+
+
         // use detections array to get blacklist status and name using id
+        let allFilteredPeople = detections.filter(
+            person => allFilteredIDs.includes(person.id)        // get all info of people who's IDs have been received after filtering
+          );
 
         // add id, name, total time, blacklist status into filtered results array
+        let allFilteredDetections = [];
+
+        allFilteredPeople.forEach(person => {
+            const index = allFilteredIDs.indexOf(person.id);
+            const totalDetectedTimeOfPerson = allTotalDetectionTimes[index];
+
+            allFilteredDetections.push(
+                {
+                    id : person.id,
+                    name : person.name,
+                    totalTime: totalDetectedTimeOfPerson,
+                    blacklisted : person.blacklisted
+                }
+            )
+
+        });
+        console.log(allFilteredDetections);
 
         // set filtered results from here.
         // from the response arrays received
+        setFilteredResults(allFilteredDetections);
     };
 
 
@@ -209,7 +227,7 @@ const FilterResults = ({allDetections}) => {
                 onClick = {() => displayFilteredResults()}
             />
 
-
+            {/* table to display filtered results */}
             {filteredResults && <Table>
                 <TableHead>
                     <TableHeadRow>
@@ -222,96 +240,14 @@ const FilterResults = ({allDetections}) => {
                     {filteredResults.map(person => {            // display table only if there are any filtered result, else HAVE TO GIVE A MESSAGE TO THE USER
                         return (
                             <Row>
-                                <TableData >{person.id}</TableData>
+                                <TableData>{person.id}</TableData>
                                 <TableData>{person.name}</TableData>
-                                <TableData>
-                                    {/* {person.timestamps.toString()} */}
-                                    {/* need to show total time per person here >>>>>>>>>>>>>>> */}
-                                </TableData>
-                                <TableData>{/*person.*/}</TableData>
-                                <TableData>{/*person.blacklisted.toString()*/}</TableData>
-
-
-                                {/* <TableData
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                        setSelectedPerson(person);
-                                    }}
-                                    >
-                                    {person.id == personToEdit && editToggled == true ? (
-                                        <input
-                                        type="text"
-                                        placeHolder={person.name}
-                                        onChange={x => setNewPersonName
-                                        (x.target.value)}
-                                        />
-                                    ) : (
-                                        person.name
-                                    )}
-                                </TableData>
-                                <TableData>
-                                    <ul>
-                                        {person.timestamps.map(timestamp => {
-                                        return <li>{timestamp}</li>;
-                                        })}
-                                    </ul>
-                                    </TableData>
-                                    <TableData>
-                                    {person.id == personToEdit && editToggled ? (
-                                        <Select
-                                        options={blacklistValues}
-                                        onChange={handleSelectorChange}
-                                        defaultValue={getBlacklistValue(person)}
-                                        />
-                                    ) : (
-                                        person.blacklisted.toString()
-                                    )}
-                                </TableData> */}
-                                {/* <TableData>
-                                <DeleteButton onClick={() => deletePerson(person.id)}>
-                                    <FontAwesomeIcon icon={faTrashAlt} />
-                                </DeleteButton>
-                                <EditButton
-                                    onClick={() => {
-                                    setPersonToEdit(person.id);
-                                    if (editToggled) {
-                                        updatePerson(
-                                        personToEdit,
-                                        newPersonName,
-                                        blackListValue
-                                        );
-                                        setEditToggled(false);
-                                        setBlackListValue(getBlacklistValue(person));
-                                    } else {
-                                        updatePerson(personToEdit, null, null);
-                                        setEditToggled(true);
-                                        sortByProperty();
-                                    }
-                                    }}
-                                >
-                                    <FontAwesomeIcon
-                                    icon={
-                                        person.id == personToEdit && editToggled
-                                        ? faCheck
-                                        : faEdit
-                                    }
-                                    />
-                                </EditButton>
-                                {person.id == personToEdit && editToggled ? (
-                                    <CancelButton
-                                    onClick={() => {
-                                        setPersonToEdit(-1);
-                                        setEditToggled(false);
-                                    }}
-                                    >
-                                    <FontAwesomeIcon icon={faTimes} />
-                                    </CancelButton>
-                                ) : null}
-                            </TableData> */}
-                        </Row>
-                    );
-                })}
-            </TableBody>
+                                <TableData>{person.totalTime}</TableData>
+                                <TableData>{person.blacklisted}</TableData>
+                            </Row>
+                        );
+                    })}
+                </TableBody>
         </Table>}
 
         </div>

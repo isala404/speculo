@@ -310,7 +310,7 @@ async editPersonSave(newPersonDetails) {
                       <FadeIn>
                         <Person
                           key={index}
-                          id={person.id}
+                          id={person._id}
                           name={person.label}
                           // name={person.name}
                           // blacklisted={person.blacklisted}
