@@ -2,7 +2,39 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/mrsupiri/speculo/badge?s=a75918dd8d73cd4933b6858e455efad553dcd7c9)](https://www.codefactor.io/repository/github/mrsupiri/speculo) ![CI/CD Pipeline](https://github.com/mrsupiri/speculo/workflows/CI/CD%20Pipeline/badge.svg)
 
-tree -I 'node_modules|cache|public|fingerprinter/models|model-weights|examples|.nyc_output|coverage|dist|venv'
+## Prerequisites
+
+- React
+- Python 3.7+
+- Docker
+- NodeJS
+- OpenCV
+
+
+## Setup the project locally
+
+#### Clone the Project
+
+```git clone https://github.com/mrsupiri/speculo/tree/master```
+
+
+#### Create the database env file
+
+Create a file called `database_config.env` in the root folder and add the following variables to it;
+
+- DB_NAME
+- DB_USERNAME
+- DB_PASSWORD
+- DB_HOST
+
+#### Run it
+
+```docker-compose up --build```
+
+> Use --build only when you run it for the first time
+
+
+## Project Structure
 
 ```
 ├── README.md
@@ -72,31 +104,6 @@ tree -I 'node_modules|cache|public|fingerprinter/models|model-weights|examples|.
 │       ├── rest_api.py                                   # exposing class methods as endpoints
 │       └── video_downscaler.py                           # video downscaler class
 ├── k8s-configs                                           # kubernetes configurations 
-│   ├── face-service
-│   │   ├── cluster-ip-service.yaml
-│   │   └── deployment.yaml
-│   ├── facecomparator
-│   │   ├── cluster-ip-service.yaml
-│   │   └── deployment.yaml
-│   ├── facedetector
-│   │   ├── cluster-ip-service.yaml
-│   │   └── deployment.yaml
-│   ├── fingerprinter
-│   │   ├── cluster-ip-service.yaml
-│   │   └── deployment.yaml
-│   ├── gateway
-│   │   ├── cluster-ip-service.yaml
-│   │   └── deployment.yaml
-│   ├── image-processor
-│   │   ├── cluster-ip-service.yaml
-│   │   └── deployment.yaml
-│   ├── ingress-controller.yaml
-│   ├── user-dashboard
-│   │   ├── cluster-ip-service.yaml
-│   │   └── deployment.yaml
-│   └── video-downscaler
-│       ├── cluster-ip-service.yaml
-│       └── deployment.yaml
 ├── models                                                 # datascience components
 │   ├── README.md
 │   ├── facecomparator                                     # facecomparator service
@@ -164,17 +171,9 @@ tree -I 'node_modules|cache|public|fingerprinter/models|model-weights|examples|.
 │           ├── index.css                                  # styling css
 │           ├── index.js
 │           ├── serviceWorker.js
-│           ├── services
-│           │   ├── DetectionsManagement.jsx
-│           │   └── TimeFilterer.js
+│           ├── services                                   # services for the app
 │           ├── setupTests.js
-│           ├── styles
-│           │   ├── admin.style.scss
-│           │   ├── dashboard.style.scss
-│           │   ├── fonts.css
-│           │   ├── person.style.scss
-│           │   ├── timecard.style.scss
-│           │   └── videojsStyle.scss
+│           ├── styles                                     # styles
 │           └── views
 │               ├── Admin.jsx                              # admin page
 │               ├── DashboardPanel.jsx                     # dashboard panel page
@@ -191,3 +190,6 @@ tree -I 'node_modules|cache|public|fingerprinter/models|model-weights|examples|.
         ├── test_data.txt                                  # links to images for testing
         └── train_data.txt                                 # links to images for training
 ```
+
+
+ 
