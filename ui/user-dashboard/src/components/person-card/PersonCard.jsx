@@ -99,11 +99,12 @@ class Person extends Component {
   handleSave = () => {
     const personDetails = {
       id: this.state.id,
-      name: this.state.name,
+      label: this.state.name,
       timestamps: this.state.timestamps,
       blacklisted: this.state.blacklisted
     }; // new details of person
 
+    console.log(personDetails);
     this.props.onSaveEdit(personDetails); // sends the new person details to the parent component
   };
 
@@ -112,7 +113,7 @@ class Person extends Component {
   };
 
   render() {
-    const nameOfPerson = this.props.name;
+    const nameOfPerson = this.state.name;
     const isUnknown = nameOfPerson.startsWith("Unknown"); // checking if the person is unknown
 
     return (
