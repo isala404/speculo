@@ -277,3 +277,15 @@ body {
         }
     }
 }
+
+@media only screen and (max-width: 1026px) {
+  .img-container {
+      display: none;
+  }
+  .cov-img {
+    display: none;
+}
+.base-container{
+  width:30em;
+}
+}
