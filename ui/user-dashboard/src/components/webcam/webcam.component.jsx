@@ -56,18 +56,45 @@ export default class WebCam extends React.Component {
         var imageSource = img;
         // imageSource = downscaledImage( 648, 432);
         var truncatedImageSource = this.splitImageValue(imageSource);
-        fetch("http://speculo.isala.me/", {
-          method: "POST",
+        
+        
+        
+        
+        // fetch("http://speculo.isala.me/", {
+        //   method: "POST",
+        //   mode: "cors",
+        //   body: JSON.stringify({
+        //     image: truncatedImageSource
+        //   })
+        // })
+        //   .then(response => response.json())
+        //   .then(data => this.setState({ response: data }, () => {
+        //     console.log(data)
+        //   }));
+      
+      
+        let dataImg = new FormData();
+        dataImg.append('image', truncatedImageSource);
+        
+        const val=[...dataImg.entries()];
+        console.log(val);
+
+        fetch("https://speculo.isala.me/api/v1/coordinates", {
+          method: 'POST',
           mode: "cors",
-          body: JSON.stringify({
-            image: truncatedImageSource
-          })
+          headers: { 'Content-Type': 'multipart/form-data' },
+          body: dataImg
         })
-          .then(response => response.json())
-          .then(data => this.setState({ response: data }, () => {
-            console.log(data)
-          }));
-      }, 750);
+          .then(response =>{
+            const parsedResponse = JSON.parse(JSON.stringify(response));
+            console.log(parsedResponse);
+          })
+          .catch((error) => {
+            console.log(error)
+          });
+      
+      
+        }, 750);
     }
   };
 
