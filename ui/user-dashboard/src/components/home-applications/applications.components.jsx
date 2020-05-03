@@ -12,15 +12,14 @@ export const Applications = () => {
           <Col xs={12} sm={12} md={12} lg={6}>
             <Row>
               <ApplicationItem isFinalElement={false}
+                path="/dashboard-panel"
                 appName="Speculo"
-                appContent="Nunc porta erat ut lectus posuere molestie. Vestibulum risus
-                  ligula, rhoncus eleifend rhoncus sed, malesuada id metus.
-                  Aenean lorem nibh, varius fermentum viverra vel, efficitur nec
-                  elit."
+                appContent="Speculo is a Web based solution to solve the problem of time consumption when it comes to analysing"
               />
             </Row>
             <Row>
               <ApplicationItem isFinalElement={true}
+                path="/live-detection"
                 appName="Live-Demo"
                 appContent="Nunc porta erat ut lectus posuere molestie. Vestibulum risus
                   ligula, rhoncus eleifend rhoncus sed, malesuada id metus.

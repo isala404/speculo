@@ -15,21 +15,21 @@ export const Features = () => {
             iconSource={MaterialBolt}
             featureHeading={"Time Friendly"}
             featureContent={
-              "Nunc porta erat ut lectus posuere molestie. Vestibulum risus ligula, rhoncus eleifend rhoncus sed, malesuada id metus. Aenean lorem nibh, varius fermentum viverra vel, efficitur nec elit. "
+              "Speculo was designed for the sole purpose of reducing the time taken for CCTV footage analysis. Speculo is fast. How fast you may ask? As Lightening McQueen described it best: \"I AM SPEED!\""
             }
           />
           <FeatureItem
             iconSource={MaterialApproval}
             featureHeading={"Privacy"}
             featureContent={
-              "Nunc porta erat ut lectus posuere molestie. Vestibulum risus ligula, rhoncus eleifend rhoncus sed, malesuada id metus. Aenean lorem nibh, varius fermentum viverra vel, efficitur nec elit. "
+              "Speculo is built upon the foundation of privacy. Although we are an online service, we have ensured that speculo does not retain any information of the session or any session for that matter."
             }
           />
           <FeatureItem
             iconSource={MaterialSupport}
             featureHeading={"Tech Support"}
             featureContent={
-              "Nunc porta erat ut lectus posuere molestie. Vestibulum risus ligula, rhoncus eleifend rhoncus sed, malesuada id metus. Aenean lorem nibh, varius fermentum viverra vel, efficitur nec elit. "
+              "{\"status\" : \"not found....YET 😝\"}"
             }
           />
         </Row>

@@ -45,8 +45,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
       });
       var arr = {data: result}
       console.log(arr)
-      sortPeople(arr);
       setResults(arr);
+      sortPeople(arr);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue, isSwitchToggled, isDataLoaded]);
@@ -72,8 +72,9 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
         data: newArr
       }
       setTimeout(()=>{
-        sortPeople(arr)
+        setPeople(arr)
         setResults(arr)
+        sortPeople(arr)
         setDeletedKey(-1)
       }, 400)
     }

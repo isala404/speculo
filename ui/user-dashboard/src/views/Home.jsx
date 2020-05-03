@@ -2,11 +2,11 @@ import React from "react";
 import { Header } from "../components/home-header/header.component";
 import { Features } from "../components/home-features/home-features.component";
 import { Applications } from "../components/home-applications/applications.components";
-// import DashBoard from "./dashboard";
 import { SystemFeatures } from "../components/system-features/system-features.component";
 import { Footer } from "../components/home-footer/footer.component";
 import { UsageMap } from "../components/location-map/location-map.component";
 import { AlliedCompanies } from "../components/companies/companies.component";
+import Fade from "react-reveal/Zoom";
 
 export const Home = () => {
   return (
@@ -15,22 +15,32 @@ export const Home = () => {
         <Header />
       </div>
       <div className="Features">
-        <Features />
+        <Fade>
+          <Features />
+        </Fade>
       </div>
       <div
         className="Applications"
         style={{ background: "#F8F8F8", paddingTop: "5%", paddingBottom: "5%" }}
       >
-        <Applications />
+        <Fade>
+          <Applications />
+        </Fade>
       </div>
       <div className="SystemFeatures">
-        <SystemFeatures />
+        <Fade>
+          <SystemFeatures />
+        </Fade>
       </div>
       <div className="UsageMap" style={{ background: "#F8F8F8" }}>
-        <UsageMap />
+        <Fade>
+          <UsageMap />
+        </Fade>
       </div>
       <div className="Customers">
-        <AlliedCompanies />
+        <Fade>
+          <AlliedCompanies />
+        </Fade>
       </div>
       <div className="Footer">
         <Footer />
