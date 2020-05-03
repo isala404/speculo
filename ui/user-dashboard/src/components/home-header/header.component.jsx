@@ -22,7 +22,7 @@ export const Header = () => {
               </Row>
               <Row>
                 <Col style={{ padding: "1em 0em 1em 0em" }}>
-                  <Link to="/profile">
+                  <Link to="/sign-up">
                     <BasicButton
                       buttonTitle="Get Started"
                       toggleShadow={true}
