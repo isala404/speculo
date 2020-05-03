@@ -1,10 +1,7 @@
 import {Request, Response} from "express";
-import FormData from 'form-data';
-import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
-import {Error, MongooseDocument, Types} from "mongoose";
-import {IMAGE_PROCESSOR_URL, COMPARATOR_URL} from "../constants/face.constants";
+import {Error} from "mongoose";
 import {ImageProcessorService} from "./imageProcessorService";
 import {ComparatorService} from "./comparator.service";
 
