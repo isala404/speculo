@@ -64,7 +64,7 @@ describe('POST /faces', () => {
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'invalid.txt')
 			.expect(400)
-			.expect({error: "Invalid image file! It must either be JPG."})
+			.expect({error: "Invalid image file! It must either be JPG or JPEG."})
 			.end((err) => {
 				if (err) return done(err);
 				done();
@@ -83,7 +83,7 @@ describe('POST /faces', () => {
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'unacceptable-pict.png')
 			.expect(400)
-			.expect({error: "Invalid image file! It must either be JPG."})
+			.expect({error: "Invalid image file! It must either be JPG or JPEG."})
 			.end((err) => {
 				if (err) return done(err);
 				done();
@@ -128,7 +128,7 @@ describe('GET /faces', () => {
 			}).timeout(10000);
 	})
 
-	it('getting a face by ID responds with invalid ID provided', (done) => {
+	it('getting a face by ID responds with face does not exist in the database', (done) => {
 		const id = '5ead2f0fac79ed001acf841d';
 
 		request(app)
@@ -188,7 +188,7 @@ describe('PUT /faces', () => {
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'invalid.txt')
 			.expect(400)
-			.expect({error: "Invalid image file! It must either be JPG."})
+			.expect({error: "Invalid image file! It must either be JPG or JPEG."})
 			.end((err) => {
 				if (err) return done(err);
 				done();
@@ -205,7 +205,7 @@ describe('PUT /faces', () => {
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'unacceptable-pict.png')
 			.expect(400)
-			.expect({error: "Invalid image file! It must either be JPG."})
+			.expect({error: "Invalid image file! It must either be JPG or JPEG."})
 			.end((err) => {
 				if (err) return done(err);
 				done();
