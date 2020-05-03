@@ -243,7 +243,7 @@ const FilterResults = ({allDetections}) => {
                                 <TableData>{person.id}</TableData>
                                 <TableData>{person.name}</TableData>
                                 <TableData>{person.totalTime}</TableData>
-                                <TableData>{person.blacklisted}</TableData>
+                                <TableData>{person.blacklisted.toString()}</TableData>
                             </Row>
                         );
                     })}
