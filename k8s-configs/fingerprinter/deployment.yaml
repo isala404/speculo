@@ -22,3 +22,8 @@ spec:
           env:
             - name: MODEL_NAME
               value: fingerprinter
+          resources:
+            limits:
+              cpu: 300m
+            requests:
+              cpu: 200m
