@@ -10,7 +10,7 @@ const Input = styled.input`
   border: 1px solid #ffffff;
   border-radius: 3px;
   border: 1px solid #2bba85;
-  height: 25px;
+  height: 30px;
   transition: 0.3s;
   font-family: "Lexend Deca", sans-serif;
   font-size: 0.75em;
@@ -58,16 +58,16 @@ const TableData = styled.td`
 const FilterResults = ({allDetections}) => {
 
 
-    const [ detections ] = useState (allDetections);
+    // const [ detections ] = useState (allDetections);
 
-    // // hard coded example
-    // const [ detections ] = useState ([
-    //     {id: 1, name: "Akassh", timestamps: [60,100,1200], blacklisted: true},
-    //     {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
-    //     {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500],  blacklisted: true},
-    //     {id: 4, name: "UnknownPerson", timestamps: [100,500], blacklisted: true}
-    // ]
-    // );
+    // hard coded example
+    const [ detections ] = useState ([
+        {id: 1, name: "Akassh", timestamps: [60,100,1200], blacklisted: true},
+        {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
+        {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500],  blacklisted: true},
+        {id: 4, name: "UnknownPerson", timestamps: [100,500], blacklisted: true}
+    ]
+    );
 
     // useEffect (() => {
     //     setDetections(props.allDetections);
@@ -87,7 +87,6 @@ const FilterResults = ({allDetections}) => {
     const headings = [
         { id: 1, headingName: "ID" },
         { id: 2, headingName: "NAME" },
-        { id: 3, headingName: "TIME STAMPS" },
         { id: 4, headingName: "TOTAL TIME" },
         { id: 5, headingName: "BLACKLISTED" }
     ];
@@ -117,22 +116,43 @@ const FilterResults = ({allDetections}) => {
                 setResults(result);
                 }}
             /> */}
-
-            <label for="minutesInput">Time Gap Sensitivity</label>
             
-            <Select
-                options={conditions}
-                // onChange={handleSelectorChange}
-                defaultValue = {conditions[0]}
-            />
+            <div>
+                <span>Time Gap Sensitivity </span>
+                
+                {/* <Input
+                    type = "number"
+                    placeholder = "Minutes"
+                    id = "minutesInput"
+                    name = "minutesInput"
+                    min = "0"
+                /> */}
+                <Input
+                    type = "number"
+                    placeholder = "Seconds"
+                    id = "secondsInput"
+                    name = "secondsInput"
+                    min = "0"
+                />
+            </div>
 
-            <Input
+            <label for="minutesInput">Total Time</label>
+            
+            <div style={{ width: "230px", display: "inline-block"}}>
+                <Select
+                    options={conditions}
+                    // onChange={handleSelectorChange}
+                    defaultValue = {conditions[0]}
+                />
+            </div>
+
+            {/* <Input
                 type = "number"
                 placeholder = "Minutes"
                 id = "minutesInput"
                 name = "minutesInput"
                 min = "0"
-            />
+            /> */}
             <Input
                 type = "number"
                 placeholder = "Seconds"
@@ -144,7 +164,7 @@ const FilterResults = ({allDetections}) => {
                 <TableHead>
                     <TableHeadRow>
                         {headings.map(heading => {
-                            return <TableHeading style={ heading.id===1 ? {width:'50px'} : {}}>{heading.headingName}</TableHeading>;
+                            return <TableHeading> {heading.headingName} </TableHeading>;
                         })}
                     </TableHeadRow>
                 </TableHead>
@@ -152,9 +172,12 @@ const FilterResults = ({allDetections}) => {
                     {filteredResults.map(person => {
                         return (
                             <Row>
-                                <TableData style={{width:'50px'}}>{person.id}</TableData>
+                                <TableData >{person.id}</TableData>
                                 <TableData>{person.name}</TableData>
-                                <TableData>{person.timestamps.toString()}</TableData>
+                                <TableData>
+                                    {/* {person.timestamps.toString()} */}
+                                    {/* need to show total time per person here >>>>>>>>>>>>>>> */}
+                                </TableData>
                                 <TableData>{/*person.*/}</TableData>
                                 <TableData>{/*person.blacklisted.toString()*/}</TableData>
 
