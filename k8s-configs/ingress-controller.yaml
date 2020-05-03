@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-controller
+  annotations:
+    kubernetes.io/ingress.class: nginx
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "30720m"
+
+spec:
+  tls:
+    - hosts:
+        - speculo.isala.me
+      secretName: isala-me
+
+  rules:
+    - host: speculo.isala.me
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: user-dashboard-cluster-ip-service
+              servicePort: 80
+    - host: speculo.isala.me
+      http:
+        paths:
+          - path: /api/
+            backend:
+              serviceName: gateway-cluster-ip-service
+              servicePort: 80

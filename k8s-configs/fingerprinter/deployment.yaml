@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fingerprinter-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: fingerprinter
+  template:
+    metadata:
+      labels:
+        component: fingerprinter
+        tier: datascience
+    spec:
+      containers:
+        - name: fingerprinter
+          image: docker.pkg.github.com/mrsupiri/speculo/fingerprinter:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MODEL_NAME
+              value: fingerprinter

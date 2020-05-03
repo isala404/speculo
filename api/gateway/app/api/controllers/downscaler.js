@@ -4,7 +4,7 @@ var fs = require('fs'); // nodeJS file system module
 var del = require('delete'); 
 
 
-const BASE_URL = process.env.DOWSCALER_SERVICE_URL;
+const BASE_URL = process.env.VIDEO_DOWNSCALER_URL;
 const api = apiAdapter(BASE_URL);
 
 const BASE_URL_PROCESSOR = process.env.IMAGE_PROCESSOR_URL;

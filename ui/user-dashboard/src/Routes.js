@@ -1,5 +1,4 @@
 import { Home } from "./views/Home.jsx";
-import Dashboard from "./components/dashboard.jsx";
 import WebCam from "./components/webcam/webcam.component"
 import { Admin } from "./views/Admin.jsx";
 import { Login, Register, Profile } from "./components/login/index";
@@ -7,8 +6,6 @@ import DashboardPanel from "./views/DashboardPanel.jsx";
 import { Upload } from "./views/Upload.jsx";
 //import { Auth } from "./Auth";
 import FilterResults from "./views/FilterResults.jsx";
-import React from "react";
-import {Unknown} from "./components/unknown/unknown"
 
 
 // data object to make code simpler
@@ -51,15 +48,15 @@ const publicRoutes = [
 
 
 function updateRoutes() {
-        if (localStorage.getItem('type') == 'admin') {
+        if (localStorage.getItem('type') === 'admin') {
             return privateAdminRoutes;
         };
 
-        if (localStorage.getItem('type') == 'user') {
+        if (localStorage.getItem('type') === 'user') {
             return privateRoutes;
         };
 
-        if (localStorage.getItem('type') == null) {
+        if (localStorage.getItem('type') === null) {
             return publicRoutes;
         };
 }

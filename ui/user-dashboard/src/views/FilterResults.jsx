@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import styled from "styled-components";
 import Select from "react-select";
 import {TimeFilterer} from '../services/TimeFilterer.js';
@@ -58,7 +58,7 @@ const TableData = styled.td`
 const FilterResults = ({allDetections}) => {
 
     // hard coded example
-    const [detections, setDetections] = useState([
+    const [ detections ] = useState([
         {id: 1, name: "Akassh", timestamps: [60,100,1200], blacklisted: true},
         {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
         {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500],  blacklisted: true},
@@ -67,8 +67,9 @@ const FilterResults = ({allDetections}) => {
 
 
     // react hooks to access state
-    const [filteredResults,setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
-    const [timeGapSensitivity, setTimeGapSensitivity] = useState(50);       // time gap sensitivity that can be allowed by the user
+    // const [filteredResults,setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
+    const [filteredResults] = useState(detections);      // hook that contains the array of filtered results
+    // const [timeGapSensitivity, setTimeGapSensitivity] = useState(50);       // time gap sensitivity that can be allowed by the user
 
     // an effect hook can be used for search
     // useEffect(() => {

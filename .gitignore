@@ -430,3 +430,4 @@ database_config.env
 /api/face-service/images/
 models/dataset_evaluate
 /api/face-service/dev_database_config.env
+k8s-configs/secrets

@@ -1,17 +1,46 @@
+
 .base-container{
-    width:100%;
+    width:70em;
     display: flex;
-    flex-direction: column;
     align-items: center;
 
-    .header{
-        font-size:24px;
-        font-family: "Open Sans", sans-serif;
+    .img-container{
+      display: flex;
+      flex-direction: row;
+      //height:50em;
+      background-color: white;
+      border-top-left-radius: 10.5px;
+      border-bottom-left-radius: 10.5px;
+      //margin-left: 23em;
+    }
+
+    .cov-img{
+      width: 40em;
+      //margin-right: 30px;
+      border-top-left-radius: 10.5px;
+      border-bottom-left-radius: 10.5px;
     }
 
     .content{
         display: flex;
         flex-direction: column;
+        background-color: white;
+        width: 30em;
+        height: 34.36em;
+        padding-left: 30px;
+        border-top-right-radius: 10.5px;
+        border-bottom-right-radius: 10.5px;
+
+        border: 2px solid black;
+        border-color: #e7e7e7;
+        
+        .header{
+          font-size:24px;
+          font-family: "Open Sans", sans-serif;
+          margin-bottom: 20px;
+          margin-top: 15px;
+          text-align: left;
+        }
 
         .image{
             width: 20em;
@@ -25,7 +54,8 @@
             margin-top: 0.3em;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            //align-items: center;
+            text-align: left;
 
             .form-group{
                 display: flex;
@@ -37,7 +67,7 @@
                 }
 
                 input{
-                    margin-top: 6px;
+                    margin-top: 3px;
                     min-width: 18em;
                     height: 37px;
                     padding: 0px 10px;
@@ -62,7 +92,7 @@
 
     .footer{
         margin-top: 3em;
-        
+        text-align: left;
     }
 }
 
@@ -174,8 +204,8 @@
 }
 
 //Button
-.btn {
-  font-size: 21px;
+.sbtn {
+  font-size: 20px;
   padding: 5px 20px;
   border: 0;
   background-color: #2BBA8F;
@@ -204,6 +234,7 @@ body {
     //background: black;
     //background-image: radial-gradient(circle at center, white 0%, #222 10%, black 60%);
     overflow: auto;
+    //background-color: #0B162B;
 }
 
 .wrap {

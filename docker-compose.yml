@@ -47,7 +47,7 @@ services:
       - 8503:3000
     environment:
       - IMAGE_PROCESSOR_URL=http://imageprocessor:8080/api/v1/fingerprint
-      - COMPARATOR_URL=http://facecomparator:8080/v1/models/facecomparator:addFace
+      - COMPARATOR_URL=http://facecomparator:8080/v1/models/facecomparator
     env_file:
       - database_config.env
   gateway:
@@ -60,6 +60,7 @@ services:
     environment:
       - FACE_SERVICE_URL=http://faceservice:3000/
       - VIDEO_DOWNSCALER_URL=http://videodownscaler:8080/
+      - IMAGE_PROCESSOR_URL= http://imageprocessor:8080/
     env_file:
       - database_config.env
   videodownscaler:
