@@ -49,7 +49,7 @@ export default class WebCam extends React.Component {
   getFaceData = () => {
     if (this.state.isRunning) {
       //sending the image every 75microseconds
-      setInterval(() => {
+      setInterval( async () => {
         //getting the downscaled image and POSTing to get the coordinates of the faces
         var img = this.downscaledImage()
         // console.log(img)
@@ -76,23 +76,32 @@ export default class WebCam extends React.Component {
         let dataImg = new FormData();
         dataImg.append('image', truncatedImageSource);
         
-        const val=[...dataImg.entries()];
-        console.log(val);
+        // const val=[...dataImg.entries()];
+        // console.log(val);
 
-        fetch("https://speculo.isala.me/api/v1/coordinates", {
+        const test=await fetch("https://speculo.isala.me/api/v1/coordinates", {
           method: 'POST',
           mode: "cors",
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: { 
+            'x-access-token': localStorage.getItem("token"),
+            'Content-Type': 'multipart/form-data' },
           body: dataImg
         })
           .then(response =>{
-            const parsedResponse = JSON.parse(JSON.stringify(response));
-            console.log(parsedResponse);
+            // const parsedResponse = JSON.parse(JSON.stringify(response));
+            // console.log(parsedResponse);
+            console.log("Got response from server.");
+            // let result= response.json();
+            // console.log(result);
+            return response;
           })
           .catch((error) => {
+            console.log("Fail");
             console.log(error)
           });
-      
+
+          const json = await test.json();
+          console.log(json);
       
         }, 750);
     }
