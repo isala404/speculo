@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Select from "react-select";
 import {TimeFilterer} from '../services/TimeFilterer.js';
@@ -57,14 +57,21 @@ const TableData = styled.td`
 
 const FilterResults = ({allDetections}) => {
 
-    // hard coded example
-    const [ detections ] = useState([
-        {id: 1, name: "Akassh", timestamps: [60,100,1200], blacklisted: true},
-        {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
-        {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500],  blacklisted: true},
-        {id: 4, name: "UnknownPerson", timestamps: [100,500], blacklisted: true}
-    ]);
 
+    const [ detections ] = useState (allDetections);
+
+    // // hard coded example
+    // const [ detections ] = useState ([
+    //     {id: 1, name: "Akassh", timestamps: [60,100,1200], blacklisted: true},
+    //     {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
+    //     {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500],  blacklisted: true},
+    //     {id: 4, name: "UnknownPerson", timestamps: [100,500], blacklisted: true}
+    // ]
+    // );
+
+    // useEffect (() => {
+    //     setDetections(props.allDetections);
+    // }, props);
 
     // react hooks to access state
     // const [filteredResults,setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
@@ -98,7 +105,7 @@ const FilterResults = ({allDetections}) => {
         <div style={{overflowX: "auto"}}>
 
             {/* test filter function */}
-            {console.log(TimeFilterer(detections, 400, "more_than", 400))}
+            {console.log(TimeFilterer(filteredResults, 400, "less_than", 10))}
 
             {/* <Switch onChange={handleSwitchChange} checked={isSwitchToggled} /> */}
             {/* <Input
@@ -148,8 +155,8 @@ const FilterResults = ({allDetections}) => {
                                 <TableData style={{width:'50px'}}>{person.id}</TableData>
                                 <TableData>{person.name}</TableData>
                                 <TableData>{person.timestamps.toString()}</TableData>
-                                <TableData>{/*person.id*/}</TableData>
-                                <TableData>{person.blacklisted.toString()}</TableData>
+                                <TableData>{/*person.*/}</TableData>
+                                <TableData>{/*person.blacklisted.toString()*/}</TableData>
 
 
                                 {/* <TableData
