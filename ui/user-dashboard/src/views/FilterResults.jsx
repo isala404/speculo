@@ -104,7 +104,7 @@ const FilterResults = ({allDetections}) => {
 
     //function that handles and retrieves the value of the select menu
     const handleSelectorChange = e => {
-        setSelectedOption(e);      // setting selectedOption's value
+        setSelectedOption(e.value);      // setting selectedOption's value
       };
 
     //function that handles and retrieves the value of the Total time
@@ -119,8 +119,8 @@ const FilterResults = ({allDetections}) => {
         console.log(timeGap + " : " + selectedOption + " : " + totalTime);
 
         // filter records and retrieve response (object of ids array & total times array)
-        const res = TimeFilterer(detections, 400, "less_than", 10);
-        console.log(res);
+        const res = TimeFilterer(detections, timeGap, selectedOption, totalTime);
+        // console.log(res);
 
         // break down the object array into id & total times
         const allFilteredIDs = res.allChosenPeople;
