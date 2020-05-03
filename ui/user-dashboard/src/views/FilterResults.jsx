@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Select from "react-select";
-import {TimeFilterer} from '../services/TimeFilterer.js';
+// import {TimeFilterer} from '../services/TimeFilterer.js';
 import {BasicButton} from "../components/button/button.component";
 
 const Input = styled.input`
@@ -80,11 +80,10 @@ const FilterResults = ({allDetections}) => {
     const [filteredResults] = useState(detections);      // hook that contains the array of filtered results
     // const [timeGapSensitivity, setTimeGapSensitivity] = useState(50);       // time gap sensitivity that can be allowed by the user
 
-    // an effect hook can be used for search
-    // useEffect(() => {
-    //     let filtered = 
-    // });
 
+    const [selectedOption, setSelectedOption] = useState("less_than_equal");        // value of the option that was chosen by the user will be hear
+    const [timeGap, setTimeGap] = useState(0);        // value of the Time Gap Sensitivity that was chosen by the user will be hear
+    const [totalTime, setTotalTime] = useState(0);        // value of the Total Time that was chosen by the user will be hear
 
     const headings = [
         { id: 1, headingName: "ID" },
@@ -102,18 +101,42 @@ const FilterResults = ({allDetections}) => {
     ];
     
 
+
+
+    //function that handles and retrieves the value of the select menu
+    const handleSelectorChange = e => {
+        setSelectedOption(e);      // setting selectedOption's value
+      };
+
+    //function that handles and retrieves the value of the input Time gap sensitivity
+    const handleTimeGapChange = e => {
+        setTimeGap(e.target.value);      // setting selectedOption's value
+      };
+
+    //function that handles and retrieves the value of the Total time
+    const handleTotalTimeChange = e => {
+        setTotalTime(e.target.value);      // setting selectedOption's value
+      };
+    
+
      //function that handles and retrieve the value of the switch
-  const displayFilteredResults = () => {
-    console.log(TimeFilterer(filteredResults, 400, "less_than", 10));
+    const displayFilteredResults = () => {
 
-    // break down the object array into id & total times
-    // use detections array to get blacklist status and name using id
+        console.log(timeGap);
+        console.log(selectedOption);
+        console.log(totalTime);
 
-    // add id, name, total time, blacklist status into filtered results array
 
-    // set filtered results from here.
-    // from the response arrays received
-  };
+        // console.log(TimeFilterer(detections, 400, "less_than", 10));
+
+        // break down the object array into id & total times
+        // use detections array to get blacklist status and name using id
+
+        // add id, name, total time, blacklist status into filtered results array
+
+        // set filtered results from here.
+        // from the response arrays received
+    };
 
 
     return (
@@ -145,9 +168,10 @@ const FilterResults = ({allDetections}) => {
                 <Input
                     type = "number"
                     placeholder = "Seconds"
-                    id = "secondsInput"
-                    name = "secondsInput"
+                    id = "secondsGapInput"
+                    name = "secondsGapInput"
                     min = "0"
+                    onChange = {handleTimeGapChange}
                 />
             </div>
             
@@ -157,7 +181,7 @@ const FilterResults = ({allDetections}) => {
                 <div style={{ width: "230px", display: "inline-block"}}>
                     <Select
                         options={conditions}
-                        // onChange={handleSelectorChange}
+                        onChange={handleSelectorChange}
                         defaultValue = {conditions[0]}
                     />
                 </div>
@@ -172,9 +196,10 @@ const FilterResults = ({allDetections}) => {
                 <Input
                     type = "number"
                     placeholder = "Seconds"
-                    id = "secondsInput"
-                    name = "secondsInput"
+                    id = "secondsTotalTimeInput"
+                    name = "secondsTotalTimeInput"
                     min = "0"
+                    onChange = {handleTotalTimeChange}
                 />
 
             </div>
