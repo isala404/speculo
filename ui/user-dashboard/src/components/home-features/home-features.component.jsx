@@ -27,9 +27,9 @@ export const Features = () => {
           />
           <FeatureItem
             iconSource={MaterialSupport}
-            featureHeading={"Tech Support"}
+            featureHeading={"Community"}
             featureContent={
-              "{\"status\" : \"not found....YET 😝\"}"
+              "The Speculo team believe that to ensure a safer society it is essential to help each other out. We plan on building a vast community of helpers to help us in this journey"
             }
           />
         </Row>

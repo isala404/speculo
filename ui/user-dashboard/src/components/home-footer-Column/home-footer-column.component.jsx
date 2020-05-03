@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import {NavLink} from "react-router-dom"
 
-export const FooterLinkColumn = ({ columnHeading, windowWidth, links }) => (
+export const FooterLinkColumn = ({ columnHeading, windowWidth, links, hrefEnabled }) => (
   <FooterColumnDiv windowWidth={windowWidth}>
     <FooterColumnHeading>{columnHeading}</FooterColumnHeading>
     <LinkDiv windowWidth={windowWidth}>
-      <MapLinks list={links} />
+     { !hrefEnabled? <MapLinks list={links} /> : <HrefLinks hrefs={links} />}
     </LinkDiv>
   </FooterColumnDiv>
 );
@@ -26,7 +27,16 @@ const FooterColumnHeading = styled.h4`
   font-size: 1.1em;
 `;
 
-const FooterLink = styled.a`
+const FooterLink = styled(NavLink)`
+  font-family: "Lexend Deca", sans-serif;
+  color: #979797;
+  transition: 0.15s ease-in-out;
+  &:hover {
+    color: #1ddd96;
+  }
+`;
+
+const HrefLink = styled.a`
   font-family: "Lexend Deca", sans-serif;
   color: #979797;
   transition: 0.15s ease-in-out;
@@ -39,6 +49,12 @@ const FooterLink = styled.a`
 const MapLinks = ({ list }) =>
   list.map(link => (
     <div style={{ margin: "0.1em" }}>
-      <FooterLink href="#">{link}</FooterLink>
+      <FooterLink to={`${link.route}`}>{link.label}</FooterLink>
     </div>
   ));
+
+//method to render the github links
+const HrefLinks = ({hrefs})=> hrefs.map(link=>(
+  <div style={{ margin: "0.1em" }}>
+  <HrefLink href={link.href}>{link.label}</HrefLink>
+</div>))

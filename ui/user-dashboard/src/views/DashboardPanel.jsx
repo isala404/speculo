@@ -113,7 +113,8 @@ render(){
           {/* <MyVideoUploader /> */}
 
             { !this.state.video &&
-              <MyVideoUploader />}
+              <MyVideoUploader />
+              }
 
         {/* show processing gif with person card loading templates here, untill displaying video */}
 {/* use loader screen for entire Dashboard component???? */}
