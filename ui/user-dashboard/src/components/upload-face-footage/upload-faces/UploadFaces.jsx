@@ -79,7 +79,7 @@ class UploadFaces extends Component {
             inputContent = { "Drag image files or Click to browse" }
             getFilesFromEvent = { getFilesFromEvent }
             onChangeStatus = { handleChangeStatus }
-            accept = "image/*"
+            accept = "image/jpg, image/jpeg"
           />
         </div>
       );
