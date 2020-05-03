@@ -9,36 +9,43 @@ import LinkedinIcon from "../../assets/footer-icons/linkedin_color.png";
 import { GetWindowSize } from "../../helpers/window-size";
 import { FooterLinkColumn } from "../home-footer-Column/home-footer-column.component";
 
-const links = ["apple", "bear", "canopy", "doctor", "elephant", "fan", "golem"];
+const links = [
+  { route: "/live-detection", label: "Live Detection" },
+  { route: "/dashboard-panel", label: "Dashboard" }
+];
+const authors = [
+  { href: "https://github.com/mrsupiri", label: "Isala Piyarisi" },
+  { href: "https://github.com/akassharjun", label: "Akassharjun Shanmugarajah" },
+  { href: "https://github.com/DinDev3", label: "Dinuka Piyadigama" },
+  { href: "https://github.com/v15a1", label: "Visal Rajapakse" },
+  { href: "https://github.com/nizzlo", label: "Nisal Samaranayake" },
+  { href: "https://github.com/kushanshamika", label: "Kushan Shamika" },
+];
 
 export const Footer = () => {
   //getting windowsize
-  const [ width ] = GetWindowSize();
+  const [width] = GetWindowSize();
   return (
     <FooterDiv>
       <Grid>
         <Row>
-          <Col xs={12} sm={4} md={4} lg={2}>
+          <Col xs={12} sm={4} md={4} lg={3}>
             <FooterLinkColumn
               links={links}
               windowWidth={width}
               columnHeading={"Features"}
             />
           </Col>
-          <Col xs={12} sm={4} md={4} lg={2}>
-          <FooterLinkColumn
-              links={links}
+
+          <Col xs={12} sm={4} md={4} lg={3}>
+            <FooterLinkColumn
+              hrefEnabled={true}
+              links={authors}
               windowWidth={width}
-              columnHeading={"Features"}
+              columnHeading={"Authors"}
             />
           </Col>
-          <Col xs={12} sm={4} md={4} lg={2}>
-          <FooterLinkColumn
-              links={links}
-              windowWidth={width}
-              columnHeading={"Features"}
-            />
-          </Col>
+
           <Col
             xs={12}
             sm={12}
@@ -51,7 +58,11 @@ export const Footer = () => {
                 <Logo />
               </Row>
               <Row>
-                <FooterContent>{content}</FooterContent>
+                <FooterContent>
+                  {
+                    "Speculo is a product of 6 students from the Informatics institute of Technology, which took course in the past 7 months. Speculo is a service which aims to help solve crimes by helping law enforcement reduce the time taken to analyse footage, which today is done manually."
+                  }
+                </FooterContent>
               </Row>
               <Row>
                 <FooterIcon src={FacebookIcon} />
@@ -83,6 +94,3 @@ const FooterIcon = styled.img`
   margin: 0.5em;
   height: 1.5em;
 `;
-
-var content =
-  "Nunc porta erat ut lectus posuere molestie. Vestibulum risus ligula, rhoncus eleifend rhoncus sed, malesuada id metus. Aenean lorem nibh, varius fermentum viverra vel, efficitur nec elit.";

@@ -15,14 +15,14 @@ export const SystemFeatures = () => {
         <Row>
           <Col xs={12} sm={12} md={12} lg={4}>
             <SystemFeatureItem
-              featureHeading={heading}
-              featureContent={content}
+              featureHeading={"Free of Charge"}
+              featureContent={"Speculo is free service which gives you the performance of Sherlock Holmes at your palms at no extra cost. Making you feel like a god amongs humans"}
               toggleBottomSpace={true}
               screenwidth={width}
             />
             <SystemFeatureItem
-              featureHeading={heading}
-              featureContent={content}
+              featureHeading={"World-Wide Accessibility"}
+              featureContent={"Speculo is a service meticolously designed to be accessible whenever, where ever you are."}
             />
           </Col>
           <Col xs={12} sm={12} md={12} lg={4}>
@@ -32,14 +32,14 @@ export const SystemFeatures = () => {
           </Col>
           <Col xs={12} sm={12} md={12} lg={4}>
             <SystemFeatureItem
-              featureHeading={heading}
-              featureContent={content}
+              featureHeading={"Mobile Friendly"}
+              featureContent={"Don't have a laptop or computer close by to analyse your footage? Not to worry. Speculo was designed in a mobile friendly manner without hindering of any features."}
               toggleBottomSpace={true}
               screenwidth={width}
             />
             <SystemFeatureItem
-              featureHeading={heading}
-              featureContent={content}
+              featureHeading={"Reliability"}
+              featureContent={"Speculo uses advance machine learning to detect faces no matter what direction the face is face. "}
             />
           </Col>
         </Row>
@@ -59,11 +59,3 @@ const SystemFeatureDiv = styled.div`
   margin: 10%;
 `;
 
-// const DeviceImage = styled.img`
-//   width: 100%;
-//     margin:auto;
-// `;
-
-var heading = "Lorem ipsum";
-var content =
-  "Nunc porta erat ut lectus posuere molestie. Vestibulum risus ligula, rhoncus eleifend rhoncus sed, malesuada id metus. Aenean lorem nibh, varius fermentum viverra vel, efficitur nec elit.";

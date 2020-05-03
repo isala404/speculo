@@ -3,7 +3,7 @@ import { Nav, Navbar } from "react-bootstrap";
 import { Logo } from "../../assets/speculo-logo";
 import { BasicButton } from "../button/button.component";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./navigation-bar.style.scss";
 
@@ -19,39 +19,39 @@ export const NavigationMenu = () => {
           style={navStyle}
           fixed="top"
         >
-          <NavLink to="/">
+          <Navlink to="/">
             <Logo />
-          </NavLink>
+          </Navlink>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto"></Nav>
             <Nav>
               {/* statements to show nav links if admin is logged in */}
               {localStorage.getItem("type") === "admin" ? (
-                <NavLink to="/live-detection">Live Detector</NavLink>
+                <Navlink to="/live-detection">Live Detector</Navlink>
               ) : null}
 
               {localStorage.getItem("type") === "admin" ? (
-                <NavLink to="/admin">Admin</NavLink>
+                <Navlink to="/admin">Admin</Navlink>
               ) : null}
 
               {localStorage.getItem("type") !== null ? (
-                <NavLink to="/dashboard-panel">Dashboard</NavLink>
+                <Navlink to="/dashboard-panel">Dashboard</Navlink>
               ) : null}
 
               {localStorage.getItem("token") === null ? (
                 [
-                  <NavLink to="/login">
+                  <Navlink to="/login">
                     <span id="navbar-login-button">Log In</span>
-                  </NavLink>,
-                  <NavLink to="/sign-up">
+                  </Navlink>,
+                  <Navlink to="/sign-up">
                     <BasicButton buttonTitle="Sign Up" />
-                  </NavLink>
+                  </Navlink>
                 ]
               ) : (
-                <NavLink to="/profile">
+                <Navlink to="/profile">
                   <BasicButton buttonTitle="Profile" />
-                </NavLink>
+                </Navlink>
               )}
             </Nav>
           </Navbar.Collapse>
@@ -65,7 +65,7 @@ const navStyle = {
   background: "rgba(15,30,61,1)"
 };
 
-const NavLink = styled(Link)`
+const Navlink = styled(NavLink)`
   margin: auto;
   padding: 0.3em;
   color: #52699c;
@@ -75,4 +75,3 @@ const NavLink = styled(Link)`
   }
 `;
 
-// const linkStyle = { margin: "auto" };
