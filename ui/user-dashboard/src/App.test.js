@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { render } from '@testing-library/react';
 
-import { Login, Register } from './components/login/index';
+import { Login } from './components/login/login';
+import { Register } from './components/login/register';
+import { Profile } from './components/login/profile';
+
 import { Home } from "./views/Home.jsx";
-import Dashboard from "./views/dashboard.jsx";
+import DashboardPanel from "./views/DashboardPanel.jsx";
 import WebCam from "./components/webcam/webcam.component"
-import { UploadPage } from "./views/upload.jsx";
+import { Upload } from "./views/Upload.jsx";
 import { Admin } from "./views/Admin.jsx";
 
 import Enzyme, { shallow, mount } from 'enzyme';
@@ -67,8 +70,8 @@ describe('To check All componnets are rendered', () => {
   });
 
   it('Dashboard component has rendered', () => {
-    const wrapper = shallow(<Dashboard />);
-    expect(wrapper.contains(<Dashboard />)).toBe(false);
+    const wrapper = shallow(<DashboardPanel />);
+    expect(wrapper.contains(<DashboardPanel />)).toBe(false);
   });
 
   it('WebCam component has rendered', () => {
@@ -76,9 +79,9 @@ describe('To check All componnets are rendered', () => {
     expect(wrapper.contains(<WebCam />)).toBe(false);
   });
 
-  it('UploadPage component has rendered', () => {
-    const wrapper = shallow(<UploadPage />);
-    expect(wrapper.contains(<UploadPage />)).toBe(false);
+  it('Upload component has rendered', () => {
+    const wrapper = shallow(<Upload />);
+    expect(wrapper.contains(<Upload />)).toBe(false);
   });
 
   it('Admin component has rendered', () => {
@@ -90,9 +93,9 @@ describe('To check All componnets are rendered', () => {
 
 
 
-describe('Testing Routing functionality', () => {
+describe('Testing initial Routing with accessibility', () => {
 
-  it('Redirection to Home', () => {
+  it('Redirection to Home enabled', () => {
     const wrapper = mount(
       <MemoryRouter initialEntries={['/']}>
         <App />
@@ -101,52 +104,45 @@ describe('Testing Routing functionality', () => {
     expect(wrapper.find(Home)).toHaveLength(1);
   });
 
-  it('Redirection to Dashboard', () => {
+  it('Redirection to Dashboard blocked', () => {
     const wrapper = mount(
-      <MemoryRouter initialEntries={['/dashboard']}>
+      <MemoryRouter initialEntries={['/dashboard-panel']}>
         <App />
       </MemoryRouter>
     );
-    expect(wrapper.find(Dashboard)).toHaveLength(1);
+    expect(wrapper.find(DashboardPanel)).toHaveLength(0);
   });
 
-  it('Redirection to uploads page', () => {
-    const wrapper = mount(
-      <MemoryRouter initialEntries={['/upload']}>
-        <App />
-      </MemoryRouter>
-    );
-    expect(wrapper.find(UploadPage)).toHaveLength(1);
-  });
+  
 
-  it('Redirection to Proof of Concept', () => {
+  it('Redirection to Proof of Concept blocked', () => {
     const wrapper = mount(
       <MemoryRouter initialEntries={['/live-detection']}>
         <App />
       </MemoryRouter>
     );
-    expect(wrapper.find(WebCam)).toHaveLength(1);
+    expect(wrapper.find(WebCam)).toHaveLength(0);
   });
 
-  it('Redirection to Admin', () => {
+  it('Redirection to Admin blocked', () => {
     const wrapper = mount(
       <MemoryRouter initialEntries={['/admin']}>
         <App />
       </MemoryRouter>
     );
-    expect(wrapper.find(Admin)).toHaveLength(1);
+    expect(wrapper.find(Admin)).toHaveLength(0);
   });
 
-  it('Redirection to Login', () => {
+  it('Redirection to Login enabled', () => {
     const wrapper = mount(
       <MemoryRouter initialEntries={['/login']}>
-        <App />
+        <Login />
       </MemoryRouter>
     );
     expect(wrapper.find(Login)).toHaveLength(1);
   });
 
-  it('Redirection to Register', () => {
+  it('Redirection to Register enabled', () => {
     const wrapper = mount(
       <MemoryRouter initialEntries={['/sign-up']}>
         <App />
@@ -163,5 +159,23 @@ describe('Testing Routing functionality', () => {
   //   );
   //   expect(wrapper.find(Register)).toHaveLength(1);
   // });
+
+  it('Redirection to Upload blocked', () => {
+    const wrapper = mount(
+      <MemoryRouter initialEntries={['/upload']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(wrapper.find(Upload)).toHaveLength(0);
+  });
+
+  it('Redirection to Profile blocked', () => {
+      const wrapper = mount(
+        <MemoryRouter initialEntries={['/profile']}>
+          <App />
+        </MemoryRouter>
+      );
+      expect(wrapper.find(Profile)).toHaveLength(0);
+    });
 
 });

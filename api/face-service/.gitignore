@@ -1,0 +1,5 @@
+/node_modules
+/images
+/dist
+./dev_database_config.env
+dev_database_config.env

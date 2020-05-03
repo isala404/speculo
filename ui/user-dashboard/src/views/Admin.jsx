@@ -3,47 +3,82 @@ import { PeopleTable } from "../components/person-table/table.component";
 import Switch from "react-switch";
 import styled from "styled-components";
 import { Grid, Row, Col } from "react-flexbox-grid";
+import "../styles/admin.style.scss";
+import { GetWindowSize } from "../helpers/window-size";
+import { BasicButton } from "../components/button/button.component";
+
 
 export const Admin = () => {
   const [isSwitchToggled, setSwitchToggle] = useState(false);
   const [searchVal, setSearchVal] = useState("");
+
+
   //function that handles and retrieve the value of the switch
   const handleSwitchChange = checked => {
     setSwitchToggle(checked);
   };
 
   useEffect(() => {}, [searchVal]);
+
+  const [width] = GetWindowSize();
   return (
-    <>
-      <div>
-        <Grid style={{ width: "100%", margin: "10%" }}>
-          <Row>
-            <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: "left"}}>
-              <span>Sort with ID and blacklist state</span>
-              <Switch onChange={handleSwitchChange} checked={isSwitchToggled} />
-            </Col>
-            <Col xs={12} sm={12} md={6} lg={6} style={{ textAlign: "right" }}>
-              <Input
-                type={"text"}
-                placeholder={"Select a person to Search for"}
-                onChange={e => {
-                  setSearchVal(e.target.value);
-                }}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <div style={{margin:"auto"}}>
-              <PeopleTable
-                peopleData={people}
-                isSwitchToggled={isSwitchToggled}
-                searchValue={searchVal}
-              />
-            </div>
-          </Row>
-        </Grid>
-      </div>
-    </>
+    <Grid style={{ width: "100%", marginTop: "2em" }}>
+      <BasicButton 
+        buttonTitle = "Upload Faces"
+        onClick = {() =>  window.open("../upload", '_self')}
+        // ref: https://stackoverflow.com/questions/47406344/how-to-open-a-page-in-new-tab-on-click-of-a-button-in-react-i-want-to-send-some
+      />
+      <Row className="rows">
+        <Col
+          xs={12}
+          sm={12}
+          md={6}
+          lg={6}
+          style={{ textAlign: "left", padding: "0em 4em" }}
+        >
+          <Switch
+            onChange={handleSwitchChange}
+            checked={isSwitchToggled}
+            uncheckedIcon={false}
+            checkedIcon={false}
+            offColor="#2BBA85"
+            onColor="#44DEA5"
+          />
+          <span style={{ marginLeft: 10 }}>
+            Sorted by{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {isSwitchToggled ? "Name" : "Blacklist value"}
+            </span>
+          </span>
+        </Col>
+        <Col
+          xs={12}
+          sm={12}
+          md={6}
+          lg={6}
+          style={{
+            textAlign: `${width < 768 ? "left" : "right"}`,
+            padding: "0em 4.8em"
+          }}
+        >
+          <Input
+            type={"text"}
+            placeholder={"Enter a name to search"}
+            onChange={e => {
+              setSearchVal(e.target.value);
+            }}
+          />
+        </Col>
+      </Row>
+      <Row className="rows">
+        {/* {isDataLoaded ? ( */}
+        <PeopleTable
+          isSwitchToggled={isSwitchToggled}
+          searchValue={searchVal}
+        />
+        {/* ) : null} */}
+      </Row>
+    </Grid>
   );
 };
 
@@ -58,28 +93,3 @@ const Input = styled.input`
   transition: 0.3s;
   font-family: "Lexend Deca", sans-serif;
 `;
-
-const people = [
-  // hard coded example
-  { id: 1, name: "Akassh", timestamps: [60, 100, 1200], blacklisted: true },
-  { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
-  {
-    id: 3,
-    name: "Nisal",
-    timestamps: [100, 500, 1200, 1500],
-    blacklisted: true
-  },
-  { id: 4, name: "UnknownPerson", timestamps: [100, 500], blacklisted: true },
-  {
-    id: 5,
-    name: "Kushan",
-    timestamps: [100, 500, 1200, 1500],
-    blacklisted: true
-  },
-  {
-    id: 6,
-    name: "Isala",
-    timestamps: [100, 500, 1200, 1500],
-    blacklisted: true
-  }
-];

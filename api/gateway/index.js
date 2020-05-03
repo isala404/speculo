@@ -1,11 +1,12 @@
 // imports
+require('dotenv').config(); // loads environment variables from a .env file into process.env
 const express = require("express");
 const logger = require("morgan");
+const gateway = require('./app/routes/gateway');
 const user = require("./app/routes/user");
-const admin = require("./app/routes/admin");
 const bodyParser = require("body-parser");
 const mongoose = require("./config/database"); //database configuration
-var jwt = require("jsonwebtoken");
+var cors = require('cors')
 
 const app = express(); // express
 app.set("secretKey", "nodeRestApi"); // jwt secret token
@@ -16,47 +17,17 @@ mongoose.connection.on(
     console.error.bind(console, "MongoDB connection error:")
 );
 
-app.use(logger("dev"));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(logger("dev"));  // HTTP request logger middleware
+app.use(bodyParser.json()); // accept JSON requests
+app.use(cors()) // enable cors
 
 app.get("/", function (req, res) {
     res.send("Welcome to Speculo Gateway");
 });
 
 // public route
-app.use("/user", user);
-app.use("/admin", admin);
-
-
-function validateUser(req, res, next) {
-    jwt.verify(req.headers["x-access-token"], req.app.get("secretKey"), function (
-        err,
-        decoded
-    ) {
-        if (err) {
-            res.json({status: "error", message: err.message, data: null});
-        } else {
-            // add user id to request
-            req.body.userId = decoded.id;
-            next();
-        }
-    });
-}
-
-function validateAdmin(req, res, next) {
-    jwt.verify(req.headers["x-access-token"], req.app.get("secretKey"), function (
-        err,
-        decoded
-    ) {
-        if (err) {
-            res.json({status: "error", message: err.message, data: null});
-        } else {
-            // add admin id to request
-            req.body.adminId = decoded.id;
-            next();
-        }
-    });
-}
+app.use("/api/v1", user);
+app.use("/api", gateway);
 
 // handle 404 error
 app.use(function (req, res, next) {
@@ -64,12 +35,13 @@ app.use(function (req, res, next) {
     err.status = 404;
     next(err);
 });
+
 // handle errors
 app.use(function (err, req, res, next) {
     console.log(err);
 
-    if (err.status === 404) res.status(404).json({message: "Not found"});
-    else res.status(500).json({message: "Something looks wrong"});
+    if (err.status === 404) res.status(404).json({status: "Not found"});
+    else res.status(500).json({status: "Something looks wrong"});
 });
 
 app.listen(3000, function () {

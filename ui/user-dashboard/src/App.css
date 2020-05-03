@@ -28,3 +28,36 @@
     transform: rotate(360deg);
   }
 }
+
+/* http://reactcommunity.org/react-transition-group/with-react-router/ */
+/* container that holds all the rendered pages */
+.view {
+  margin-top: 3.9em;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+}
+
+/* changing style on state and className change for animations */
+.view-enter {
+  opacity: 0;
+  transform: scale(1.1);
+}
+
+.view-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 400ms, transform 300ms;
+}
+
+.view-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.view-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 400ms, transform 300ms;
+}
+

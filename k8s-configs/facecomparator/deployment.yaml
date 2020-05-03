@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facecomparator-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: facecomparator
+  template:
+    metadata:
+      labels:
+        component: facecomparator
+        tier: datascience
+    spec:
+      containers:
+        - name: facecomparator
+          image: docker.pkg.github.com/mrsupiri/speculo/facecomparator:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: FACE_SERVICE_URL
+              value: http://face-service-cluster-ip-service/api/v1/faces
+            - name: FINGERPRINT_THRESHOLD
+              value: "570"
+            - name: COMPARATOR_SHAPE
+              value: "(256,)"

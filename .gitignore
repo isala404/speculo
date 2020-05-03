@@ -399,7 +399,7 @@ yarn-error.log*
 
 **/faces
 *.avi
-fingerprinter/dataset*
+models/fingerprinter/dataset*
 
 **/logs
 *.h5
@@ -409,8 +409,9 @@ fingerprinter/dataset*
 # video file
 *.mp4
 
-facedetector/model-weights
-fingerprinter/archive
+models/facedetector/model-weights
+models/fingerprinter/archive
+models/fingerprinter/models/**/img/predictions-epoch-*
 
 **/variables
 **/assets
@@ -418,5 +419,15 @@ fingerprinter/archive
 api/image-preprocessor/videos/**
 api/postprocessor/images/**
 
-/database_config.env
+database_config.env
+*tar.gz
+*ipynb_checkpoints/
+*.pkl
 
+**/node_modules
+/api/face-service/dist
+**/images/
+/api/face-service/images/
+models/dataset_evaluate
+/api/face-service/dev_database_config.env
+k8s-configs/secrets
