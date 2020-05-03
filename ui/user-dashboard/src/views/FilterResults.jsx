@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Select from "react-select";
 import {TimeFilterer} from '../services/TimeFilterer.js';
+import {BasicButton} from "../components/button/button.component";
 
 const Input = styled.input`
   background: white;
@@ -22,6 +23,7 @@ const Table = styled.table`
   table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
+  clear: both;
 `;
 
 const TableBody = styled.tbody`
@@ -74,7 +76,7 @@ const FilterResults = ({allDetections}) => {
     // }, props);
 
     // react hooks to access state
-    // const [filteredResults,setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
+    // const [filteredResults,setFilteredResults] = useState(null);      // hook that contains the array of filtered results
     const [filteredResults] = useState(detections);      // hook that contains the array of filtered results
     // const [timeGapSensitivity, setTimeGapSensitivity] = useState(50);       // time gap sensitivity that can be allowed by the user
 
@@ -100,11 +102,24 @@ const FilterResults = ({allDetections}) => {
     ];
     
 
+     //function that handles and retrieve the value of the switch
+  const displayFilteredResults = () => {
+    console.log(TimeFilterer(filteredResults, 400, "less_than", 10));
+
+    // break down the object array into id & total times
+    // use detections array to get blacklist status and name using id
+
+    // add id, name, total time, blacklist status into filtered results array
+
+    // set filtered results from here.
+    // from the response arrays received
+  };
+
+
     return (
-        <div style={{overflowX: "auto"}}>
+        <div style={{marginTop:"2em"}}>
 
             {/* test filter function */}
-            {console.log(TimeFilterer(filteredResults, 400, "less_than", 10))}
 
             {/* <Switch onChange={handleSwitchChange} checked={isSwitchToggled} /> */}
             {/* <Input
@@ -117,7 +132,7 @@ const FilterResults = ({allDetections}) => {
                 }}
             /> */}
             
-            <div>
+            <div style = {{float: "left", display: "inline-block"}}>
                 <span>Time Gap Sensitivity </span>
                 
                 {/* <Input
@@ -135,32 +150,42 @@ const FilterResults = ({allDetections}) => {
                     min = "0"
                 />
             </div>
-
-            <label for="minutesInput">Total Time</label>
             
-            <div style={{ width: "230px", display: "inline-block"}}>
-                <Select
-                    options={conditions}
-                    // onChange={handleSelectorChange}
-                    defaultValue = {conditions[0]}
+            <div style = {{float: "left", display: "inline-block", marginLeft: "120px"}}>
+                <label for="minutesInput">Total Time</label>
+                
+                <div style={{ width: "230px", display: "inline-block"}}>
+                    <Select
+                        options={conditions}
+                        // onChange={handleSelectorChange}
+                        defaultValue = {conditions[0]}
+                    />
+                </div>
+
+                {/* <Input
+                    type = "number"
+                    placeholder = "Minutes"
+                    id = "minutesInput"
+                    name = "minutesInput"
+                    min = "0"
+                /> */}
+                <Input
+                    type = "number"
+                    placeholder = "Seconds"
+                    id = "secondsInput"
+                    name = "secondsInput"
+                    min = "0"
                 />
+
             </div>
 
-            {/* <Input
-                type = "number"
-                placeholder = "Minutes"
-                id = "minutesInput"
-                name = "minutesInput"
-                min = "0"
-            /> */}
-            <Input
-                type = "number"
-                placeholder = "Seconds"
-                id = "secondsInput"
-                name = "secondsInput"
-                min = "0"
+            <BasicButton
+                buttonTitle = "Filter Results"
+                onClick = {() => displayFilteredResults()}
             />
-            <Table>
+
+
+            {filteredResults && <Table>
                 <TableHead>
                     <TableHeadRow>
                         {headings.map(heading => {
@@ -169,7 +194,7 @@ const FilterResults = ({allDetections}) => {
                     </TableHeadRow>
                 </TableHead>
                 <TableBody>
-                    {filteredResults.map(person => {
+                    {filteredResults.map(person => {            // display table only if there are any filtered result, else HAVE TO GIVE A MESSAGE TO THE USER
                         return (
                             <Row>
                                 <TableData >{person.id}</TableData>
@@ -262,7 +287,8 @@ const FilterResults = ({allDetections}) => {
                     );
                 })}
             </TableBody>
-        </Table>
+        </Table>}
+
         </div>
     );
 };
