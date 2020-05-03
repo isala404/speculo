@@ -194,19 +194,8 @@ const FilterResults = ({ allDetections }) => {
   return (
     <Grid>
       <div style={{ marginTop: "4em" }}>
-        {/* test filter function */}
 
-        {/* <Switch onChange={handleSwitchChange} checked={isSwitchToggled} /> */}
-        {/* <Input
 
-                type={"text"}
-                placeholder={"Select a person to Search for"}
-                onChange={e => {
-                setSearchVal(e.target.value);
-                var result = search(people, searchVal);
-                setResults(result);
-                }}
-            /> */}
         <Row>
           <Col xs={12} sm={12} md={4} lg={4}>
             <div style={{ float: "left" }}>
