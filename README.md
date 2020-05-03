@@ -10,30 +10,6 @@
 - NodeJS
 - OpenCV
 
-
-## Setup the project locally
-
-#### Clone the Project
-
-```git clone https://github.com/mrsupiri/speculo/tree/master```
-
-
-#### Create the database env file
-
-Create a file called `database_config.env` in the root folder and add the following variables to it;
-
-- DB_NAME
-- DB_USERNAME
-- DB_PASSWORD
-- DB_HOST
-
-#### Run it
-
-```docker-compose up --build```
-
-> Use --build only when you run it for the first time
-
-
 ## Project Structure
 
 ```
@@ -192,4 +168,53 @@ Create a file called `database_config.env` in the root folder and add the follow
 ```
 
 
+## Setup the project locally
+
+#### Clone the Project
+
+```git clone https://github.com/mrsupiri/speculo/tree/master```
+
+#### Add the database configuration
+
+Create a file called `database_config.env` in the root folder and add the following variables to it;
+
+- DB_NAME
+- DB_USERNAME
+- DB_PASSWORD
+- DB_HOST
+
+#### Run it
+
+> Use --build only when you run it for the first time
+
+```docker-compose up --build```
+
+## Core Functionality 
+
+### Face Detector 
+The sole task of this model is to extract all the face coordinates from the given frame.
+
+### Fingerprinter
+Fingerprinter is a model completely written from scratch by the authors which is specific only for this system. 
+As this is a deep learning research project, authors had to use trial and error methods while developing it. 
+It generates a fingerprint for any given image.
+
+### Comparator
+This is a machine learning model, this model’s job is to match the fingerprints given by the fingerprinting model to 
+the fingerprints on the database.
  
+### Face Service
+The main functionality of this service is to expose endpoints to perform CRUD operations on Faces. It relies on other services such as the facecomparator and imageprocessor to generate the fingerprint in order to save/update a face.
+
+### Image Processor
+This service handles all the image related processing processes. It exposes three endpoints, each listed with its own features below
+
+- /preprocess - Processes the video footage sent from the frontend frame by frame and sends the faces detected along with their respective timestamps
+- /fingerprint - Generates the fingerprint for a face using the fingerprinter
+- /coordinates - Finds the coordinates along with face data for a given frame from the front end. Used for the live detection feature.
+
+### Video Downscaler
+This service receives a video footage and removes the duplicate frames in it and returns it. It is used to reduce the file size and processing time for the system.
+
+### Gateway
+This is a custom identity-aware HTTP proxy that handles inbound traffic and relay it to internal services after successful authentication
