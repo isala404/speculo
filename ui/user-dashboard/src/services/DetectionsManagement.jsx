@@ -1,31 +1,31 @@
 import axios from "axios";
 import {
-  detectionsEndpoint,
+  // detectionsEndpoint,
   getAllFacesEndpoint,
   deleteFacesEndpoint,
   editDetailsEndpoint
 } from "../endpoints";
 
 // Get all detections of people in a video
-export async function retrieveAllDetections() {
-  let token = null;
-  if (localStorage.getItem("token") != null) {
-    token = localStorage.getItem("token");
-    console.log("Token: ", token);
-  } else {
-    console.log("token not found");
-  }
+// export async function retrieveAllDetections() {
+//   let token = null;
+//   if (localStorage.getItem("token") != null) {
+//     token = localStorage.getItem("token");
+//     console.log("Token: ", token);
+//   } else {
+//     console.log("token not found");
+//   }
 
-  const res = await axios.get(detectionsEndpoint, {
-    headers: {
-      "x-access-token": token,
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
-    }
-  });
-  console.log(res.data);
-  return res.data;
-}
+//   const res = await axios.get(detectionsEndpoint, {
+//     headers: {
+//       "x-access-token": token,
+//       "Content-Type": "application/json",
+//       "Access-Control-Allow-Origin": "*"
+//     }
+//   });
+//   console.log(res.data);
+//   return res.data;
+// }
 
 // ------------
 

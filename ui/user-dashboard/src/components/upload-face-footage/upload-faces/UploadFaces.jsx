@@ -12,10 +12,10 @@ class UploadFaces extends Component {
     
     // Used to extract all image files from a dropped folder
     const Input = ({ accept, onFiles, files, getFilesFromEvent }) => {
-      const text = files.length > 0 ? "Add more files" : "Choose files";
+      const text = files.length > 0 ? "Add more files" : "Drop Files / Folders";
 
       return (
-        <label className="upload-label">
+        <label className="dzu-inputLabel">
           {text}
           <input
             style={{ display: "none" }}
@@ -79,7 +79,7 @@ class UploadFaces extends Component {
             inputContent = { "Drag image files or Click to browse" }
             getFilesFromEvent = { getFilesFromEvent }
             onChangeStatus = { handleChangeStatus }
-            accept = "image/*"
+            accept = "image/jpg, image/jpeg"
           />
         </div>
       );
