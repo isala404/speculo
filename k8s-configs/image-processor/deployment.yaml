@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: image-processor-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       component: image-processor

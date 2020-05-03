@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: face-service-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       component: face-service
