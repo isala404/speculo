@@ -65,7 +65,7 @@ export class FaceService {
     /** This method will add a face to an existing face by adding it's fingerprint to the database */
     public async appendFace(req: Request, res: Response) {
         let id = req.params.id;
-        let unknownFaceId = req.query['id'].toString();
+        let unknownFaceIds : string[] = req.body['ids'];
         let file = req.file;
 
         if (!id.match("^[0-9a-fA-F]{24}$")) {
@@ -73,29 +73,39 @@ export class FaceService {
             return res.status(400).json({error: "Invalid ID provided!"})
         }
 
-        if (!unknownFaceId.match("^[0-9a-fA-F]{24}$")) {
-            console.debug("FaceService.appendFace -> Invalid ID provided for Unknown Face!")
-            return res.status(400).json({error: "Invalid ID provided for the Unknown Face!"})
+        let fingerprints : number[] = [];
+
+        for (let unknownFaceId of unknownFaceIds){
+
+            if (!unknownFaceId.match("^[0-9a-fA-F]{24}$")) {
+                console.debug("FaceService.appendFace -> Invalid ID provided for Unknown Face!")
+                return res.status(400).json({error: "Invalid ID provided for the Unknown Face!"})
+            }
+
+            let unknownFace = await Face.findById({_id: unknownFaceId}).exec().catch((error) => {
+                console.debug(`FaceService.appendFace -> ${error}`)
+                return res.status(500).json({error: "There was an error in retrieving the unknown face by ID"})
+            });
+
+            if (!unknownFace) {
+                console.debug("FaceService.appendFace -> The ID provided does not match any unknown faces in the database!")
+                return res.status(404).json({"error": "The ID provided does not match any unknown faces in the database!"})
+            }
+
+            let fingerprint = unknownFace.get('fingerprints')[0];
+
+            fingerprints.push(fingerprint);
+
+            Face.deleteOne({_id: unknownFaceId}, error => {
+                if (error) {
+                    console.debug(`FaceService.appendFace -> ${error}`);
+                } else {
+                    console.debug("Successfully deleted the unknown face from the database!")
+                }
+            });
         }
 
-        if (!file) {
-            console.debug("FaceService.appendFace -> No image file provided!")
-            return res.status(400).json({error: "No image file provided!"})
-        }
-
-        let fileValues = file.originalname.split('.')
-
-        let format = fileValues[1]
-
-        if (format != 'jpg' && format != 'jpeg') {
-            fs.unlinkSync(file.path)
-            console.debug(`FaceService.appendFace -> Invalid image provided`)
-            return res.status(400).json({error: "Invalid image format! It must either be JPG or JPEG."})
-        }
-
-        let face;
-
-        face = await Face.findById({_id: id}).exec().catch((error) => {
+        let face = await Face.findById({_id: id}).exec().catch((error) => {
             if (error) {
                 console.debug(`FaceService.appendFace -> ${error}`)
                 return res.status(400).json({error: "There was an error in retrieving the face by ID"})
@@ -107,32 +117,6 @@ export class FaceService {
             return res.status(404).json({error: "The ID provided does not match any faces in the database!"})
         }
 
-        let unknownFace;
-
-        unknownFace = await Face.findById({_id: unknownFaceId}).exec().catch((error) => {
-            console.debug(`FaceService.appendFace -> ${error}`)
-            return res.status(500).json({error: "There was an error in retrieving the unknown face by ID"})
-        });
-
-        if (!unknownFace) {
-            console.debug("FaceService.appendFace -> The ID provided does not match any unknown faces in the database!")
-            return res.status(404).json({"error": "The ID provided does not match any unknown faces in the database!"})
-        }
-
-        let fingerprint: number[];
-
-        try {
-            fingerprint = await new ImageProcessorService().getFingerprint(file)
-            // delete the file after it's use
-            fs.unlinkSync(file.path)
-        } catch (error) {
-            console.debug(`FaceService.appendFace -> ${error}`);
-            return res.status(400).json({error: "There was an error in generating the fingerprint for this image."})
-        }
-
-        let fingerprints = face.get('fingerprints');
-        fingerprints.push(fingerprint)
-
         face.set("fingerprints", fingerprints)
 
         Face.updateOne({_id: id}, face, error => {
@@ -143,14 +127,6 @@ export class FaceService {
 
             console.debug(`Successfully added the unknown face added to existing face!`);
             res.status(200).json({message: "Successfully added the unknown face added to existing face successfully!"});
-        });
-
-        Face.deleteOne({_id: unknownFaceId}, error => {
-            if (error) {
-                console.debug(`FaceService.appendFace -> ${error}`);
-            } else {
-                console.debug("Successfully deleted the unknown face from the database!")
-            }
         });
 
         new ComparatorService().restartComparator()

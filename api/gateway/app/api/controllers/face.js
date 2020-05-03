@@ -44,16 +44,9 @@ module.exports = {
 
     append_face: function (req, res, next) {
 
-        const file = req.files;
-
-        let form = new FormData();
-        file.forEach(element => {
-            form.append('image', element.buffer, element.originalname);
-        });
-
         // set maxContentLength and maxBodyLength set infinity to handle large files
         api
-            .put('api' + req.path, form, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
+            .put('api' + req.path, req.body, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers: {'Content-Type': `application/json;`}}).then(resp => {
             res.send(resp.data)
         })
             .catch(error => {
@@ -64,10 +57,11 @@ module.exports = {
 
     get_all_faces: function (req, res, next) {
 
+        let path;
         if (req.query.fingerprint == 'true'){
-            var path = 'api' + req.path+'?fingerprint=true';
+            path = 'api' + req.path+'?fingerprint=true';
         }else{
-            var path = 'api' + req.path+'?fingerprint=false';
+            path = 'api' + req.path + '?fingerprint=false';
         }
 
         api
