@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import UploadFaces from "../components/upload-face-footage/upload-faces/UploadFaces";
 import { NavigationMenu } from "../components/navigation-bar/navigation-bar.component";
-import { BasicButton } from "../components/button/button.component";
+// import { BasicButton } from "../components/button/button.component";
 
 export const Upload = () => {
-  const [isScanByFace, setScanByFace] = useState(false);
+  // const [isScanByFace, setScanByFace] = useState(false);
 
-  const checkboxHandler = () => {
-    isScanByFace ? setScanByFace(false) : setScanByFace(true);
-  };
+  // const checkboxHandler = () => {
+  //   isScanByFace ? setScanByFace(false) : setScanByFace(true);
+  // };
   return (
     <>
       <NavigationMenu />
@@ -16,27 +16,29 @@ export const Upload = () => {
         <div style={{ margin: window.innerWidth * 0.1}}>
           <div style={uploadTextStyleHeading}>
             <span style={{ uploadTextStyle }}>
-              Select the footage you want to analyse.
+              Upload Images of People you would like to Analyse.
             </span>
           </div>
           {/* <UploadFootage /> */}
-          <div style={uploadTextStyle}>
+          {/* <div style={uploadTextStyle}>
             <input type="checkbox" onChange={checkboxHandler} />
             <span style={{ uploadTextStyle }}>
               {" "}
               I want to see if a selected face(s) is/are in the footage
             </span>
-          </div>{" "}
-          {isScanByFace ? (
+          </div>{" "} */}
+          {/* {isScanByFace ? ( */}
+
           <div>
-            <div style={uploadTextStyleHeading}>
+            {/* <div style={uploadTextStyle}>
               <span>Select the faces.</span>
-            </div>
+            </div> */}
             <UploadFaces />
           </div>
-          ) : null}
-          <div style={{marginTop: "2em"}}></div>
-          <BasicButton toggleShadow={false} buttonTitle={"Analyse Footage"}/>
+          
+          {/* ) : null} */}
+          {/* <div style={{marginTop: "2em"}}></div>
+          <BasicButton toggleShadow={false} buttonTitle={"Analyse Footage"}/> */}
         </div>
       </div>
     </>

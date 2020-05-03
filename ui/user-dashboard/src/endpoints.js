@@ -3,7 +3,7 @@ export const speculoBackend = `https://speculo.isala.me`;           // GCP hoste
 
 
 // get endpoints
-export const detectionsEndpoint = `${speculoBackend}/api/get/`;         // get all detections post processing
+// export const detectionsEndpoint = `${speculoBackend}/api/get/`;         // get all detections post processing
 export const getAllFacesEndpoint = `${speculoBackend}/api/v1/faces?`;        // get all saved faces with blacklist info from backend
 
 // post (uploading) endpoints
