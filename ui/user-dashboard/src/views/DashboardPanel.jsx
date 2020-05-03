@@ -67,7 +67,7 @@ render(){
           console.log(status, meta, file)
 
           if (status === 'done') {
-            // console.log(xhr.response);
+            console.log(xhr.response);
 
             this.setState({
               responseDetections: JSON.parse(xhr.response).data,

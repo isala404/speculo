@@ -372,7 +372,7 @@ const DeleteButton = styled.button`
 `;
 
 const EditButton = styled.button`
-  color: white;
+  color: #2bba85;
   background-color: transparent;
   border: none;
   border-radius: 6px;
@@ -382,6 +382,7 @@ const EditButton = styled.button`
   &:hover {
     background-color: #2bba85;
     border-radius: 6px;
+    color: white;
   }
 `;
 const CancelButton = styled.button`

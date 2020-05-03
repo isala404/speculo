@@ -63,10 +63,10 @@ const FilterResults = ({allDetections}) => {
 
     // hard coded example
     // const [ detections ] = useState ([
-    //     {id: 1, name: "Akassh", timestamps: [5, 60, 100, 1200], blacklisted: true},
-    //     {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
-    //     {id: 3, name: "Nisal", timestamps: [100, 500, 1200, 1500],  blacklisted: true},
-    //     {id: 4, name: "UnknownPerson", timestamps: [100, 500], blacklisted: true}
+    //     {_id: 1, name: "Akassh", timestamps: [5, 60, 100, 1200], blacklisted: true},
+    //     {_id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
+    //     {_id: 3, name: "Nisal", timestamps: [100, 500, 1200, 1500],  blacklisted: true},
+    //     {_id: 4, name: "UnknownPerson", timestamps: [100, 500], blacklisted: true}
     // ]
     // );
 
@@ -135,13 +135,13 @@ const FilterResults = ({allDetections}) => {
         let allFilteredDetections = [];
 
         allFilteredPeople.forEach(person => {
-            const index = allFilteredIDs.indexOf(person.id);
+            const index = allFilteredIDs.indexOf(person._id);
             const totalDetectedTimeOfPerson = allTotalDetectionTimes[index];
 
             allFilteredDetections.push(
                 {
                     id : person.id,
-                    name : person.name,
+                    name : person.label,
                     totalTime: totalDetectedTimeOfPerson,
                     blacklisted : person.blacklisted
                 }

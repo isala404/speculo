@@ -305,7 +305,7 @@ async editPersonSave(newPersonDetails) {
 
                   {/* display all the names of the people recognized */}
                   {/* {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received */}
-                  {this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
+                  {this.state.allDetections && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
                       <FadeIn>
                         <Person
@@ -313,7 +313,7 @@ async editPersonSave(newPersonDetails) {
                           id={person._id}
                           name={person.label}
                           // name={person.name}
-                          // blacklisted={person.blacklisted}
+                          blacklisted={person.blacklisted}
                           timestamps={person.timestamps} // taking all the timestamps of the relevant person
                           onChoose={() => this.showTimeCards(person)} // display timestamps of the person
                           onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
