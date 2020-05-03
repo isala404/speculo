@@ -152,14 +152,16 @@ export default class Dashboard extends Component {
 
   //function to get the width and height of the viewport dynamically
   updateDimensions = () => {
-    var videoHeight = document.getElementById("videoPlayer").offsetHeight;
-    var videoWidth = document.getElementById("videoPlayer").offsetWidth;
-    var windowHeight = window.innerHeight;
-    this.setState({
-      videoHeight: videoHeight,
-      videoWidth: videoWidth,
-      windowHeight: windowHeight
-    });
+    if(this.state.video != null){
+      var videoHeight = document.getElementById("videoPlayer").offsetHeight;
+      var videoWidth = document.getElementById("videoPlayer").offsetWidth;
+      var windowHeight = window.innerHeight;
+      this.setState({
+        videoHeight: videoHeight,
+        videoWidth: videoWidth,
+        windowHeight: windowHeight
+      });
+    }
   };
 
   // this method seeks the video to the specified timestamp
