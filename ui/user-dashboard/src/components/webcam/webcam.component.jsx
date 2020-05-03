@@ -16,7 +16,7 @@ export default class WebCam extends React.Component {
     this.canvas = null;
   }
 
-  componentDidMount(){
+  componentDidMount() {
     //initialization of the canvas for downscaling
     this.canvas = document.createElement("canvas");
     this.canvas.width = 400;
@@ -26,7 +26,7 @@ export default class WebCam extends React.Component {
 
   //asynchronous function to get the image from the state and downscale it using the canvas
   // returns the downscalled bas64 image
-  downscaledImage = () =>{
+  downscaledImage = () => {
     var image = this.state.imageSrc
     var img = new Image();
     img.src = image;
@@ -49,17 +49,17 @@ export default class WebCam extends React.Component {
   getFaceData = () => {
     if (this.state.isRunning) {
       //sending the image every 75microseconds
-      setInterval( async () => {
+      setInterval(async () => {
         //getting the downscaled image and POSTing to get the coordinates of the faces
         var img = this.downscaledImage()
         // console.log(img)
-        var imageSource = img;
+        //var imageSource = img;
         // imageSource = downscaledImage( 648, 432);
-        var truncatedImageSource = this.splitImageValue(imageSource);
-        
-        
-        
-        
+        //var truncatedImageSource = this.splitImageValue(imageSource);
+
+
+
+
         // fetch("http://speculo.isala.me/", {
         //   method: "POST",
         //   mode: "cors",
@@ -71,28 +71,50 @@ export default class WebCam extends React.Component {
         //   .then(data => this.setState({ response: data }, () => {
         //     console.log(data)
         //   }));
-      
-      
+
+
+        var pos = img.indexOf(';base64,');
+        var type = img.substring(5, pos);
+        var b64 = img.substr(pos + 8);
+
+        var imageContent = atob(b64);
+
+        var buffer = new ArrayBuffer(imageContent.length);
+        var view = new Uint8Array(buffer);
+
+        for (var n = 0; n < imageContent.length; n++) {
+          view[n] = imageContent.charCodeAt(n);
+        }
+
+        var blob = new Blob([buffer], { type: type });
+
+
+
         let dataImg = new FormData();
         //dataImg.set('image', img);
-        dataImg.set('image', truncatedImageSource);
-        
-        // const val=[...dataImg.entries()];
-        // console.log(val);
-        
-        for (var pair of dataImg.entries()) {
-          console.log(pair[0]+ ' - ' + pair[1]); 
-      }
+        dataImg.set('image', blob);
 
-        const test=await fetch("https://speculo.isala.me/api/v1/coordinates", {
+
+        // const val = [...dataImg.entries()];
+        // console.log(val);
+
+        //console.log(localStorage.getItem("token"));
+
+        //   for (var pair of dataImg.entries()) {
+        //     console.log(pair[0]+ ' - ' + pair[1]); 
+        // }
+
+        const test = await fetch("https://speculo.isala.me/api/v1/coordinates", {
           method: 'POST',
           mode: "cors",
-          headers: { 
+          headers: {
             'x-access-token': localStorage.getItem("token"),
-            'Content-Type': 'multipart/form-data' },
+            processData: false,
+            contentType: false
+          },
           body: dataImg
         })
-          .then(response =>{
+          .then(response => {
             // const parsedResponse = JSON.parse(JSON.stringify(response));
             // console.log(parsedResponse);
             console.log("Got response from server.");
@@ -105,10 +127,12 @@ export default class WebCam extends React.Component {
             console.log(error);
           });
 
-          const json = await test.json();
-          console.log(json);
-      
-        }, 750);
+
+        //Value visal requires
+        const json = await test.json();
+        console.log(json);
+
+      }, 750);
     }
   };
 
@@ -209,6 +233,6 @@ const CustomPrimaryButton = styled.button`
     color: #ffffff;
     border: 2px solid #1ddd96;
     box-shadow: ${props =>
-      props.showShadow ? "0px 0px 200px 10px #1ddd96" : null};
+    props.showShadow ? "0px 0px 200px 10px #1ddd96" : null};
   }
 `;
