@@ -21,17 +21,17 @@ class ImageComparator:
 		self._FACE_SERVICE_ENDPOINT = os.getenv('FACE_SERVICE_URL')
 		logging.info(f"FINGERPRINT_THRESHOLD : {self.FINGERPRINT_THRESHOLD}")
 		logging.info(f"COMPARATOR_SHAPE : {self.COMPARATOR_SHAPE}")
-		
+
 		# check if fingerprints and labels given
 		if labels is None or fingerprints is None:
 			# Place holder for fingerprints and names
 			self.known_fingerprints = []
 			self.known_labels = []
-			
+
 			# Get all the faces in the database using synchronized async function
 			loop = asyncio.get_event_loop()
 			faces = loop.run_until_complete(self._get_all_faces())
-			
+
 			# format those data as it's required by the model
 			for entry in faces:
 				for fingerprint in entry['fingerprints']:
@@ -40,31 +40,31 @@ class ImageComparator:
 		else:
 			self.known_fingerprints = fingerprints
 			self.known_labels = labels
-		
+
 		# initiate k nearest neighbor model
 		self.model = KNeighborsClassifier(
 			n_neighbors=len(set(self.known_labels)))
-		
+
 		if self.known_labels:
 			# train the model with current fingerprints and names
 			self.model.fit(self.known_fingerprints, self.known_labels)
-	
+
 	async def _get_all_faces(self):
 		session = aiohttp.ClientSession()
 		headers = {'content-type': 'application/json'}
 		# Get all the faces via Face Service from the database
 		response = await session.get(self._FACE_SERVICE_ENDPOINT + "?fingerprint=true", headers=headers)
 		data = await response.json()
-		
+
 		await session.close()
-		
+
 		# if reason is in the response sent from the Face Service that means something went wrong
 		if 'reason' in data.keys():
 			logging.error(data['reason'])
 			raise Exception("There was an getting all the faces.")
-		
+
 		return data['data']
-	
+
 	async def get_best_match(self, fingerprint, save=True):
 		"""Find the closes matching label for the fingerprint
 		@param fingerprint: fingerprint of the face
@@ -82,10 +82,10 @@ class ImageComparator:
 				return await self._save_unknown_face(fingerprint)
 			else:
 				return "unknown"
-		
+
 		# return model's outputted name
 		return self.known_labels[face_idx.tolist()[0][0]]
-	
+
 	async def _save_unknown_face(self, fingerprint):
 		"""Save unknown face the database
 		@param fingerprint: fingerprint new face
@@ -93,24 +93,24 @@ class ImageComparator:
 		"""
 		session = aiohttp.ClientSession()
 		headers = {'content-type': 'application/json'}
-		
+
 		body = json.dumps({'fingerprint': np.reshape(
 			fingerprint, self.COMPARATOR_SHAPE).tolist()})
-		
+
 		response = await session.post(self._FACE_SERVICE_ENDPOINT + "/unknown", data=body, headers=headers)
-		
+
 		data = await response.json()
-		
+
 		await session.close()
-		
+
 		if 'error' in data.keys():
 			logging.error(data['error'])
 			raise Exception("There was an error in saving the unknown face.")
-		
+
 		# Remember the new fingerprint with it's ID
 		self.add_new_face(fingerprint, data['id'])
 		return data['id']
-	
+
 	def add_new_face(self, fingerprint, label):
 		""" Remember the new fingerprint with it's ID
 		@param fingerprint: fingerprint new face
@@ -122,7 +122,7 @@ class ImageComparator:
 			self.known_fingerprints.append(fingerprint)
 			# Added the name current know list of name
 			self.known_labels.append(label)
-			
+
 			# retrain the classifier with the new data
 			self.model = KNeighborsClassifier(
 				n_neighbors=len(set(self.known_labels)))
@@ -130,5 +130,32 @@ class ImageComparator:
 			return True
 		except Exception as e:
 			logging.error('Error while fitting a new fingerprint')
+			logging.exception(e)
+			return False
+
+	async def reset_faces(self):
+		try:
+			# Place holder for fingerprints and names
+			self.known_fingerprints = []
+			self.known_labels = []
+
+			# format those data as it's required by the model
+			for entry in await self._get_all_faces():
+				for fingerprint in entry['fingerprints']:
+					self.known_fingerprints.append(fingerprint)
+					self.known_labels.append(entry['_id'])
+
+			# initiate k nearest neighbor model
+			self.model = KNeighborsClassifier(
+				n_neighbors=len(set(self.known_labels)))
+
+			if self.known_labels:
+				# train the model with current fingerprints and names
+				self.model.fit(self.known_fingerprints, self.known_labels)
+				return True
+			logging.warning("No faces found in the database")
+			return False
+		except Exception as e:
+			logging.error("Error while resetting face")
 			logging.exception(e)
 			return False
