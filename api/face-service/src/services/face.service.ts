@@ -404,5 +404,7 @@ export class FaceService {
 
         console.debug(`FaceService.addUnknownFace -> Successfully saved unknown face to the database!`);
         res.status(201).json({"id": face._id});
+
+        new ImageProcessorService().sendFaceData(face._id, face.get('fingerprints')[0]);
     }
 }
