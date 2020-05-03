@@ -230,6 +230,7 @@ class ImageProcessor:
 						all_detections.append({
 							'id': face_data['_id'],
 							'label': face_data['label'],
+							'blacklisted' : face_data['blacklisted'],
 							'timestamps': [timestamp]
 						})
 					else:
