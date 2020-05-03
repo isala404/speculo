@@ -6,6 +6,7 @@ import {Face} from "../models/face";
 import {Error, MongooseDocument, Types} from "mongoose";
 import {IMAGE_PROCESSOR_URL, COMPARATOR_URL} from "../constants/face.constants";
 import {ImageProcessorService} from "./imageProcessorService";
+import {ComparatorService} from "./comparator.service";
 
 export class FaceService {
 
@@ -59,7 +60,7 @@ export class FaceService {
 
         res.status(201).json({id: face._id})
 
-        new ImageProcessorService().sendFaceData(face._id, fingerprint)
+        new ComparatorService().sendFaceData(face._id, fingerprint)
 
     }
 
@@ -153,7 +154,7 @@ export class FaceService {
             }
         });
 
-        new ImageProcessorService().sendFaceData(id, fingerprint)
+        new ComparatorService().restartComparator()
 
         fs.unlinkSync(file.path)
     }
@@ -271,6 +272,7 @@ export class FaceService {
         });
 
         fs.unlinkSync(file.path)
+        new ComparatorService().restartComparator()
     }
 
     /** This method deletes all the faces in the database. */
@@ -284,6 +286,8 @@ export class FaceService {
                 res.status(200).json({message: "Successfully deleted all the faces in the database!"})
             }
         }));
+
+        new ComparatorService().restartComparator()
     }
 
     /** This method deletes a face by id in the database. */
@@ -305,6 +309,8 @@ export class FaceService {
                 res.status(200).json({message: `Successfully deleted the face by ID in the database!`})
             }
         }));
+
+        new ComparatorService().restartComparator()
     }
 
     /** This method patches a face's label in the database. */
@@ -405,6 +411,6 @@ export class FaceService {
         console.debug(`FaceService.addUnknownFace -> Successfully saved unknown face to the database!`);
         res.status(201).json({"id": face._id});
 
-        new ImageProcessorService().sendFaceData(face._id, face.get('fingerprints')[0]);
+        new ComparatorService().sendFaceData(face._id, face.get('fingerprints')[0]);
     }
 }
