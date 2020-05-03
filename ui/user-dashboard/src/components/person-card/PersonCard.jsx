@@ -133,29 +133,36 @@ class Person extends Component {
         <div className="detection-count" style={{float:""}}>
           <span>{this.state.timestamps.length} </span><span className="detection">detections</span>
         </div>
-        <div style={{ float: "right" }}>
-          {/* style = {{float:"right", display:"inline-block"}}> */}
-          <EditPopUp
-            name={this.state.name}
-            nameHandler={this.nameHandler}
-            blacklisted={this.state.blacklisted}
-            blacklistedHandler={this.blacklistedHandler}
-            handleSave={this.handleSave}
-            handleChoose={this.handleChoose}
-          />
 
-          {/* if(nameOfPerson.startsWith("Unknown"){ */}
-          {isUnknown ? (
-            <span></span> // delete should be shown only if name doesn't contain unknown
-          ) : (
-            <span>
-              {/* Have a cross mark instead of Delete text */}
-              <DeleteButton onClick={this.props.onDelete}>
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </DeleteButton>
-            </span>
-          )}
-        </div>
+        {/* these shouldn't be shown to a normal user */}
+        {localStorage.getItem("type") === "admin" ? (
+                              
+          <div style={{ float: "right" }}>
+            {/* style = {{float:"right", display:"inline-block"}}> */}
+            <EditPopUp
+              name={this.state.name}
+              nameHandler={this.nameHandler}
+              blacklisted={this.state.blacklisted}
+              blacklistedHandler={this.blacklistedHandler}
+              handleSave={this.handleSave}
+              handleChoose={this.handleChoose}
+            />
+
+            {/* if(nameOfPerson.startsWith("Unknown"){ */}
+            {isUnknown ? (
+              <span></span> // delete should be shown only if name doesn't contain unknown
+            ) : (
+              <span>
+                {/* Have a cross mark instead of Delete text */}
+                <DeleteButton onClick={this.props.onDelete}>
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </DeleteButton>
+              </span>
+            )}
+          </div>
+          
+        ) : null}
+
       </PersonCard>
     );
   }
