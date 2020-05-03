@@ -76,7 +76,7 @@ class ImageProcessor:
 		
 		body = {'instances': np.reshape(face, [-1, self._FINGERPRINT_SIZE[0], self._FINGERPRINT_SIZE[1],
 		                                       self._FINGERPRINT_SIZE[2]]).tolist()}
-				
+		
 		client = aiohttp.ClientSession()
 		
 		response = await client.post(url=self._FINGERPRINT_ENDPOINT, json=body)
@@ -91,7 +91,7 @@ class ImageProcessor:
 		
 		return data['predictions']
 	
-	async def _get_comparison(self, fingerprint) -> dict:
+	async def _get_comparison(self, fingerprint) -> str:
 		"""Consumes the facecomparator service and receives the closes matching face to the given fingerprint
 
 		:param fingerprint: The fingerprint of the current face
@@ -116,11 +116,11 @@ class ImageProcessor:
 		
 		return data['predictions']
 	
-	async def _get_face_by_id(self, id) -> dict:
+	async def _get_face_by_id(self, face_id) -> dict:
 		"""Consumes the face service and retrieves a face by the given ID
 
-		:param id: The UUID of the face that matched the fingerprint
-		:type id: str
+		:param face_id: The UUID of the face that matched the fingerprint
+		:type face_id: str
 		:returns: the face data
 		:rtype: dict
 		"""
@@ -128,7 +128,7 @@ class ImageProcessor:
 		client = aiohttp.ClientSession()
 		headers = {'content-type': 'application/json'}
 		
-		response = await client.get(url=self._FACE_SERVICE_URL + f'/{id}', headers=headers)
+		response = await client.get(url=self._FACE_SERVICE_URL + f'/{face_id}', headers=headers)
 		
 		data = await response.json()
 		
@@ -223,14 +223,15 @@ class ImageProcessor:
 					face_id = await self._get_comparison(fingerprint=fingerprint)
 					logging.info(f'[PREPROCESS] - Received Face Data for Frame #{next_frame_index}')
 					
-					face_data = await self._get_face_by_id(face_id)
-					index, entry = self._find_face_by_id(all_detections, face_data['_id'])
+					index, entry = self._find_face_by_id(all_detections, face_id)
 					
 					if index == -1:
+						face_data = await self._get_face_by_id(face_id)
+						
 						all_detections.append({
 							'id': face_data['_id'],
 							'label': face_data['label'],
-							'blacklisted' : face_data['blacklisted'],
+							'blacklisted': face_data['blacklisted'],
 							'timestamps': [timestamp]
 						})
 					else:
