@@ -5,9 +5,8 @@ import styled from "styled-components";
 import FormData from "form-data";
 import person from "./person.jpg";
 import axios from "axios";
-import download from "downloadjs"
-var toBlob = require('canvas-to-blob');
-
+import download from "downloadjs";
+var toBlob = require("canvas-to-blob");
 
 export default class WebCam extends React.Component {
   //constructor
@@ -24,8 +23,6 @@ export default class WebCam extends React.Component {
   }
 
   componentDidMount() {
-    //setting render
-    this.state.rendered = true;
     //initialization of the canvas for downscaling
     this.canvas = document.createElement("canvas");
     this.canvas.width = 432;
@@ -44,7 +41,6 @@ export default class WebCam extends React.Component {
     return dataURI;
   };
 
-
   setRef = webcam => {
     this.webcam = webcam;
   };
@@ -55,41 +51,77 @@ export default class WebCam extends React.Component {
     return newImageStringArr[1];
   };
 
-
-
   //method to send the image as a POST request to get the details of the face(s) in the image
   getFaceData = () => {
-    if (this.state.isRunning) {
-      //sending the image every 75microseconds
-      setInterval(() => {
+    //sending the image every 75microseconds
+    setInterval(async () => {
+      if (this.state.isRunning) {
         //getting the downscaled image and POSTing to get the coordinates of the faces
         var img = this.downscaledImage();
-        // console.log(img)
-        var imageSource = img;
-        var form = new FormData()
-        form.append("image", img)
-        // imageSource = downscaledImage( 648, 432);
-        var truncatedImageSource = this.splitImageValue(imageSource);
-        fetch("http://speculo.isala.me/", {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({
-            image: truncatedImageSource
+
+        //converting base64 image to a Buffer
+        var pos = img.indexOf(";base64,");
+        var type = img.substring(5, pos);
+        var b64 = img.substr(pos + 8);
+        var imageContent = atob(b64);
+        var buffer = new ArrayBuffer(imageContent.length);
+        var view = new Uint8Array(buffer);
+
+        for (var n = 0; n < imageContent.length; n++) {
+          view[n] = imageContent.charCodeAt(n);
+        }
+        //converting image buffer to blob
+        var blob = new Blob([buffer], { type: type });
+
+        //adding blob to FormData
+        let dataImg = new FormData();
+        dataImg.set("image", blob);
+
+        console.log("sending response");
+        const coordinates = await fetch(
+          "https://speculo.isala.me/api/v1/coordinates",
+          {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "x-access-token": localStorage.getItem("token"),
+              processData: false,
+              contentType: false
+            },
+            body: dataImg
+          }
+        )
+          .then(response => {
+            return response;
           })
-        })
-          .then(response => response.json())
-          .then(data =>
-            this.setState({ response: data }, () => {
-              console.log(data);
-            })
-          );
-      }, 750);
-    }
+          .catch(error => {
+            console.log("Fail");
+            console.log(error);
+          });
+
+        //Value visal requires
+        const json = await coordinates.json();
+        if (json.data) {
+          const len = json.data.faces.length;
+          // console.log(json.data.faces.length)
+          if (len > 0) {
+            this.setState({ response: json }, () =>
+              console.log(this.state.response)
+            );
+          } else {
+            this.setState({ response: null });
+          }
+        }
+      }
+    }, 750);
   };
 
   //method used to capture the webcam screenshot
   capture = () => {
-    var src = this.webcam.getScreenshot();
+    var src;
+    if (this.state.isRunning && this.webcam != null) {
+      src = this.webcam.getScreenshot();
+    }
     this.setState({
       imageSrc: src
     });
@@ -105,14 +137,14 @@ export default class WebCam extends React.Component {
     }
   };
 
-  componentWillUnmount(){
-    this.setState({isRunning:false})
+  componentWillUnmount() {
+    this.setState({ isRunning: false });
   }
 
   render() {
     const webcamConstraints = {
-      width: 3600,
-      height: 720
+      width: 720,
+      height: 480
     };
 
     return (
@@ -123,7 +155,7 @@ export default class WebCam extends React.Component {
             height={0}
             ref={this.setRef}
             screenshotFormat="image/jpeg"
-            width={1080}
+            width={720}
             videoConstraints={webcamConstraints}
           />
         </div>
