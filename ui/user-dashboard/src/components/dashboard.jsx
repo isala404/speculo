@@ -261,7 +261,7 @@ async editPersonSave(newPersonDetails) {
   render() {
     const { selectedPerson } = this.state;
     return (
-      <div style={{ backgroundImage: 'url("../assets/wire-art.svg")' }}>
+      <div style={{ backgroundImage: 'url("../assets/wire-art.svg")' , marginTop:"1em"}}>
         {/* <div>
           <NavigationMenu />
         </div>
@@ -327,7 +327,7 @@ async editPersonSave(newPersonDetails) {
                   ))}
 
 
-                  {/* <div style={{ height: 100 }}></div> */}
+                  <div style={{ height: 100 }}></div>
                 </PersonDiv>
                 <div className="fadeout" />
               </div>

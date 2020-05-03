@@ -3,7 +3,9 @@ import Dropzone from "react-dropzone-uploader";
 import "react-dropzone-uploader/dist/styles.css";
 import { footageUploadEndpoint } from "../endpoints";
 import Dashboard from '../components/dashboard.jsx';
+// import styled from 'styled-components';
 import "../components/upload-face-footage/upload.scss";
+// import PersonLoader from '../components/person-card/PersonLoader';
 
 class DashboardPanel extends Component {
   constructor(props){
@@ -110,11 +112,22 @@ render(){
 
           {/* <MyVideoUploader /> */}
 
-            {!this.state.video &&
+            { !this.state.video &&
               <MyVideoUploader />}
 
         {/* show processing gif with person card loading templates here, untill displaying video */}
 {/* use loader screen for entire Dashboard component???? */}
+
+              {/* { !this.state.video &&
+              <PersonDiv>
+                <>
+                  <PersonLoader />
+                  <PersonLoader />
+                  <PersonLoader />
+                  <PersonLoader />
+                </>
+              </PersonDiv> }
+ */}
 
 {/* set the detections in the backend */}
             {this.state.video && 
@@ -138,5 +151,8 @@ render(){
 export default DashboardPanel;
 
 // const PersonDiv = styled.div`
-//   height: 100;
+//   height: 100px;
+//   width: 270px;
+//   float: right;
+//   margin-right: 30px;
 // `;
