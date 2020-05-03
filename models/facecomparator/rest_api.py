@@ -13,6 +13,7 @@ comparator = ImageComparator()
 
 async def predict(request):
     try:
+        logging.info("Predicting a face")
         data = await request.json()
         if 'instances' not in data.keys():
             return web.Response(body=json.dumps({'error': 'instances-required'}),
@@ -41,6 +42,7 @@ async def predict(request):
 
 async def add_new_face(request):
     try:
+        logging.info("Adding a face")
         data = await request.json()
         if 'fingerprint' not in data.keys():
             return web.Response(body=json.dumps({'error': 'fingerprint-required'}),
@@ -74,6 +76,7 @@ async def add_new_face(request):
 
 
 async def reset_faces(request):
+    logging.info("Reseting the Model")
     if await comparator.reset_faces():
         return web.Response(body=json.dumps({'data': 'comparator reset'}),
                             status=200, content_type='application/json')

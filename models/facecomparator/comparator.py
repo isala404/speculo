@@ -11,6 +11,7 @@ import logging
 import os
 import aiohttp
 import numpy as np
+from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
 
 
@@ -72,8 +73,12 @@ class ImageComparator:
 		@return: ID of the user or "unknown"
 		"""
 		# Get the most closes fingerprint from the memory to the given fingerprint
-		distance, face_idx = self.model.kneighbors(
-			[fingerprint], n_neighbors=len(set(self.known_labels)), return_distance=True)
+		try:
+			distance, face_idx = self.model.kneighbors(
+				[fingerprint], n_neighbors=len(set(self.known_labels)), return_distance=True)
+		except NotFittedError:
+			logging.warning("User tried to predict before fitting the model")
+			return await self._save_unknown_face(fingerprint)
 		# print(self.known_labels[face_idx.tolist()[0][0]], distance.tolist()[0][0])
 		# Check if the distance between fingerprints is greater than FINGERPRINT_THRESHOLD
 		if distance.tolist()[0][0] >= self.FINGERPRINT_THRESHOLD or len(self.known_labels) == 0:
