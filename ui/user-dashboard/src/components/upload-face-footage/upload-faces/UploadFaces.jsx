@@ -3,6 +3,7 @@ import Dropzone from "react-dropzone-uploader";
 import "react-dropzone-uploader/dist/styles.css";
 import { getDroppedOrSelectedFiles } from "html5-file-selector";
 import { facesUploadEndpoint } from "../../../endpoints";
+import { withSnackbar } from 'notistack';
 import "../upload.scss"
 
 class UploadFaces extends Component {
@@ -33,10 +34,10 @@ class UploadFaces extends Component {
     };
 
     const MyImageUploader = () => {
-      const handleSubmit = (files, allFiles) => {
-        console.log(files.map(f => f.meta));
-        allFiles.forEach(f => f.remove());
-      };
+      // const handleSubmit = (files, allFiles) => {
+      //   console.log(files.map(f => f.meta));
+      //   allFiles.forEach(f => f.remove());
+      // };
 
     const getFilesFromEvent = e => {
       return new Promise(resolve => {
@@ -47,8 +48,15 @@ class UploadFaces extends Component {
     };
 
     // called every time a file's `status` changes
-    const handleChangeStatus = ({ meta, file }, status) => {
+    const handleChangeStatus = ({ meta, file, remove }, status) => {
       console.log(status, meta, file);
+
+      if (status === 'headers_received') {
+        remove();
+      } 
+      if (status === 'error_upload') {
+        this.props.enqueueSnackbar("No faces were found in the image!");
+      }
     };
 
     // specify upload params and url for files
@@ -74,13 +82,15 @@ class UploadFaces extends Component {
         <div>
           <Dropzone
             getUploadParams = { getUploadParams }
-            onSubmit = { handleSubmit }
+            // onSubmit = { handleSubmit }
             InputComponent={Input}
             inputContent = { "Drag image files or Click to browse" }
             getFilesFromEvent = { getFilesFromEvent }
             onChangeStatus = { handleChangeStatus }
             accept = "image/jpg, image/jpeg"
-          />
+            // submitButtonContent = "Reset Dropzone"
+            submitButtonDisabled="true"
+            />
         </div>
       );
     };
@@ -94,4 +104,4 @@ class UploadFaces extends Component {
   }
 }
 
-export default UploadFaces;
+export default withSnackbar(UploadFaces);

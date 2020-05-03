@@ -7,6 +7,8 @@ import Dashboard from '../components/dashboard.jsx';
 import "../components/upload-face-footage/upload.scss";
 import FilterResults from "./FilterResults";
 // import PersonLoader from '../components/person-card/PersonLoader';
+import LottieAnimation from "../components/animations/LottieControl"
+
 
 class DashboardPanel extends Component {
   constructor(props){
@@ -67,7 +69,7 @@ render(){
           console.log(status, meta, file)
 
           if (status === 'done') {
-            // console.log(xhr.response);
+            console.log(xhr.response);
 
             this.setState({
               responseDetections: JSON.parse(xhr.response).data,
@@ -118,7 +120,10 @@ render(){
               }
 
         {/* show processing gif with person card loading templates here, untill displaying video */}
-{/* use loader screen for entire Dashboard component???? */}
+
+              {!this.state.video && 
+                <LottieAnimation />
+              }
 
               {/* { !this.state.video &&
               <PersonDiv>

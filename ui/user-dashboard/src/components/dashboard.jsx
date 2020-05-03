@@ -152,14 +152,16 @@ export default class Dashboard extends Component {
 
   //function to get the width and height of the viewport dynamically
   updateDimensions = () => {
-    var videoHeight = document.getElementById("videoPlayer").offsetHeight;
-    var videoWidth = document.getElementById("videoPlayer").offsetWidth;
-    var windowHeight = window.innerHeight;
-    this.setState({
-      videoHeight: videoHeight,
-      videoWidth: videoWidth,
-      windowHeight: windowHeight
-    });
+    if(this.state.video != null){
+      var videoHeight = document.getElementById("videoPlayer").offsetHeight;
+      var videoWidth = document.getElementById("videoPlayer").offsetWidth;
+      var windowHeight = window.innerHeight;
+      this.setState({
+        videoHeight: videoHeight,
+        videoWidth: videoWidth,
+        windowHeight: windowHeight
+      });
+    }
   };
 
   // this method seeks the video to the specified timestamp
@@ -305,21 +307,19 @@ async editPersonSave(newPersonDetails) {
 
                   {/* display all the names of the people recognized */}
                   {/* {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received */}
-                  {this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
+                  {this.state.allDetections && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
                       <FadeIn>
                         <Person
                           key={index}
-                          id={person._id}
+                          id={person.id}
                           name={person.label}
                           // name={person.name}
-                          // blacklisted={person.blacklisted}
+                          blacklisted={person.blacklisted}
                           timestamps={person.timestamps} // taking all the timestamps of the relevant person
                           onChoose={() => this.showTimeCards(person)} // display timestamps of the person
                           onChooseIndex={() => this.choosenPersonToEdit(index)} //Choose the index of a person to be edited
-                          onSaveEdit={personDetails =>
-                            this.editPersonSave(personDetails)
-                          } // save the new details pf the person
+                          onSaveEdit={personDetails => this.editPersonSave(personDetails)} // save the new details pf the person
                           onDelete={() => this.deletePerson(person.id)} // delete the person from the db
                         />
                       </FadeIn>

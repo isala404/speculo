@@ -93,17 +93,19 @@ class Person extends Component {
   };
 
   blacklistedHandler = e => {
-    this.setState({ blacklisted: e.target.value }); // accessing inserted input and setting it's value to blacklisted status
+    this.setState({ blacklisted: e }); // accessing inserted input and setting it's value to blacklisted status
+    // this.setState({ blacklisted: e.target.value }); // accessing inserted input and setting it's value to blacklisted status
   };
 
   handleSave = () => {
     const personDetails = {
       id: this.state.id,
-      name: this.state.name,
+      label: this.state.name,
       timestamps: this.state.timestamps,
       blacklisted: this.state.blacklisted
     }; // new details of person
 
+    console.log(personDetails);
     this.props.onSaveEdit(personDetails); // sends the new person details to the parent component
   };
 
@@ -112,7 +114,7 @@ class Person extends Component {
   };
 
   render() {
-    const nameOfPerson = this.props.name;
+    const nameOfPerson = this.state.name;
     const isUnknown = nameOfPerson.startsWith("Unknown"); // checking if the person is unknown
 
     return (
@@ -131,29 +133,36 @@ class Person extends Component {
         <div className="detection-count" style={{float:""}}>
           <span>{this.state.timestamps.length} </span><span className="detection">detections</span>
         </div>
-        <div style={{ float: "right" }}>
-          {/* style = {{float:"right", display:"inline-block"}}> */}
-          <EditPopUp
-            name={this.state.name}
-            nameHandler={this.nameHandler}
-            blacklisted={this.state.blacklisted}
-            blacklistedHandler={this.blacklistedHandler}
-            handleSave={this.handleSave}
-            handleChoose={this.handleChoose}
-          />
 
-          {/* if(nameOfPerson.startsWith("Unknown"){ */}
-          {isUnknown ? (
-            <span></span> // delete should be shown only if name doesn't contain unknown
-          ) : (
-            <span>
-              {/* Have a cross mark instead of Delete text */}
-              <DeleteButton onClick={this.props.onDelete}>
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </DeleteButton>
-            </span>
-          )}
-        </div>
+        {/* these shouldn't be shown to a normal user */}
+        {localStorage.getItem("type") === "admin" ? (
+                              
+          <div style={{ float: "right" }}>
+            {/* style = {{float:"right", display:"inline-block"}}> */}
+            <EditPopUp
+              name={this.state.name}
+              nameHandler={this.nameHandler}
+              blacklisted={this.state.blacklisted}
+              blacklistedHandler={this.blacklistedHandler}
+              handleSave={this.handleSave}
+              handleChoose={this.handleChoose}
+            />
+
+            {/* if(nameOfPerson.startsWith("Unknown"){ */}
+            {isUnknown ? (
+              <span></span> // delete should be shown only if name doesn't contain unknown
+            ) : (
+              <span>
+                {/* Have a cross mark instead of Delete text */}
+                <DeleteButton onClick={this.props.onDelete}>
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </DeleteButton>
+              </span>
+            )}
+          </div>
+          
+        ) : null}
+
       </PersonCard>
     );
   }

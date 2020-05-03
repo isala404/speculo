@@ -5,10 +5,14 @@ import "./styles/fonts.css"
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter, Route} from "react-router-dom";
+import { SnackbarProvider } from 'notistack';
+
 
 ReactDOM.render(
     <BrowserRouter>
-        <Route path="/" component={App}/>
+        <SnackbarProvider maxSnack={3}>
+            <Route path="/" component={App}/>
+        </SnackbarProvider>
     </BrowserRouter>,
     document.getElementById('root'));
 
