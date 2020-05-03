@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Grid, Row, Col } from "react-flexbox-grid";
 import styled from "styled-components";
 import "../../styles/fonts.css";
@@ -81,17 +81,17 @@ const SubText = styled.span`
 //   overflow: hidden;
 // `;
 
-const Input = styled.input`
-  background: white;
-  padding: 0.4em;
-  width: 250px;
-  border: 1px solid #ffffff;
-  border-radius: 3px;
-  box-shadow: 0px 0px 100px 2px #2bba85;
-  height: 10;
-  transition: 0.3s;
-  font-family: "Lexend Deca", sans-serif;
-  &:hover {
-    box-shadow: 0px 0px 200px 10px #1ddd96;
-  }
-`;
+// const Input = styled.input`
+//   background: white;
+//   padding: 0.4em;
+//   width: 250px;
+//   border: 1px solid #ffffff;
+//   border-radius: 3px;
+//   box-shadow: 0px 0px 100px 2px #2bba85;
+//   height: 10;
+//   transition: 0.3s;
+//   font-family: "Lexend Deca", sans-serif;
+//   &:hover {
+//     box-shadow: 0px 0px 200px 10px #1ddd96;
+//   }
+// `;

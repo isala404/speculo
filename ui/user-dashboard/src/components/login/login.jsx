@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { NavigationMenu } from "../navigation-bar/navigation-bar.component";
 import { Footer } from "../home-footer/footer.component";
 //import {Animation} from "./animation";
 
