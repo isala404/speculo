@@ -56,7 +56,7 @@ module.exports = {
         console.log("REQUEST PATH" + req.path)
         // set maxContentLength and maxBodyLength set infinity to handle large files
         api
-            .put('api' + req.path, req.body).then(resp => {
+          .put('api' + req.path, req.body).then(resp => {
             res.send(resp.data)
         })
             .catch(error => {

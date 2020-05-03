@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { NavigationMenu } from "../navigation-bar/navigation-bar.component";
 import { Footer } from "../home-footer/footer.component";
 // import { Redirect } from 'react-router-dom';
 //import {Animation} from "./animation";
@@ -205,16 +204,13 @@ export class Register extends React.Component {
         return (
             <>
                 {/* <Animation /> */}
-                <div style={{ background: "#000000" }}>
-                    <NavigationMenu />
-                </div>
                 <center>
-                    <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
+                <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
 
-                        <div className="img-container">
-                            <img src="https://i.imgur.com/PFMNraQ.png" alt="Cover"
-                                className="cov-img" />
-                        </div>
+                    <div className="img-container">
+                        <img src="https://i.imgur.com/PFMNraQ.png" alt="Cover"
+                        className="cov-img"/>
+                    </div>
 
                         <div className="content">
                             <div className="header"><b>Sign</b> Up</div>

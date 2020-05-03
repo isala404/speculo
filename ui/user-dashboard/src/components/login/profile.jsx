@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { NavigationMenu } from "../navigation-bar/navigation-bar.component";
 import { Footer } from "../home-footer/footer.component";
 //import {Animation} from "./animation";
 
@@ -104,10 +103,6 @@ export class Profile extends React.Component {
         return (
             <>
                 {/* <Animation /> */}
-
-                <div style={{ background: "#000000" }}>
-                    <NavigationMenu />
-                </div>
                 <center>
                 <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
 

@@ -45,8 +45,8 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
       });
       var arr = {data: result}
       console.log(arr)
-      sortPeople(arr);
       setResults(arr);
+      sortPeople(arr);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue, isSwitchToggled, isDataLoaded]);
@@ -72,8 +72,9 @@ export const PeopleTable = ({ isSwitchToggled, searchValue }) => {
         data: newArr
       }
       setTimeout(()=>{
-        sortPeople(arr)
+        setPeople(arr)
         setResults(arr)
+        sortPeople(arr)
         setDeletedKey(-1)
       }, 400)
     }
@@ -371,7 +372,7 @@ const DeleteButton = styled.button`
 `;
 
 const EditButton = styled.button`
-  color: #2bba85;
+  color: white;
   background-color: transparent;
   border: none;
   border-radius: 6px;
@@ -379,14 +380,13 @@ const EditButton = styled.button`
   transition: 0.3s;
 
   &:hover {
-    color: white;
     background-color: #2bba85;
     border-radius: 6px;
   }
 `;
 const CancelButton = styled.button`
   color: #2bba85;
-  background-color: inherit;
+  background-color: transparent;
   border: 2px solid #a0ffdc;
   border-radius: 6px;
   outline: none;
