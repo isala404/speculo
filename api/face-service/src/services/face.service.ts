@@ -1,10 +1,7 @@
 import {Request, Response} from "express";
-import FormData from 'form-data';
-import axios from 'axios';
 import * as fs from "fs";
 import {Face} from "../models/face";
-import {Error, MongooseDocument, Types} from "mongoose";
-import {IMAGE_PROCESSOR_URL, COMPARATOR_URL} from "../constants/face.constants";
+import {Error} from "mongoose";
 import {ImageProcessorService} from "./imageProcessorService";
 import {ComparatorService} from "./comparator.service";
 
@@ -27,7 +24,8 @@ export class FaceService {
         // ignore any file that isn't a png or jpg
         if (format != 'jpg' && format != 'jpeg') {
             console.debug(`FaceService.addFace -> Invalid image provided`)
-            return res.status(400).json({error: "Invalid image file! It must either be JPG."})
+            fs.unlinkSync(file.path)
+            return res.status(400).json({error: "Invalid image file! It must either be JPG or JPEG."})
         }
 
         let fingerprint: number[];
@@ -90,8 +88,9 @@ export class FaceService {
         let format = fileValues[1]
 
         if (format != 'jpg' && format != 'jpeg') {
+            fs.unlinkSync(file.path)
             console.debug(`FaceService.appendFace -> Invalid image provided`)
-            return res.status(400).json({error: "Invalid image format! It must either be JPG."})
+            return res.status(400).json({error: "Invalid image format! It must either be JPG or JPEG."})
         }
 
         let face;
@@ -233,7 +232,7 @@ export class FaceService {
 
         if (format != 'jpg' && format != 'jpeg' ) {
             console.debug(`FaceService.appendFace -> Invalid image provided`)
-            return res.status(400).json({error: "Invalid image file! It must either be JPG."})
+            return res.status(400).json({error: "Invalid image file! It must either be JPG or JPEG."})
         }
 
         let fingerprint: number[];

@@ -2,6 +2,7 @@ import React from "react";
 import Webcam from "react-webcam";
 import Canvas from "../canvas/canvas.component";
 import styled from "styled-components";
+import FormData from "form-data";
 
 export default class WebCam extends React.Component {
   //constructor
@@ -10,30 +11,38 @@ export default class WebCam extends React.Component {
     this.state = {
       imageSrc: "",
       isRunning: false,
-      response: []
+      response: [],
+      rendered: false
     };
 
     this.canvas = null;
+    this._isMounted = false;
   }
 
   componentDidMount() {
+    this._isMounted = true;
     //initialization of the canvas for downscaling
     this.canvas = document.createElement("canvas");
-    this.canvas.width = 400;
-    this.canvas.height = 300;
+    this.canvas.width = 432;
+    this.canvas.height = 288;
     this.ctx = this.canvas.getContext("2d");
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.setState({ isRunning: false });
   }
 
   //asynchronous function to get the image from the state and downscale it using the canvas
   // returns the downscalled bas64 image
   downscaledImage = () => {
-    var image = this.state.imageSrc
+    var image = this.state.imageSrc;
     var img = new Image();
     img.src = image;
-    this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
+    this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
     var dataURI = this.canvas.toDataURL("image/jpeg");
     return dataURI;
-  }
+  };
 
   setRef = webcam => {
     this.webcam = webcam;
@@ -47,98 +56,77 @@ export default class WebCam extends React.Component {
 
   //method to send the image as a POST request to get the details of the face(s) in the image
   getFaceData = () => {
-    if (this.state.isRunning) {
-      //sending the image every 75microseconds
-      setInterval(async () => {
+    //sending the image every 75microseconds
+    setInterval(async () => {
+      if (this.state.isRunning) {
         //getting the downscaled image and POSTing to get the coordinates of the faces
-        var img = this.downscaledImage()
-        // console.log(img)
-        //var imageSource = img;
-        // imageSource = downscaledImage( 648, 432);
-        //var truncatedImageSource = this.splitImageValue(imageSource);
+        var img = this.downscaledImage();
 
-
-
-
-        // fetch("http://speculo.isala.me/", {
-        //   method: "POST",
-        //   mode: "cors",
-        //   body: JSON.stringify({
-        //     image: truncatedImageSource
-        //   })
-        // })
-        //   .then(response => response.json())
-        //   .then(data => this.setState({ response: data }, () => {
-        //     console.log(data)
-        //   }));
-
-
-        var pos = img.indexOf(';base64,');
+        //converting base64 image to a Buffer
+        var pos = img.indexOf(";base64,");
         var type = img.substring(5, pos);
         var b64 = img.substr(pos + 8);
-
         var imageContent = atob(b64);
-
         var buffer = new ArrayBuffer(imageContent.length);
         var view = new Uint8Array(buffer);
 
         for (var n = 0; n < imageContent.length; n++) {
           view[n] = imageContent.charCodeAt(n);
         }
-
+        //converting image buffer to blob
         var blob = new Blob([buffer], { type: type });
 
-
-
+        //adding blob to FormData
         let dataImg = new FormData();
-        //dataImg.set('image', img);
-        dataImg.set('image', blob);
+        dataImg.set("image", blob);
 
+        // console.log(localStorage.getItem("token"))
+        //getting detected face(s) data
+        if (this.state.isRunning) {
+          //POST request to get faces in an image
+          const coordinates = await fetch(
+            "https://speculo.isala.me/api/v1/coordinates",
+            {
+              method: "POST",
+              mode: "cors",
+              headers: {
+                "x-access-token": localStorage.getItem("token"),
+                processData: false,
+                contentType: false
+              },
+              body: dataImg
+            }
+          )
+            .then(response => {
+              return response;
+            })
+            .catch(error => {
+              console.log("Fail");
+              console.log(error);
+            });
 
-        // const val = [...dataImg.entries()];
-        // console.log(val);
-
-        //console.log(localStorage.getItem("token"));
-
-        //   for (var pair of dataImg.entries()) {
-        //     console.log(pair[0]+ ' - ' + pair[1]); 
-        // }
-
-        const test = await fetch("https://speculo.isala.me/api/v1/coordinates", {
-          method: 'POST',
-          mode: "cors",
-          headers: {
-            'x-access-token': localStorage.getItem("token"),
-            processData: false,
-            contentType: false
-          },
-          body: dataImg
-        })
-          .then(response => {
-            // const parsedResponse = JSON.parse(JSON.stringify(response));
-            // console.log(parsedResponse);
-            console.log("Got response from server.");
-            // let result= response.json();
-            // console.log(result);
-            return response;
-          })
-          .catch((error) => {
-            console.log("Fail");
-            console.log(error);
-          });
-
-
-        //Value visal requires
-        const json = await test.json();
-        console.log(json);
-
-      }, 750);
-    }
+          //retrieved data
+          const json = await coordinates.json();
+          if (json.data) {
+            const len = json.data.faces.length;
+            // console.log(json.data.faces.length)
+            if (len > 0) {
+              this.setState({ response: json });
+            } else {
+              this.setState({ response: null });
+            }
+          }
+        }
+      }
+    }, 750);
   };
 
   //method used to capture the webcam screenshot
   capture = () => {
-    var src = this.webcam.getScreenshot();
+    var src;
+    if (this.state.isRunning && this.webcam != null) {
+      src = this.webcam.getScreenshot();
+    }
     this.setState({
       imageSrc: src
     });
@@ -146,20 +134,19 @@ export default class WebCam extends React.Component {
 
   //capturing a frame every 50 milliseconds
   getVideo = () => {
-    if (this.state.isRunning) {
-      console.log("inside getvideo()");
-      setInterval(() => {
+    console.log("inside getvideo()");
+    setInterval(() => {
+      if (this.state.isRunning) {
         this.capture();
-      }, 50);
-    }
+      }
+    }, 50);
   };
 
   render() {
     const webcamConstraints = {
-      width: 3600,
-      height: 720
+      width: 720,
+      height: 480
     };
-
 
     return (
       <>
@@ -169,7 +156,7 @@ export default class WebCam extends React.Component {
             height={0}
             ref={this.setRef}
             screenshotFormat="image/jpeg"
-            width={1080}
+            width={720}
             videoConstraints={webcamConstraints}
           />
         </div>
@@ -187,32 +174,18 @@ export default class WebCam extends React.Component {
         >
           Start live demo
         </CustomPrimaryButton>
-        <div className="canvas-component">
-          <Canvas
-            source={this.state.isRunning ? this.state.imageSrc : null}
-            analysedFaceData={this.state.response}
-          />
-        </div>
-        {/* <div><Canvas source = {downscaledImage} /></div> */}
+        {this.state.isRunning ? (
+          <div className={`canvas-component-${this.state.isRunning}`}>
+            <Canvas
+              source={this.state.isRunning ? this.state.imageSrc : null}
+              analysedFaceData={this.state.response}
+            />
+          </div>
+        ) : null}
       </>
     );
   }
 }
-
-// const downscaledImage = (width, height) => {
-//   // create an off-screen canvas
-//   const canvas = document.createElement('canvas')
-//   canvas.width = width;
-//   canvas.height = height;
-//   const ctx = canvas.getContext("2d");
-//   var image = new Image()
-//   image.src = `${this.state.imageSrc}`;
-//   image.onload =() =>{
-//     ctx.drawImage(image, 0,0, width, height)
-//   }
-//   console.log(canvas.toDataURL())
-//   return canvas.toDataURL("image/jpeg",0.5)
-// };
 
 const CustomPrimaryButton = styled.button`
   color: #2bba85;
@@ -222,6 +195,7 @@ const CustomPrimaryButton = styled.button`
   font-family: "Gilroy-Regular";
   border: 2px solid #2bba85;
   border-radius: 3px;
+  margin: 4em auto;
   box-shadow: ${props =>
     props.showShadow ? "0px 0px 100px 4px #2bba85" : null};
   background: #2bba85;
@@ -233,6 +207,6 @@ const CustomPrimaryButton = styled.button`
     color: #ffffff;
     border: 2px solid #1ddd96;
     box-shadow: ${props =>
-    props.showShadow ? "0px 0px 200px 10px #1ddd96" : null};
+      props.showShadow ? "0px 0px 200px 10px #1ddd96" : null};
   }
 `;

@@ -20,8 +20,8 @@ export const UsageMap = () => {
             <MapAppDiv>
             <div style={{justifyContent:"center", display:"flex", margin: "auto"}}>
                 <ApplicationItem
-                appName="Integer ut ex vitae enim semper"
-                appContent="Nunc porta erat ut lectus posuere molestie. Vestibulum risus ligula, rhoncus eleifend rhoncus sed, malesuada id metus. Aenean lorem nibh, varius fermentum viverra vel, efficitur nec elit. "
+                appName="Be a part of our force"
+                appContent="Speculo in the near future aims to published our source code for Open Source development, to thrust our vision of helping to achieve a safer society with your help"
               />
             </div>
             </MapAppDiv>

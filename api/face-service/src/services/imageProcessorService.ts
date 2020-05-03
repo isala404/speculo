@@ -1,8 +1,7 @@
-import {Request, Response} from "express";
 import FormData from 'form-data';
 import axios from 'axios';
 import * as fs from "fs";
-import {IMAGE_PROCESSOR_URL, COMPARATOR_URL} from "../constants/face.constants";
+import {IMAGE_PROCESSOR_URL} from "../constants/face.constants";
 
 /** A class for all the external service API logic that the face service depends on */
 export class ImageProcessorService {

@@ -12,20 +12,16 @@ export const Applications = () => {
           <Col xs={12} sm={12} md={12} lg={6}>
             <Row>
               <ApplicationItem isFinalElement={false}
+                path="/dashboard-panel"
                 appName="Speculo"
-                appContent="Nunc porta erat ut lectus posuere molestie. Vestibulum risus
-                  ligula, rhoncus eleifend rhoncus sed, malesuada id metus.
-                  Aenean lorem nibh, varius fermentum viverra vel, efficitur nec
-                  elit."
+                appContent="Speculo is a Web based solution to solve the problem of time consumption when it comes to analysing CCTV footage. Simply upload the footage and watch the magic happen."
               />
             </Row>
             <Row>
               <ApplicationItem isFinalElement={true}
-                appName="Live-Demo"
-                appContent="Nunc porta erat ut lectus posuere molestie. Vestibulum risus
-                  ligula, rhoncus eleifend rhoncus sed, malesuada id metus.
-                  Aenean lorem nibh, varius fermentum viverra vel, efficitur nec
-                  elit."
+                path="/live-detection"
+                appName="Live-Detection"
+                appContent="The Live-Detection app is a simple app at your disposal to witness how various technologies are harnessed and brought together to create Speculo."
               />
             </Row>
           </Col>

@@ -6,7 +6,6 @@ import FacebookIcon from "../../assets/footer-icons/facebook_color.png";
 import GoogleIcon from "../../assets/footer-icons/google_color.png";
 import TwitterIcon from "../../assets/footer-icons/twitter_color.png";
 import LinkedinIcon from "../../assets/footer-icons/linkedin_color.png";
-import { BasicButton } from "../button/button.component";
 
 export const AlliedCompanies = () => (
   <CompaniesDiv>
@@ -20,12 +19,12 @@ export const AlliedCompanies = () => (
             <CompanyLogo src={LinkedinIcon} />
           </div>
           <div>
-            <CompanyDivHeading>Lorem Ipsum</CompanyDivHeading>
+            <CompanyDivHeading>Help us grow!</CompanyDivHeading>
           </div>
           <div>
-            <CompanyDivSubText>Trusted by 2M members across 120+ countries</CompanyDivSubText>
+            <CompanyDivSubText>It would be great if YOU can help us make the world a better place</CompanyDivSubText>
           </div>
-          <BasicButton buttonTitle="Get Started" />
+          {/* <BasicButton buttonTitle="Get Started" /> */}
         </Col>
       </Row>
     </Grid>

@@ -3,6 +3,7 @@ import { Grid, Row, Col } from "react-flexbox-grid";
 import styled from "styled-components";
 import "../../styles/fonts.css";
 import { BasicButton } from "../button/button.component";
+import { Link } from "react-router-dom";
 
 export const Header = () => {
   return (
@@ -16,16 +17,17 @@ export const Header = () => {
               </Row>
               <Row>
                 <SubText>
-                  Detect faces with ease with Speculo. See who is in your video
-                  footage with a simple click.
+                  Have you had enough of waiting long for video footage to be analysed? Speculo drastically reduces the time take for video analysis.
                 </SubText>
               </Row>
               <Row>
-                <Col style={{padding: "1em 1em 1em 0em"}}>
-                  <Input placeholder={"example@gmail.com"} type="text"/>
-                </Col>
-                <Col style={{padding: "1em 0em 1em 0em"}}>
-                  <BasicButton buttonTitle="Get Started" toggleShadow={true}/>
+                <Col style={{ padding: "1em 0em 1em 0em" }}>
+                  <Link to="/sign-up">
+                    <BasicButton
+                      buttonTitle="Get Started"
+                      toggleShadow={true}
+                    />
+                  </Link>
                 </Col>
               </Row>
               <Row>
@@ -36,8 +38,8 @@ export const Header = () => {
             </HeaderHeadingDiv>
           </Col>
           <Col xs={12} sm={12} md={12} lg={6}>
-            <div style={{overflow:"hidden"}}>
-            {/* TODO: Add image here */}
+            <div style={{ overflow: "hidden" }}>
+              {/* TODO: Add image here */}
             </div>
           </Col>
         </Row>
@@ -50,6 +52,8 @@ const HeaderDiv = styled.div`
   background: #0b162b;
   color: white;
 `;
+
+
 
 const HeaderHeading = styled.h1`
   font-weight: bold;
@@ -77,18 +81,17 @@ const SubText = styled.span`
 //   overflow: hidden;
 // `;
 
-const Input = styled.input`
-  background: white;
-  padding: 0.4em;
-  width: 250px;
-  border: 1px solid #FFFFFF;
-  border-radius: 3px;
-  box-shadow: 0px 0px 100px 2px #2bba85;
-  height: 10;
-  transition: 0.3s;
-  font-family: "Lexend Deca", sans-serif;
-  &:hover {
-    box-shadow: 0px 0px 200px 10px #1ddd96;
-  }
-`;
-
+// const Input = styled.input`
+//   background: white;
+//   padding: 0.4em;
+//   width: 250px;
+//   border: 1px solid #ffffff;
+//   border-radius: 3px;
+//   box-shadow: 0px 0px 100px 2px #2bba85;
+//   height: 10;
+//   transition: 0.3s;
+//   font-family: "Lexend Deca", sans-serif;
+//   &:hover {
+//     box-shadow: 0px 0px 200px 10px #1ddd96;
+//   }
+// `;

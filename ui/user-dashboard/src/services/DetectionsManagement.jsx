@@ -164,3 +164,7 @@ export async function whitelistPersonInSystem(personId) {
 
   // return res;
 }
+
+export const getCoordinates = async() =>{
+  
+}

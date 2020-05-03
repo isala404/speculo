@@ -1,36 +1,35 @@
-import React from "react"
-import {BasicButton} from "../button/button.component"
-import styled from "styled-components"
-import {Row} from "react-flexbox-grid";
+import React from "react";
+import { BasicButton } from "../button/button.component";
+import styled from "styled-components";
+import { Row } from "react-flexbox-grid";
 
 // export const ApplicationItem =({appName, appContent, buttonOnclick, isFinalElement}) =>{
-export const ApplicationItem =({appName, appContent, isFinalElement}) =>{
-    return(
-        <ApplicationDiv isFinalElement = {isFinalElement}>
-              <Row>
-                <ApplicationHeading>{appName}</ApplicationHeading>
-              </Row>
-              <Row>
-                <ApplicationContent>
-                  {appContent}
-                </ApplicationContent>
-              </Row>
-              <Row>
-                <ApplicationButtonDiv>
-                  <BasicButton
-                    buttonTitle="Check it out!"
-                    buttonWidth={"60%"}
-                  />
-                </ApplicationButtonDiv>
-              </Row>
-            </ApplicationDiv>
-    )
-}
-
+export const ApplicationItem = ({ appName, appContent, isFinalElement }) => {
+  return (
+    <ApplicationDiv isFinalElement={isFinalElement}>
+      <Row>
+        <ApplicationHeading>{appName}</ApplicationHeading>
+      </Row>
+      <Row>
+        <ApplicationContent>{appContent}</ApplicationContent>
+      </Row>
+      <Row>
+        <ApplicationButtonDiv>
+          <a href="https://github.com/mrsupiri/speculo">
+            <BasicButton
+              buttonTitle="GitHub repo"
+              buttonWidth={"60%"}
+            />
+          </a>
+        </ApplicationButtonDiv>
+      </Row>
+    </ApplicationDiv>
+  );
+};
 
 const ApplicationDiv = styled.div`
   text-align: left;
-  margin-bottom: ${props => !props.finalElement ? "2em" : "0em"}
+  margin-bottom: ${props => (!props.finalElement ? "2em" : "0em")};
 `;
 
 const ApplicationHeading = styled.h3`
