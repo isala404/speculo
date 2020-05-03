@@ -28,7 +28,6 @@ router.put(
 router.put(
   "/v1/faces/:id/append",
   userController.validateUser,
-  multer.any(),
   faceController.append_face
 );
 router.get(

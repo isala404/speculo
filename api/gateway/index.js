@@ -40,8 +40,8 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
     console.log(err);
 
-    if (err.status === 404) res.status(404).json({status: "Not found"});
-    else res.status(500).json({status: "Something looks wrong"});
+    if (err.status === 404) res.status(404).json({status: err});
+    else res.status(500).json({status: err});
 });
 
 app.listen(3000, function () {

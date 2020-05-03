@@ -16,7 +16,11 @@ module.exports = {
         });
 
         api
-            .post('api' + req.path, form, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
+            .post('api' + req.path, form, {
+                'maxContentLength': Infinity,
+                'maxBodyLength': Infinity,
+                headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}
+            }).then(resp => {
             res.send(resp.data)
         })
             .catch(error => {
@@ -34,7 +38,11 @@ module.exports = {
         });
 
         api
-            .put('api' + req.path, form, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}}).then(resp => {
+            .put('api' + req.path, form, {
+                'maxContentLength': Infinity,
+                'maxBodyLength': Infinity,
+                headers: {'Content-Type': `multipart/form-data; boundary=${form._boundary}`}
+            }).then(resp => {
             res.send(resp.data)
         })
             .catch(error => {
@@ -43,10 +51,12 @@ module.exports = {
     },
 
     append_face: function (req, res, next) {
-
+        console.log("REQUEST BODY" + req.body)
+        console.log("REQUEST TYPE" + req.type)
+        console.log("REQUEST PATH" + req.path)
         // set maxContentLength and maxBodyLength set infinity to handle large files
         api
-            .put('api' + req.path, req.body, {'maxContentLength': Infinity, 'maxBodyLength': Infinity, headers: {'Content-Type': `application/json;`}}).then(resp => {
+            .put('api' + req.path, req.body).then(resp => {
             res.send(resp.data)
         })
             .catch(error => {
@@ -58,9 +68,9 @@ module.exports = {
     get_all_faces: function (req, res, next) {
 
         let path;
-        if (req.query.fingerprint == 'true'){
-            path = 'api' + req.path+'?fingerprint=true';
-        }else{
+        if (req.query.fingerprint == 'true') {
+            path = 'api' + req.path + '?fingerprint=true';
+        } else {
             path = 'api' + req.path + '?fingerprint=false';
         }
 
