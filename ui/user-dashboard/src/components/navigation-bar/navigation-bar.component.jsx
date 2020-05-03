@@ -1,9 +1,9 @@
 import React from "react";
-import { Nav, Navbar} from "react-bootstrap";
+import { Nav, Navbar } from "react-bootstrap";
 import { Logo } from "../../assets/speculo-logo";
 import { BasicButton } from "../button/button.component";
-import styled from "styled-components"
-import {Link} from "react-router-dom"
+import styled from "styled-components";
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./navigation-bar.style.scss";
 
@@ -26,27 +26,33 @@ export const NavigationMenu = () => {
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto"></Nav>
             <Nav>
-              <NavLink to ="/" >Features</NavLink>
+              {/* statements to show nav links if admin is logged in */}
+              {localStorage.getItem("type") === "admin" ? (
+                <NavLink to="/live-detection">Live Detector</NavLink>
+              ) : null}
 
-              {localStorage.getItem('type') === 'admin' ?
-              <NavLink to="/admin">Admin</NavLink>
-              :
-              null}
+              {localStorage.getItem("type") === "admin" ? (
+                <NavLink to="/admin">Admin</NavLink>
+              ) : null}
 
-              {localStorage.getItem('type') !==null ?
-              <NavLink to="/dashboard-panel">Dashboard</NavLink>
-              :
-              null}
+              {localStorage.getItem("type") !== null ? (
+                <NavLink to="/dashboard-panel">Dashboard</NavLink>
+              ) : null}
 
-
-              {localStorage.getItem('token') === null ?
+              {localStorage.getItem("token") === null ? (
                 [
-                  <NavLink to="/login" ><span id="navbar-login-button">Log In</span></NavLink>,
-                  <NavLink to="/sign-up" ><BasicButton buttonTitle="Sign Up" /></NavLink>
+                  <NavLink to="/login">
+                    <span id="navbar-login-button">Log In</span>
+                  </NavLink>,
+                  <NavLink to="/sign-up">
+                    <BasicButton buttonTitle="Sign Up" />
+                  </NavLink>
                 ]
-                :
-                <NavLink to="/profile" ><BasicButton buttonTitle="Profile" /></NavLink>
-              }
+              ) : (
+                <NavLink to="/profile">
+                  <BasicButton buttonTitle="Profile" />
+                </NavLink>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Navbar>

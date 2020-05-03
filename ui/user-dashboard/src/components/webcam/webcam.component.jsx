@@ -16,14 +16,21 @@ export default class WebCam extends React.Component {
     };
 
     this.canvas = null;
+    this._isMounted = false;
   }
 
   componentDidMount() {
+    this._isMounted = true;
     //initialization of the canvas for downscaling
     this.canvas = document.createElement("canvas");
     this.canvas.width = 432;
     this.canvas.height = 288;
     this.ctx = this.canvas.getContext("2d");
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.setState({ isRunning: false });
   }
 
   //asynchronous function to get the image from the state and downscale it using the canvas
@@ -75,7 +82,8 @@ export default class WebCam extends React.Component {
 
         // console.log(localStorage.getItem("token"))
         //getting detected face(s) data
-        if(this.state.isRunning){
+        if (this.state.isRunning) {
+          //POST request to get faces in an image
           const coordinates = await fetch(
             "https://speculo.isala.me/api/v1/coordinates",
             {
@@ -96,15 +104,14 @@ export default class WebCam extends React.Component {
               console.log("Fail");
               console.log(error);
             });
-  
+
           //retrieved data
           const json = await coordinates.json();
           if (json.data) {
-            console.log(json)
             const len = json.data.faces.length;
             // console.log(json.data.faces.length)
             if (len > 0) {
-              this.setState({ response: json })
+              this.setState({ response: json });
             } else {
               this.setState({ response: null });
             }
@@ -134,10 +141,6 @@ export default class WebCam extends React.Component {
       }
     }, 50);
   };
-
-  componentWillUnmount() {
-    this.setState({ isRunning: false });
-  }
 
   render() {
     const webcamConstraints = {
