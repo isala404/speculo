@@ -6,7 +6,7 @@ spec:
   type: ClusterIP
   selector:
     component: image-processor
-    tier: datascience
+    tier: backend
   ports:
     - port: 80
       targetPort: 8080

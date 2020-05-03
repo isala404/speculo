@@ -127,7 +127,11 @@ for person_dir in sorted(os.listdir("dataset_evaluate")):
             print("current_samples", total_samples, "correct_predictions", correct_predictions,
                   "unknown_predictions", unknown_predictions, "accuracy:", accuracy)
 
-    # if this is execute from CI only process one file
+            # if this is execute from CI stop after 20 samples
+            if os.getenv("CI") and total_samples > 20:
+                break
+
+    # if this is execute from CI only process first folder
     if os.getenv("CI"):
         break
 

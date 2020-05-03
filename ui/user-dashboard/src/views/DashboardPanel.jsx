@@ -70,6 +70,10 @@ render(){
 
           this.setState( {video: URL.createObjectURL(file)});
 
+
+          // call function to wait for a response and only if a response is received changed, 
+          // 
+
           allFiles.forEach(f => f.remove())
         }
         

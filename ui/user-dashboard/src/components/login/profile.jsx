@@ -104,7 +104,7 @@ export class Profile extends React.Component {
         return (
             <>
                 {/* <Animation /> */}
-
+                <center>
                 <div className="base-container" ref={this.props.containerRef} style={{ marginTop: "10em", marginBottom: "10em" }}>
 
                     <div className="img-container">
@@ -161,6 +161,7 @@ export class Profile extends React.Component {
                     </div>
 
                 </div>
+                </center>
 
                 <div className="Footer">
                     <Footer />

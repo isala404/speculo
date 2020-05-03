@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         component: image-processor
-        tier: datascience
+        tier: backend
     spec:
       containers:
         - name: image-processor
@@ -21,10 +21,10 @@ spec:
             - containerPort: 8080
           env:
             - name: FACE_SERVICE_URL
-              value: http://face-service-cluster-ip-service:80/
+              value: http://face-service-cluster-ip-service/api/v1/faces
             - name: COMPARATOR_URL
-              value: http://facecomparator-cluster-ip-service:80/
+              value: http://facecomparator-cluster-ip-service/v1/models/facecomparator:predict
             - name: FACEDETECTOR_URL
-              value: http://facedetector-cluster-ip-service:80/
+              value: http://facedetector-cluster-ip-service/v1/models/facedetector:predict
             - name: FINGERPRINTER_URL
-              value: http://fingerprinter-cluster-ip-service:80/
+              value: http://fingerprinter-cluster-ip-service/v1/models/fingerprinter:predict

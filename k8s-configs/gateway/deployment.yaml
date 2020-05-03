@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         component: gateway
-        tier: datascience
+        tier: backend
     spec:
       containers:
         - name: gateway
@@ -21,6 +21,28 @@ spec:
             - containerPort: 3000
           env:
             - name: FACE_SERVICE_URL
-              value: http://face-service-cluster-ip-service:80/
+              value: http://face-service-cluster-ip-service/
             - name: VIDEO_DOWNSCALER_URL
-              value: http://video-downscaler-cluster-ip-service:80/
+              value: http://video-downscaler-cluster-ip-service/
+            - name: IMAGE_PROCESSOR_URL
+              value: http://image-processor-cluster-ip-service/
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: DB_NAME
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: DB_PASSWORD
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: database-secrets
+                  key: DB_HOST

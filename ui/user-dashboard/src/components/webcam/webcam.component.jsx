@@ -2,6 +2,12 @@ import React from "react";
 import Webcam from "react-webcam";
 import Canvas from "../canvas/canvas.component";
 import styled from "styled-components";
+import FormData from "form-data";
+import person from "./person.jpg";
+import axios from "axios";
+import download from "downloadjs"
+var toBlob = require('canvas-to-blob');
+
 
 export default class WebCam extends React.Component {
   //constructor
@@ -10,31 +16,34 @@ export default class WebCam extends React.Component {
     this.state = {
       imageSrc: "",
       isRunning: false,
-      response: []
+      response: [],
+      rendered: false
     };
 
     this.canvas = null;
   }
 
-  componentDidMount(){
+  componentDidMount() {
+    //setting render
+    this.state.rendered = true;
     //initialization of the canvas for downscaling
     this.canvas = document.createElement("canvas");
-    this.canvas.width = 400;
-    this.canvas.height = 300;
+    this.canvas.width = 432;
+    this.canvas.height = 288;
     this.ctx = this.canvas.getContext("2d");
   }
 
   //asynchronous function to get the image from the state and downscale it using the canvas
   // returns the downscalled bas64 image
-  downscaledImage = () =>{
-    var image = this.state.imageSrc
+  downscaledImage = () => {
+    var image = this.state.imageSrc;
     var img = new Image();
     img.src = image;
-    this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
-    var dataURI = this.canvas.toDataURL("image/jpg");
-    console.log(dataURI)
+    this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+    var dataURI = this.canvas.toDataURL("image/jpeg");
     return dataURI;
-  }
+  };
+
 
   setRef = webcam => {
     this.webcam = webcam;
@@ -46,15 +55,19 @@ export default class WebCam extends React.Component {
     return newImageStringArr[1];
   };
 
+
+
   //method to send the image as a POST request to get the details of the face(s) in the image
   getFaceData = () => {
     if (this.state.isRunning) {
       //sending the image every 75microseconds
       setInterval(() => {
         //getting the downscaled image and POSTing to get the coordinates of the faces
-        var img = this.downscaledImage()
+        var img = this.downscaledImage();
         // console.log(img)
         var imageSource = img;
+        var form = new FormData()
+        form.append("image", img)
         // imageSource = downscaledImage( 648, 432);
         var truncatedImageSource = this.splitImageValue(imageSource);
         fetch("http://speculo.isala.me/", {
@@ -65,9 +78,11 @@ export default class WebCam extends React.Component {
           })
         })
           .then(response => response.json())
-          .then(data => this.setState({ response: data }, () => {
-            console.log(data)
-          }));
+          .then(data =>
+            this.setState({ response: data }, () => {
+              console.log(data);
+            })
+          );
       }, 750);
     }
   };
@@ -90,12 +105,15 @@ export default class WebCam extends React.Component {
     }
   };
 
+  componentWillUnmount(){
+    this.setState({isRunning:false})
+  }
+
   render() {
     const webcamConstraints = {
       width: 3600,
       height: 720
     };
-
 
     return (
       <>
@@ -129,26 +147,10 @@ export default class WebCam extends React.Component {
             analysedFaceData={this.state.response}
           />
         </div>
-        {/* <div><Canvas source = {downscaledImage} /></div> */}
       </>
     );
   }
 }
-
-// const downscaledImage = (width, height) => {
-//   // create an off-screen canvas
-//   const canvas = document.createElement('canvas')
-//   canvas.width = width;
-//   canvas.height = height;
-//   const ctx = canvas.getContext("2d");
-//   var image = new Image()
-//   image.src = `${this.state.imageSrc}`;
-//   image.onload =() =>{
-//     ctx.drawImage(image, 0,0, width, height)
-//   }
-//   console.log(canvas.toDataURL())
-//   return canvas.toDataURL("image/jpeg",0.5)
-// };
 
 const CustomPrimaryButton = styled.button`
   color: #2bba85;
