@@ -74,10 +74,15 @@ export default class WebCam extends React.Component {
       
       
         let dataImg = new FormData();
-        dataImg.append('image', truncatedImageSource);
+        //dataImg.set('image', img);
+        dataImg.set('image', truncatedImageSource);
         
         // const val=[...dataImg.entries()];
         // console.log(val);
+        
+        for (var pair of dataImg.entries()) {
+          console.log(pair[0]+ ' - ' + pair[1]); 
+      }
 
         const test=await fetch("https://speculo.isala.me/api/v1/coordinates", {
           method: 'POST',
@@ -97,7 +102,7 @@ export default class WebCam extends React.Component {
           })
           .catch((error) => {
             console.log("Fail");
-            console.log(error)
+            console.log(error);
           });
 
           const json = await test.json();
