@@ -59,21 +59,20 @@ const TableData = styled.td`
 
 const FilterResults = ({allDetections}) => {
 
-    // const [ detections ] = useState (allDetections);
+    const [ detections ] = useState (allDetections);
 
     // hard coded example
-    const [ detections ] = useState ([
-        {id: 1, name: "Akassh", timestamps: [5, 60, 100, 1200], blacklisted: true},
-        {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
-        {id: 3, name: "Nisal", timestamps: [100, 500, 1200, 1500],  blacklisted: true},
-        {id: 4, name: "UnknownPerson", timestamps: [100, 500], blacklisted: true}
-    ]
-    );
+    // const [ detections ] = useState ([
+    //     {id: 1, name: "Akassh", timestamps: [5, 60, 100, 1200], blacklisted: true},
+    //     {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
+    //     {id: 3, name: "Nisal", timestamps: [100, 500, 1200, 1500],  blacklisted: true},
+    //     {id: 4, name: "UnknownPerson", timestamps: [100, 500], blacklisted: true}
+    // ]
+    // );
 
     // react hooks to access state
-    // const [filteredResults,setFilteredResults] = useState(null);      // hook that contains the array of filtered results
-    const [filteredResults , setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
-
+    const [filteredResults,setFilteredResults] = useState(null);      // hook that contains the array of filtered results
+    // const [filteredResults , setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
 
     const [selectedOption, setSelectedOption] = useState("less_than_equal");        // value of the option that was chosen by the user will be hear
     const [timeGap, setTimeGap] = useState(0);        // value of the Time Gap Sensitivity that was chosen by the user will be hear
