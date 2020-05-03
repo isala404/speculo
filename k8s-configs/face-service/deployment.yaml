@@ -23,7 +23,7 @@ spec:
             - name: IMAGE_PROCESSOR_URL
               value: http://image-processor-cluster-ip-service/api/v1/fingerprint
             - name: COMPARATOR_URL
-              value: http://facecomparator-cluster-ip-service/v1/models/facecomparator:addFace
+              value: http://facecomparator:8080/v1/models/facecomparator
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
