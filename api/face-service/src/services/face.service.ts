@@ -365,7 +365,7 @@ export class FaceService {
         // checking if the client has sent a valid ID.
         if (!id.match("^[0-9a-fA-F]{24}$")) {
             console.debug("FaceService.patchWhitelist -> Invalid ID provided.")
-            return res.status(500).json({error: "Invalid ID provided!"})
+            return res.status(400).json({error: "Invalid ID provided!"})
         }
 
         let face = {

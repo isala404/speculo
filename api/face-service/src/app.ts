@@ -11,70 +11,73 @@ const {MongoMemoryServer} = require('mongodb-memory-server');
 
 /** Express Application */
 class App {
-	public app: express.Application;
-	public faceController: FaceController;
+    public app: express.Application;
+    public faceController: FaceController;
 
-	constructor() {
-		this.app = express();
-		// configure base express app
-		this.setConfig();
+    constructor() {
+        this.app = express();
+        // configure base express app
+        this.setConfig();
 
-		this.setMongoConfig()
+        if (process.env.RUN_ENV === 'test') {
+            // configure mock database for testing
+            this.setTestMongoConfig().then();
+        } else {
+            // configure mongo db connection
+            this.setMongoConfig();
+        }
 
-		if (process.env.RUN_ENV === 'test') {
-			// configure mock database for testing
-			this.setTestMongoConfig();
-		} else {
-			// configure mongo db connection
-			this.setMongoConfig();
-		}
+        this.faceController = new FaceController(this.app);
+    }
 
-		this.faceController = new FaceController(this.app);
-	}
+    private setConfig() {
+        // allows us to receive requests with data in json format
+        this.app.use(bodyParser.json({limit: '50mb'}));
 
-	private setConfig() {
-		// allows us to receive requests with data in json format
-		this.app.use(bodyParser.json({limit: '50mb'}));
+        this.app.use(bodyParser.urlencoded());
 
-		// allows us to receive requests with data in x-www-form-urlencoded format
-		this.app.use(bodyParser.urlencoded());
+        // enables cors
+        this.app.use(cors());
 
-		// enables cors
-		this.app.use(cors());
+        // logs request
+        this.app.use(logger("dev"));
+    }
 
-		// logs request
-		this.app.use(logger("dev"));
-	}
+    private async setTestMongoConfig() {
+        mongoose.Promise = global.Promise;
+        const mongod = new MongoMemoryServer();
 
-	private async setTestMongoConfig() {
-		mongoose.Promise = global.Promise;
-		const mongod = new MongoMemoryServer();
+        const uri = await mongod.getConnectionString();
 
-		const uri = await mongod.getConnectionString();
+        const mongooseOpts = {
+            useNewUrlParser: true,
+            autoReconnect: true,
+            reconnectTries: Number.MAX_VALUE,
+            reconnectInterval: 1000
+        };
 
-		const mongooseOpts = {
-			useNewUrlParser: true,
-			autoReconnect: true,
-			reconnectTries: Number.MAX_VALUE,
-			reconnectInterval: 1000
-		};
+        mongoose.connect(uri, mongooseOpts).then(
+            r => {
+                console.log(`app.setTestMongoConfig -> Connected to database`)
+            }
+        ).catch(error => {
+            console.log(`app.setTestMongoConfig -> There was an error connecting to the database! | ${error}`)
+        })
+    }
 
-		await mongoose.connect(uri, mongooseOpts);
-	}
+    private setMongoConfig() {
+        mongoose.Promise = global.Promise;
 
-	private setMongoConfig() {
-		mongoose.Promise = global.Promise;
-
-		mongoose.connect(MONGO_URI, {
-			useNewUrlParser: true,
-		}).then(r => {
-			console.log(`app.setMongoConfig -> Connected to database`)
-		}).catch(error => {
-			if (error) {
-				console.log(`app.setMongoConfig -> There was an error connecting to the database! | ${error}`)
-			}
-		});
-	}
+        mongoose.connect(MONGO_URI, {
+            useNewUrlParser: true,
+        }).then(r => {
+            console.log(`app.setMongoConfig -> Connected to database`)
+        }).catch(error => {
+            if (error) {
+                console.log(`app.setMongoConfig -> There was an error connecting to the database! | ${error}`)
+            }
+        });
+    }
 }
 
 export default new App().app;
