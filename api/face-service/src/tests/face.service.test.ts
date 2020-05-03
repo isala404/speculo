@@ -44,7 +44,7 @@ describe('POST /faces', () => {
 	it('respond with image file not provided', (done) => {
 		request(app)
 			.post('/api/v1/faces')
-			.expect(404)
+			.expect(400)
 			.expect({"error": "No image file provided!"})
 			.end((err) => {
 				if (err) return done(err);
@@ -63,8 +63,8 @@ describe('POST /faces', () => {
 			.post('/api/v1/faces')
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'invalid.txt')
-			.expect(500)
-			.expect({error: "Invalid image file! It must either be JPG or PNG."})
+			.expect(400)
+			.expect({error: "Invalid image file! It must either be JPG."})
 			.end((err) => {
 				if (err) return done(err);
 				done();
@@ -82,8 +82,8 @@ describe('POST /faces', () => {
 			.post('/api/v1/faces')
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'unacceptable-pict.png')
-			.expect(500)
-			.expect({error: "There was an error in generating the fingerprint for this image."})
+			.expect(400)
+			.expect({error: "Invalid image file! It must either be JPG."})
 			.end((err) => {
 				if (err) return done(err);
 				done();
@@ -120,7 +120,7 @@ describe('GET /faces', () => {
 		const invalidId = 'INVALID_ID';
 		request(app)
 			.get(`/api/v1/faces/${invalidId}`)
-			.expect(500)
+			.expect(400)
 			.expect({error: "Invalid ID provided!"})
 			.end((err) => {
 				if (err) return done(err);
@@ -170,7 +170,7 @@ describe('PUT /faces', () => {
 			.put(`/api/v1/faces/${invalidId}`)
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'John Krassiniei.jpg')
-			.expect(500)
+			.expect(400)
 			.expect({error: "Invalid ID provided!"})
 			.end((err) => {
 				if (err) return done(err);
@@ -187,8 +187,8 @@ describe('PUT /faces', () => {
 			.put(`/api/v1/faces/${id}`)
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'invalid.txt')
-			.expect(500)
-			.expect({error: "Invalid image file! It must either be JPG or PNG."})
+			.expect(400)
+			.expect({error: "Invalid image file! It must either be JPG."})
 			.end((err) => {
 				if (err) return done(err);
 				done();
@@ -204,8 +204,8 @@ describe('PUT /faces', () => {
 			.put(`/api/v1/faces/${id}`)
 			.set(formData.getHeaders())
 			.attach('image', fileBuffer, 'unacceptable-pict.png')
-			.expect(500)
-			.expect({error: "There was an error in generating the fingerprint for this image."})
+			.expect(400)
+			.expect({error: "Invalid image file! It must either be JPG."})
 			.end((err) => {
 				if (err) return done(err);
 				done();
@@ -232,7 +232,7 @@ describe('PATCH /faces', () => {
 		const invalidId = 'INVALID_ID';
 		request(app)
 			.patch(`/api/v1/faces/${invalidId}/label`)
-			.expect(500)
+			.expect(400)
 			.expect({error: "Invalid ID provided!"})
 			.end((err) => {
 				if (err) return done(err);
@@ -257,7 +257,7 @@ describe('PATCH /faces', () => {
 		const invalidId = 'INVALID_ID';
 		request(app)
 			.patch(`/api/v1/faces/${invalidId}/blacklist`)
-			.expect(500)
+			.expect(400)
 			.expect({error: "Invalid ID provided!"})
 			.end((err) => {
 				if (err) return done(err);
@@ -282,7 +282,7 @@ describe('PATCH /faces', () => {
 		const invalidId = 'INVALID_ID';
 		request(app)
 			.patch(`/api/v1/faces/${invalidId}/whitelist`)
-			.expect(500)
+			.expect(400)
 			.expect({error: "Invalid ID provided!"})
 			.end((err) => {
 				if (err) return done(err);
@@ -309,7 +309,7 @@ describe('DELETE /faces', () => {
 		const invalidId = 'INVALID_ID';
 		request(app)
 			.delete(`/api/v1/faces/${invalidId}`)
-			.expect(500)
+			.expect(400)
 			.expect({error: "Invalid ID provided!"})
 			.end((err) => {
 				if (err) return done(err);
