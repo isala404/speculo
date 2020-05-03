@@ -10,7 +10,9 @@ export class ComparatorService {
 		}
 
 		axios.post(`${COMPARATOR_URL}:addFace`, data).then(function (response) {
-			console.log(`Successfully added face data to the face comparator's memory!`);
+			if (response.status === 200) {
+				console.log(`Successfully added face data to the face comparator's memory!`);
+			}
 		}).catch(function (error) {
 			console.log(`There was an error in adding the face data to the face comparator's memory. | ${error}`);
 		});
@@ -20,7 +22,9 @@ export class ComparatorService {
 	public restartComparator() {
 
 		axios.post(`${COMPARATOR_URL}:reset`).then(function (response) {
-			console.log(`Successfully restarted the face comparator's memory!`);
+			if (response.status === 200) {
+				console.log(`Successfully restarted the face comparator's memory!`);
+			}
 		}).catch(function (error) {
 			console.log(`There was an error in restarting the face comparator's memory. | ${error}`);
 		});
