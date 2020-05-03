@@ -231,7 +231,6 @@ export class FaceService {
         let format = fileValues[1]
 
         if (format != 'jpg' && format != 'jpeg' ) {
-            fs.unlinkSync(file.path)
             console.debug(`FaceService.appendFace -> Invalid image provided`)
             return res.status(400).json({error: "Invalid image file! It must either be JPG or JPEG."})
         }
