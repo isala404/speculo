@@ -5,7 +5,7 @@
 ## Prerequisites
 
 - React
-- Python 3.7+
+- Python 3.8
 - Docker
 - NodeJS
 - OpenCV
@@ -218,3 +218,7 @@ This service receives a video footage and removes the duplicate frames in it and
 
 ### Gateway
 This is a custom identity-aware HTTP proxy that handles inbound traffic and relay it to internal services after successful authentication
+
+
+### User Dashboard
+This interface that a user will use to interact with the system.
