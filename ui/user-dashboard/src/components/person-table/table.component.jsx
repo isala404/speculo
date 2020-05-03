@@ -387,7 +387,7 @@ const EditButton = styled.button`
 `;
 const CancelButton = styled.button`
   color: #2bba85;
-  background-color: inherit;
+  background-color: transparent;
   border: 2px solid #a0ffdc;
   border-radius: 6px;
   outline: none;

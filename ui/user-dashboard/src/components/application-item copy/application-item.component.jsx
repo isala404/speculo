@@ -15,7 +15,7 @@ export const ApplicationItem = ({ appName, appContent, isFinalElement }) => {
       </Row>
       <Row>
         <ApplicationButtonDiv>
-          <a href="https://github.com/mrsupiri">
+          <a href="https://github.com/mrsupiri/speculo">
             <BasicButton
               buttonTitle="GitHub repo"
               buttonWidth={"60%"}
