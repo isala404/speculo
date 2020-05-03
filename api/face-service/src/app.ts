@@ -56,9 +56,7 @@ class App {
 		};
 
 		mongoose.connect(uri, mongooseOpts).then(val => {
-			if (val) {
-				console.log(val)
-			}
+			if (val) {}
 			console.log(`app.setTestMongoConfig -> Connected to database`)
 		}).catch(error => {
 			console.log(`app.setTestMongoConfig -> There was an error connecting to the database! | ${error}`)
@@ -71,9 +69,7 @@ class App {
 		mongoose.connect(MONGO_URI, {
 			useNewUrlParser: true,
 		}).then(val => {
-			if (val) {
-				console.log(val)
-			}
+			if (val) {}
 			console.log(`app.setMongoConfig -> Connected to database`)
 		}).catch(error => {
 			if (error) {

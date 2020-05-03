@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import styled from "styled-components";
 import Select from "react-select";
-import { TimeFilterer } from "../services/TimeFilterer.js";
-import { Grid, Row, Col } from "react-flexbox-grid";
+import {TimeFilterer} from '../services/TimeFilterer.js';
 
 const Input = styled.input`
   background: white;
@@ -19,122 +18,90 @@ const Input = styled.input`
 
 const Table = styled.table`
   min-width: 600px;
-  width: 1000px;
+  width: 1000;
   table-layout: fixed;
   border-collapse: collapse;
   text-align: left;
-  border-radius: 10px;
-  overflow: hidden;
 `;
 
 const TableBody = styled.tbody`
   display: block;
   width: 100%;
-  overflow: ${props => (props.scrollable ? "auto" : "hidden")};
+  overflow: auto;
   height: 500px;
 `;
 
 const TableHead = styled.thead`
-  width: 100%;
+//   background: #0B162B;
   color: #fff;
-  display: table-header-group;
 `;
-const TableRow = styled.tr`
+const TableHeadRow = styled.tr`
   display: block;
-  background: rgba(15, 30, 61, 1);
-  width: 100%;
+  background-color: #0B162B;
 `;
-const Rows = styled.tr`
-  width: 100%;
-  animation: ${props =>
-    !props.deleted ? "0.4s ease-out 0s 1 appear" : "0.4s ease-out 0s 1 delete"};
-  :nth-child(even) {
-    background: #ededed;
-    transition: 0.1s;
-    opacity: 1;
-  }
-
-  /* https://stackoverflow.com/questions/6805482/css3-transition-animation-on-load */
-  @keyframes appear {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  @keyframes delete {
-    0% {
-      transform: translateX(0%);
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-  }
+const Row = styled.tr`
+  background: white;
+  border-bottom: 1px solid #A0FFDC;
 `;
-
 const TableHeading = styled.th`
   padding: 1em;
   text-align: left;
-  width: 250px;
+  width: 200px;
 `;
 const TableData = styled.td`
   padding: 1em;
   text-align: left;
-  width: 250px;
+  width: 200px;
 `;
 
-const FilterResults = ({ allDetections }) => {
-  // hard coded example
-  const [detections] = useState([
-    { id: 1, name: "Akassh", timestamps: [60, 100, 1200], blacklisted: true },
-    { id: 2, name: "Visal", timestamps: [1000], blacklisted: false },
-    {
-      id: 3,
-      name: "Nisal",
-      timestamps: [100, 500, 1200, 1500],
-      blacklisted: true
-    },
-    { id: 4, name: "UnknownPerson", timestamps: [100, 500], blacklisted: true }
-  ]);
 
-  // react hooks to access state
-  // const [filteredResults,setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
-  const [filteredResults] = useState(detections); // hook that contains the array of filtered results
-  // const [timeGapSensitivity, setTimeGapSensitivity] = useState(50);       // time gap sensitivity that can be allowed by the user
+const FilterResults = ({allDetections}) => {
 
-  // an effect hook can be used for search
-  // useEffect(() => {
-  //     let filtered =
-  // });
+    // hard coded example
+    const [ detections ] = useState([
+        {id: 1, name: "Akassh", timestamps: [60,100,1200], blacklisted: true},
+        {id: 2, name: "Visal", timestamps: [1000],  blacklisted: false},
+        {id: 3, name: "Nisal", timestamps: [100,500,1200, 1500],  blacklisted: true},
+        {id: 4, name: "UnknownPerson", timestamps: [100,500], blacklisted: true}
+    ]);
 
-  const headings = [
-    { id: 1, headingName: "ID" },
-    { id: 2, headingName: "NAME" },
-    { id: 3, headingName: "TIME STAMPS" },
-    { id: 4, headingName: "TOTAL TIME" },
-    { id: 5, headingName: "BLACKLISTED" }
-  ];
 
-  const conditions = [
-    { value: "less_than_equal", label: "Less than or Equal to" },
-    { value: "less_than", label: "Less than" },
-    { value: "equal", label: "Equal to" },
-    { value: "more_than", label: "More than" },
-    { value: "more_than_equal", label: "More than or Equal to" }
-  ];
+    // react hooks to access state
+    // const [filteredResults,setFilteredResults] = useState(detections);      // hook that contains the array of filtered results
+    const [filteredResults] = useState(detections);      // hook that contains the array of filtered results
+    // const [timeGapSensitivity, setTimeGapSensitivity] = useState(50);       // time gap sensitivity that can be allowed by the user
 
-  return (
-    <Grid>
-      <div style={{ marginTop: "4em" }}>
-        {/* test filter function */}
-        {console.log(TimeFilterer(detections, 400, "more_than", 400))}
+    // an effect hook can be used for search
+    // useEffect(() => {
+    //     let filtered = 
+    // });
 
-        {/* <Switch onChange={handleSwitchChange} checked={isSwitchToggled} /> */}
-        {/* <Input
+
+    const headings = [
+        { id: 1, headingName: "ID" },
+        { id: 2, headingName: "NAME" },
+        { id: 3, headingName: "TIME STAMPS" },
+        { id: 4, headingName: "TOTAL TIME" },
+        { id: 5, headingName: "BLACKLISTED" }
+    ];
+
+    const conditions = [
+        { value: "less_than_equal", label: "Less than or Equal to" },
+        { value: "less_than", label: "Less than" },
+        { value: "equal", label: "Equal to" },
+        { value: "more_than", label: "More than" },
+        { value: "more_than_equal", label: "More than or Equal to" }
+    ];
+    
+
+    return (
+        <div style={{overflowX: "auto"}}>
+
+            {/* test filter function */}
+            {console.log(TimeFilterer(detections, 400, "more_than", 400))}
+
+            {/* <Switch onChange={handleSwitchChange} checked={isSwitchToggled} /> */}
+            {/* <Input
                 type={"text"}
                 placeholder={"Select a person to Search for"}
                 onChange={e => {
@@ -144,60 +111,48 @@ const FilterResults = ({ allDetections }) => {
                 }}
             /> */}
 
-        <Row>
-          <label for="minutesInput">Time Gap Sensitivity</label>
-        </Row>
-        <Select
-          options={conditions}
-          // onChange={handleSelectorChange}
-          defaultValue={conditions[0]}
-        />
+            <label for="minutesInput">Time Gap Sensitivity</label>
+            
+            <Select
+                options={conditions}
+                // onChange={handleSelectorChange}
+                defaultValue = {conditions[0]}
+            />
 
-        <Row style={{margin:"1em"}}>
-          <div style={{margin: "auto"}}>
-          <Input
-            style={{margin:"0.5em"}}
-            type="number"
-            placeholder="Minutes"
-            id="minutesInput"
-            name="minutesInput"
-            min="0"
-          />
-          <Input
-            type="number"
-            placeholder="Seconds"
-            id="secondsInput"
-            name="secondsInput"
-            min="0"
-          />
-          </div>
-        </Row>
-        <div style={{ overflowX: "auto", margin: "0em 4em" }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {headings.map(heading => {
-                  return (
-                    <TableHeading
-                      style={heading.id === 1 ? { width: "50px" } : {}}
-                    >
-                      {heading.headingName}
-                    </TableHeading>
-                  );
-                })}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredResults.map(person => {
-                return (
-                  <Rows>
-                    <TableData style={{ width: "50px" }}>{person.id}</TableData>
-                    <TableData>{person.name}</TableData>
-                    <TableData>{person.timestamps.toString()}</TableData>
-                    <TableData>{/*person.id*/}</TableData>
-                    <TableData>{person.blacklisted.toString()}</TableData>
+            <Input
+                type = "number"
+                placeholder = "Minutes"
+                id = "minutesInput"
+                name = "minutesInput"
+                min = "0"
+            />
+            <Input
+                type = "number"
+                placeholder = "Seconds"
+                id = "secondsInput"
+                name = "secondsInput"
+                min = "0"
+            />
+            <Table>
+                <TableHead>
+                    <TableHeadRow>
+                        {headings.map(heading => {
+                            return <TableHeading style={ heading.id===1 ? {width:'50px'} : {}}>{heading.headingName}</TableHeading>;
+                        })}
+                    </TableHeadRow>
+                </TableHead>
+                <TableBody>
+                    {filteredResults.map(person => {
+                        return (
+                            <Row>
+                                <TableData style={{width:'50px'}}>{person.id}</TableData>
+                                <TableData>{person.name}</TableData>
+                                <TableData>{person.timestamps.toString()}</TableData>
+                                <TableData>{/*person.id*/}</TableData>
+                                <TableData>{person.blacklisted.toString()}</TableData>
 
-                    {/* <TableData
+
+                                {/* <TableData
                                     style={{ cursor: "pointer" }}
                                     onClick={() => {
                                         setSelectedPerson(person);
@@ -232,7 +187,7 @@ const FilterResults = ({ allDetections }) => {
                                         person.blacklisted.toString()
                                     )}
                                 </TableData> */}
-                    {/* <TableData>
+                                {/* <TableData>
                                 <DeleteButton onClick={() => deletePerson(person.id)}>
                                     <FontAwesomeIcon icon={faTrashAlt} />
                                 </DeleteButton>
@@ -273,15 +228,13 @@ const FilterResults = ({ allDetections }) => {
                                     </CancelButton>
                                 ) : null}
                             </TableData> */}
-                  </Rows>
-                );
-              })}
+                        </Row>
+                    );
+                })}
             </TableBody>
-          </Table>
+        </Table>
         </div>
-      </div>
-    </Grid>
-  );
+    );
 };
 
 export default FilterResults;

@@ -5,6 +5,7 @@ import { footageUploadEndpoint } from "../endpoints";
 import Dashboard from '../components/dashboard.jsx';
 // import styled from 'styled-components';
 import "../components/upload-face-footage/upload.scss";
+import FilterResults from "./FilterResults";
 // import PersonLoader from '../components/person-card/PersonLoader';
 
 class DashboardPanel extends Component {
@@ -132,10 +133,17 @@ render(){
 
 {/* set the detections in the backend */}
             {this.state.video && 
-            <Dashboard 
-              videoSRC = { this.state.video }
-              allDetections = { this.state.responseDetections }
-            />
+            <>
+              <Dashboard 
+                videoSRC = { this.state.video }
+                allDetections = { this.state.responseDetections }
+              />
+
+              <FilterResults
+                allDetections = { this.state.responseDetections }
+              />
+              
+            </>
             }
 
             {/* {this.state.video && console.log(this.state.responseDetections)} */}
