@@ -106,7 +106,6 @@ export async function editNameInSystem(personId, newName) {
 
 // blacklist a person in the system
 export async function blacklistPersonInSystem(personId) {
-  console.log("inside blacklist person");
   let token = null;
   if (localStorage.getItem("token") != null) {
     token = localStorage.getItem("token");

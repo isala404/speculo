@@ -3,6 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import styled from "styled-components";
+import Switch from "react-switch";
 
 
 const EditButton = styled.button`
@@ -53,9 +54,13 @@ const EditPopUp = (props) => {
                         {/* change true false to a checkbox toggle */}
           <p>
             <span className="modal-lable">Black-listed status: </span>
-            <input
-              value={props.blacklisted}
+            <Switch
               onChange={props.blacklistedHandler}
+              checked={props.blacklisted}
+              // uncheckedIcon={false}
+              // checkedIcon={false}
+              offColor="#2BBA85"
+              onColor="black"
             />
           </p>
         </Modal.Body>

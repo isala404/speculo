@@ -93,7 +93,8 @@ class Person extends Component {
   };
 
   blacklistedHandler = e => {
-    this.setState({ blacklisted: e.target.value }); // accessing inserted input and setting it's value to blacklisted status
+    this.setState({ blacklisted: e }); // accessing inserted input and setting it's value to blacklisted status
+    // this.setState({ blacklisted: e.target.value }); // accessing inserted input and setting it's value to blacklisted status
   };
 
   handleSave = () => {
