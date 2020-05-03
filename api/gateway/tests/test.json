@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "60c68d01-582d-414a-ae69-2275d3d15c49",
+		"_postman_id": "edd66a84-f1b2-4b6b-a6a3-c70b944ea569",
 		"name": "Speculo Gateway",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -42,12 +42,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/user/authenticate",
+							"raw": "localhost:3000/api/v1/user/authenticate",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"user",
 								"authenticate"
 							]
@@ -89,12 +91,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/user/authenticate",
+							"raw": "localhost:3000/api/v1/user/authenticate",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"user",
 								"authenticate"
 							]
@@ -134,12 +138,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/admin/authenticate",
+							"raw": "localhost:3000/api/v1/admin/authenticate",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"admin",
 								"authenticate"
 							]
@@ -179,12 +185,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/admin/authenticate",
+							"raw": "localhost:3000/api/v1/admin/authenticate",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"admin",
 								"authenticate"
 							]
@@ -241,12 +249,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/user/register",
+							"raw": "localhost:3000/api/v1/user/register",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"user",
 								"register"
 							]
@@ -297,12 +307,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/user/register",
+							"raw": "localhost:3000/api/v1/user/register",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"user",
 								"register"
 							]
@@ -353,12 +365,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/user/register",
+							"raw": "localhost:3000/api/v1/user/register",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"user",
 								"register"
 							]
@@ -409,12 +423,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/admin/register",
+							"raw": "localhost:3000/api/v1/admin/register",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"admin",
 								"register"
 							]
@@ -465,12 +481,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/admin/register",
+							"raw": "localhost:3000/api/v1/admin/register",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"admin",
 								"register"
 							]
@@ -521,12 +539,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/admin/register",
+							"raw": "localhost:3000/api/v1/admin/register",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"admin",
 								"register"
 							]
@@ -577,12 +597,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/admin/register",
+							"raw": "localhost:3000/api/v1/admin/register",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
+								"v1",
 								"admin",
 								"register"
 							]
