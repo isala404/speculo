@@ -22,14 +22,12 @@ export default class Canvas extends React.Component {
 
     if (this.props.analysedFaceData !== null){
       if (this.props.analysedFaceData.data) {
-        console.log("inside canvas draw");
         var faceData = this.props.analysedFaceData.data.faces;
         //resetting the canvas
         ctx.beginPath();
         // using a map function to iterate through all the detected faces
         faceData.map(face => {
           var coordinates = face.coordinates;
-          console.log(coordinates);
           //drawing the rectangle in the canvas
           ctx.rect(
             coordinates[1] * scaleBy,
@@ -60,7 +58,7 @@ export default class Canvas extends React.Component {
   render() {
     return (
       <div>
-        <canvas ref="camvas" width={720} height={480} />
+        <canvas ref="camvas" width={720} height={480} className="face-canvas"/>
       </div>
     );
   }

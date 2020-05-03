@@ -3,10 +3,6 @@ import Webcam from "react-webcam";
 import Canvas from "../canvas/canvas.component";
 import styled from "styled-components";
 import FormData from "form-data";
-import person from "./person.jpg";
-import axios from "axios";
-import download from "downloadjs";
-var toBlob = require("canvas-to-blob");
 
 export default class WebCam extends React.Component {
   //constructor
@@ -77,39 +73,41 @@ export default class WebCam extends React.Component {
         let dataImg = new FormData();
         dataImg.set("image", blob);
 
-        console.log("sending response");
-        const coordinates = await fetch(
-          "https://speculo.isala.me/api/v1/coordinates",
-          {
-            method: "POST",
-            mode: "cors",
-            headers: {
-              "x-access-token": localStorage.getItem("token"),
-              processData: false,
-              contentType: false
-            },
-            body: dataImg
-          }
-        )
-          .then(response => {
-            return response;
-          })
-          .catch(error => {
-            console.log("Fail");
-            console.log(error);
-          });
-
-        //Value visal requires
-        const json = await coordinates.json();
-        if (json.data) {
-          const len = json.data.faces.length;
-          // console.log(json.data.faces.length)
-          if (len > 0) {
-            this.setState({ response: json }, () =>
-              console.log(this.state.response)
-            );
-          } else {
-            this.setState({ response: null });
+        // console.log(localStorage.getItem("token"))
+        //getting detected face(s) data
+        if(this.state.isRunning){
+          const coordinates = await fetch(
+            "https://speculo.isala.me/api/v1/coordinates",
+            {
+              method: "POST",
+              mode: "cors",
+              headers: {
+                "x-access-token": localStorage.getItem("token"),
+                processData: false,
+                contentType: false
+              },
+              body: dataImg
+            }
+          )
+            .then(response => {
+              return response;
+            })
+            .catch(error => {
+              console.log("Fail");
+              console.log(error);
+            });
+  
+          //retrieved data
+          const json = await coordinates.json();
+          if (json.data) {
+            console.log(json)
+            const len = json.data.faces.length;
+            // console.log(json.data.faces.length)
+            if (len > 0) {
+              this.setState({ response: json })
+            } else {
+              this.setState({ response: null });
+            }
           }
         }
       }
@@ -129,12 +127,12 @@ export default class WebCam extends React.Component {
 
   //capturing a frame every 50 milliseconds
   getVideo = () => {
-    if (this.state.isRunning) {
-      console.log("inside getvideo()");
-      setInterval(() => {
+    console.log("inside getvideo()");
+    setInterval(() => {
+      if (this.state.isRunning) {
         this.capture();
-      }, 50);
-    }
+      }
+    }, 50);
   };
 
   componentWillUnmount() {
@@ -173,12 +171,14 @@ export default class WebCam extends React.Component {
         >
           Start live demo
         </CustomPrimaryButton>
-        <div className="canvas-component">
-          <Canvas
-            source={this.state.isRunning ? this.state.imageSrc : null}
-            analysedFaceData={this.state.response}
-          />
-        </div>
+        {this.state.isRunning ? (
+          <div className={`canvas-component-${this.state.isRunning}`}>
+            <Canvas
+              source={this.state.isRunning ? this.state.imageSrc : null}
+              analysedFaceData={this.state.response}
+            />
+          </div>
+        ) : null}
       </>
     );
   }
@@ -192,6 +192,7 @@ const CustomPrimaryButton = styled.button`
   font-family: "Gilroy-Regular";
   border: 2px solid #2bba85;
   border-radius: 3px;
+  margin: 4em auto;
   box-shadow: ${props =>
     props.showShadow ? "0px 0px 100px 4px #2bba85" : null};
   background: #2bba85;
