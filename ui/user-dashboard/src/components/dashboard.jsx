@@ -29,13 +29,13 @@ export default class Dashboard extends Component {
     this.state = {
       // allDetections: [],           // stores all the detected faces with the timestamps
       // allDetections: people,
-      allDetections: this.props.allDetections,           // stores all the detected faces with the timestamps
+      allDetections: this.props.allDetections, // stores all the detected faces with the timestamps
       // processing: true,           // processing status of video - to handle displaying detections once received
       selectedPerson: null,
       seekTime: 0,
       chosenIndexToEdit: 0,
       videoWidth: null,
-      videoHeight: 100,
+      videoHeight: null,
       windowHeight: window.innerHeight
     };
 
@@ -73,7 +73,6 @@ export default class Dashboard extends Component {
   // };
 
   componentDidMount() {
-
     // //for grabbing a screencapture
     // this.container = document.getElementById("videoPlayer");
     // this.video = document.createElement("video");
@@ -100,7 +99,6 @@ export default class Dashboard extends Component {
     //     // redirect back to uploading footage? / show message that video isn't available
     // }
 
-    
     // this.video.src ="../../demo.mp4";
     // this.container.appendChild(this.video);
     // this.video.pause();
@@ -113,7 +111,6 @@ export default class Dashboard extends Component {
     // this.ctx = this.canvas.getContext("2d");
     // // this.video.hidden = true;
 
-
     // instantiate Video.js
     this.videoPlayer = videojs("videoPlayer", { responsive: true });
     this.videoPlayer.responsive(true);
@@ -125,14 +122,12 @@ export default class Dashboard extends Component {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
     //settin the viewport dimensions
-    
 
     // get detected faces with timestamps from the backend
     // this.getAllDetections();
     // console.log(this.props.allDetections);
-
   }
-  
+
   componentDidUpdate() {
     window.addEventListener("resize", this.updateDimensions);
   }
@@ -143,17 +138,15 @@ export default class Dashboard extends Component {
       this.player.dispose();
     }
   }
-  
-  // for testing purposes
-//   timeout = (ms) => { 
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
 
+  // for testing purposes
+  //   timeout = (ms) => {
+  //     return new Promise(resolve => setTimeout(resolve, ms));
+  // }
 
   //function to get the width and height of the viewport dynamically
-  updateDimensions = () => {
-    if(this.state.video != null){
-      var videoHeight = document.getElementById("videoPlayer").offsetHeight;
+  updateDimensions = () => {      
+      var videoHeight = document.getElementById("videoPlayer").clientHeight;
       var videoWidth = document.getElementById("videoPlayer").offsetWidth;
       var windowHeight = window.innerHeight;
       this.setState({
@@ -161,7 +154,6 @@ export default class Dashboard extends Component {
         videoWidth: videoWidth,
         windowHeight: windowHeight
       });
-    }
   };
 
   // this method seeks the video to the specified timestamp
@@ -184,57 +176,59 @@ export default class Dashboard extends Component {
     }
   }
 
-
   // Get all detected people with detected timestamps in a video
-//   async getAllDetections() {
-//     try { 
-//         const res = await retrieveAllDetections();
-//         // const res = this.props.allDetections;
-//         this.setState({processing:false , allDetections: res});
+  //   async getAllDetections() {
+  //     try {
+  //         const res = await retrieveAllDetections();
+  //         // const res = this.props.allDetections;
+  //         this.setState({processing:false , allDetections: res});
 
-//         // await this.timeout(10000);     // tester
-//         // this.setState({processing:false , allDetections: people});
-//     } catch (e) {
-//         console.log(e);
-//     }
-// }
-
+  //         // await this.timeout(10000);     // tester
+  //         // this.setState({processing:false , allDetections: people});
+  //     } catch (e) {
+  //         console.log(e);
+  //     }
+  // }
 
   // Edit name/ black-list status of a person in the system db & display in UI
-async editPersonSave(newPersonDetails) {
+  async editPersonSave(newPersonDetails) {
     const chosenIndexToEdit = this.state.chosenIndexToEdit;
     let oldDetailsOfPerson = this.state.allDetections[chosenIndexToEdit];
 
     let newDetectionsArray = [...this.state.allDetections];
     newDetectionsArray[chosenIndexToEdit] = newPersonDetails; // replacing the chosen index with the person details obtained from the pop-up component
     this.setState({ allDetections: newDetectionsArray });
-    
 
     // send patch requests to db ---
 
     // check if the name has changed
-    if (oldDetailsOfPerson.name !== newPersonDetails.name){
-        try{
-            const res = editNameInSystem(newPersonDetails.id, newPersonDetails.name);
-            console.log(res);
-        } catch (e) {
-            console.log(e);
-        }
+    if (oldDetailsOfPerson.name !== newPersonDetails.name) {
+      try {
+        const res = editNameInSystem(
+          newPersonDetails.id,
+          newPersonDetails.name
+        );
+        console.log(res);
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     // check if the blacklist status has changed
-    if (oldDetailsOfPerson.blacklisted !== newPersonDetails.blacklisted){
-        try{
-            let res = null;
-            if(newPersonDetails.blacklisted === true){           // blacklist a person
-                res = await blacklistPersonInSystem(newPersonDetails.id);
-            } else if (newPersonDetails.blacklisted === false){      // whitelist a person
-                res = await whitelistPersonInSystem(newPersonDetails.id);
-            }
-            console.log(res);
-        } catch (e) {
-            console.log(e);
+    if (oldDetailsOfPerson.blacklisted !== newPersonDetails.blacklisted) {
+      try {
+        let res = null;
+        if (newPersonDetails.blacklisted === true) {
+          // blacklist a person
+          res = await blacklistPersonInSystem(newPersonDetails.id);
+        } else if (newPersonDetails.blacklisted === false) {
+          // whitelist a person
+          res = await whitelistPersonInSystem(newPersonDetails.id);
         }
+        console.log(res);
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 
@@ -263,7 +257,12 @@ async editPersonSave(newPersonDetails) {
   render() {
     const { selectedPerson } = this.state;
     return (
-      <div style={{ backgroundImage: 'url("../assets/wire-art.svg")' , marginTop:"1em"}}>
+      <div
+        style={{
+          backgroundImage: 'url("../assets/wire-art.svg")',
+          marginTop: "1em"
+        }}
+      >
         {/* <div>
           <NavigationMenu />
         </div>
@@ -271,23 +270,24 @@ async editPersonSave(newPersonDetails) {
 
         <Grid>
           <Row>
-            <Col xs={12} sm={12} md={12} lg={9}> 
+            <Col xs={12} sm={12} md={12} lg={9}>
               <div id="video-js-responsive-container vjs-hd videoContainer">
-                {<video
-                  ref={node => (this.videoNode = node)}
-                  id="videoPlayer"
-                  className="video-js vjs-fluid vjs-theme-fantasy"
-                  data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
-                  type= "video/mp4"
-                >
-                  <source
-                    // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                    src = {this.props.videoSRC}
-
+                {
+                  <video
+                    ref={node => (this.videoNode = node)}
+                    id="videoPlayer"
+                    className="video-js vjs-fluid vjs-theme-fantasy"
+                    data-setup='{ "controls": true, "autoplay": false, "fluid":true, "playbackRates":[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4] }'
                     type="video/mp4"
-                  />
-                  {/* video that needs to be added to check for faces will be opened here */}
-                </video>}
+                  >
+                    <source
+                      // src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                      src={this.props.videoSRC}
+                      type="video/mp4"
+                    />
+                    {/* video that needs to be added to check for faces will be opened here */}
+                  </video>
+                }
               </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={3}>
@@ -295,8 +295,7 @@ async editPersonSave(newPersonDetails) {
                 <PersonDiv
                   style={{ height: this.state.videoHeight, overflowY: "auto" }}
                 >
-                
-                {/* {this.state.processing &&
+                  {/* {this.state.processing &&
                   <>
                     <PersonLoader />
                     <PersonLoader />
@@ -306,7 +305,7 @@ async editPersonSave(newPersonDetails) {
                 } */}
 
                   {/* display all the names of the people recognized */}
-                  {/* {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received */}
+                  {/* {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received */} */}
                   {this.state.allDetections && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
                       <FadeIn>
@@ -326,7 +325,6 @@ async editPersonSave(newPersonDetails) {
                     </div>
                   ))}
 
-
                   <div style={{ height: 100 }}></div>
                 </PersonDiv>
                 <div className="fadeout" />
@@ -338,7 +336,7 @@ async editPersonSave(newPersonDetails) {
               <div>
                 <div
                   className="allTimeCards"
-                  style={{ width: this.state.videoWidth}}
+                  style={{ width: this.state.videoWidth }}
                 >
                   <div className="timeCardContent">
                     {selectedPerson &&
@@ -360,6 +358,11 @@ async editPersonSave(newPersonDetails) {
               </div>
             ) : null}
           </Row>
+          {/* <div>
+            <h1>
+              {`the height is ${this.state.videoHeight}`}
+            </h1>
+          </div> */}
         </Grid>
         {/* <button onClick={this.getTimestampImages}>hajdfkjak</button> */}
       </div>
