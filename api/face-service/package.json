@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc",
-    "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
-    "prod": "tsc && node ./dist/server.js",
     "start": "nodemon",
+    "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
+    "build": "tsc",
+    "prod": "tsc && node ./dist/server.js",
     "test": "mocha -r ts-node/register src/tests/**/*.test.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
   },
