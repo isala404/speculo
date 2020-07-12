@@ -128,7 +128,6 @@ export async function blacklistPersonInSystem(personId) {
 
 // whitelist a person in the system
 export async function whitelistPersonInSystem(personId) {
-  console.log("inside whitelist person");
   let token = null;
   if (localStorage.getItem("token") != null) {
     token = localStorage.getItem("token");

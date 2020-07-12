@@ -274,7 +274,7 @@ const FilterResults = ({ allDetections }) => {
                   return (
                     <Rows>
                       <TableData>{person.id}</TableData>
-                      <TableData>{person.name}</TableData>
+                      <TableData>{person.label}</TableData>
                       <TableData>{person.totalTime}</TableData>
                       <TableData>{person.blacklisted.toString()}</TableData>
                     </Rows>

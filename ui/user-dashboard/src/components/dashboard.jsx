@@ -196,17 +196,17 @@ export default class Dashboard extends Component {
     let oldDetailsOfPerson = this.state.allDetections[chosenIndexToEdit];
 
     let newDetectionsArray = [...this.state.allDetections];
-    newDetectionsArray[chosenIndexToEdit] = newPersonDetails; // replacing the chosen index with the person details obtained from the pop-up component
+    newDetectionsArray[chosenIndexToEdit] = newPersonDetails;  // replacing the chosen index with the person details obtained from the pop-up component
     this.setState({ allDetections: newDetectionsArray });
 
     // send patch requests to db ---
 
     // check if the name has changed
-    if (oldDetailsOfPerson.name !== newPersonDetails.name) {
+    if (oldDetailsOfPerson.label !== newPersonDetails.label) {
       try {
         const res = editNameInSystem(
           newPersonDetails.id,
-          newPersonDetails.name
+          newPersonDetails.label
         );
         console.log(res);
       } catch (e) {
@@ -305,7 +305,7 @@ export default class Dashboard extends Component {
                 } */}
 
                   {/* display all the names of the people recognized */}
-                  {/* {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received */} */}
+                  {/* {!this.state.processing && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received */}
                   {this.state.allDetections && this.state.allDetections.map((person, index) => (    // display only after detections are processed and received
                     <div key={index}>
                       <FadeIn>
