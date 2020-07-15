@@ -30,16 +30,15 @@ export const NavigationMenu = () => {
               {localStorage.getItem("type") === "admin" ? (
                 <Navlink to="/live-detection">Live Detector</Navlink>
               ) : null}
-
               {localStorage.getItem("type") === "admin" ? (
                 <Navlink to="/admin">Admin</Navlink>
               ) : null}
-
               {localStorage.getItem("type") !== null ? (
                 <Navlink to="/dashboard-panel">Dashboard</Navlink>
               ) : null}
 
-              {localStorage.getItem("token") === null ? (
+              {/* TODO: uncomment to enable authentication button */}
+              {/* {localStorage.getItem("token") === null ? (
                 [
                   <Navlink to="/login">
                     <span id="navbar-login-button">Log In</span>
@@ -52,7 +51,7 @@ export const NavigationMenu = () => {
                 <Navlink to="/profile">
                   <BasicButton buttonTitle="Profile" />
                 </Navlink>
-              )}
+              )} */}
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -74,4 +73,3 @@ const Navlink = styled(NavLink)`
     text-decoration: none;
   }
 `;
-

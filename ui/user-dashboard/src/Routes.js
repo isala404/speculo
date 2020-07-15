@@ -4,7 +4,6 @@ import { Admin } from "./views/Admin.jsx";
 import { Login, Register, Profile } from "./components/login/index";
 import DashboardPanel from "./views/DashboardPanel.jsx";
 import { Upload } from "./views/Upload.jsx";
-//import { Auth } from "./Auth";
 import FilterResults from "./views/FilterResults.jsx";
 
 
@@ -58,7 +57,8 @@ function updateRoutes() {
 
         if (localStorage.getItem('type') === null) {
             return publicRoutes;
-        };
+    };
+
 }
 
 const Routes = updateRoutes();
