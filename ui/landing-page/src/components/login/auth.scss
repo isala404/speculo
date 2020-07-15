@@ -1,0 +1,291 @@
+
+.base-container{
+    width:70em;
+    display: flex;
+    align-items: center;
+
+    .img-container{
+      display: flex;
+      flex-direction: row;
+      //height:50em;
+      background-color: white;
+      border-top-left-radius: 10.5px;
+      border-bottom-left-radius: 10.5px;
+      //margin-left: 23em;
+    }
+
+    .cov-img{
+      width: 40em;
+      //margin-right: 30px;
+      border-top-left-radius: 10.5px;
+      border-bottom-left-radius: 10.5px;
+    }
+
+    .content{
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        width: 30em;
+        height: 34.36em;
+        padding-left: 30px;
+        border-top-right-radius: 10.5px;
+        border-bottom-right-radius: 10.5px;
+
+        border: 2px solid black;
+        border-color: #e7e7e7;
+        
+        .header{
+          font-size:24px;
+          font-family: "Open Sans", sans-serif;
+          margin-bottom: 20px;
+          margin-top: 15px;
+          text-align: left;
+        }
+
+        .image{
+            width: 20em;
+            img{
+                width:100%;
+                height:100%;
+            }
+        }
+
+        .form{
+            margin-top: 0.3em;
+            display: flex;
+            flex-direction: column;
+            //align-items: center;
+            text-align: left;
+
+            .form-group{
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                
+                label{
+                    font-size: 20px;
+                }
+
+                input{
+                    margin-top: 3px;
+                    min-width: 18em;
+                    height: 37px;
+                    padding: 0px 10px;
+                    font-size: 16px;
+                    font-family: "Open Sans", sans-serif;
+                    background-color: #f3f3f3;
+                    border:0;
+                    border-radius: 4px;
+                    margin-bottom: 31px;
+
+                    transition: all 250ms ease-in-out;
+                    &:focus{
+                        outline: none;
+                        box-shadow: 0px 0px 12px 0.8px #05a34196;
+
+                    }
+                }
+            }
+        }
+    }
+
+
+    .footer{
+        margin-top: 3em;
+        text-align: left;
+    }
+}
+
+//Custom Fonts
+@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
+
+// .App {
+//   text-align: center;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-family: "Open Sans", sans-serif;
+// }
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+//Login Main Container
+.login {
+  width: 27em;
+  height: 40em;
+  //min-height: 44em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  position: relative;
+  z-index: 99;
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0px 0px 12px 2px rgba(15, 15, 15, 0.2);
+    border-radius: 4px;
+    position: relative;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    padding: 17px 10px;
+    //transition: transform 200ms ease-in-out;
+  }
+  .right-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 90%;
+    background-color: #0d8f3f;
+    width: 100%;
+    position: absolute;
+    right: -34%;
+    border-radius: 6px;
+    z-index: 1;
+    transition: all 400ms ease-in-out;
+    cursor: pointer;
+    box-shadow: 0px 0px 12px 2px rgba(15, 15, 15, 0.281);
+
+    &.right {
+      right: -40%;
+      align-items: flex-end;
+      &:hover {
+        right: -45%;
+      }
+    }
+    &.left {
+      right: 40%;
+      align-items: flex-start;
+      &:hover {
+        right: 45%;
+      }
+    }
+
+    .text {
+      font-size: 21px;
+      font-weight: 500;
+      color: #fff;
+      margin-right: 3em;
+      margin-left: 3em;
+    }
+  }
+}
+
+//Button
+.sbtn {
+  font-size: 20px;
+  padding: 5px 20px;
+  border: 0;
+  background-color: #2BBA8F;
+  color: #fff;
+  border-radius: 3px;
+  margin-right: 5px;
+  transition: all 250ms ease-in-out;
+  cursor: pointer;
+  &:hover {
+    background-color: rgb(31, 214, 159);
+    color: #fff;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+$total: 160;
+$time: 50s;
+
+html, body, .wrap {
+    height: 100%;
+}
+
+body {
+    //background: black;
+    //background-image: radial-gradient(circle at center, white 0%, #222 10%, black 60%);
+    overflow: auto;
+    //background-color: #0B162B;
+}
+
+.wrap {
+    transform-style: preserve-3d;
+    perspective: 800px;
+    position: fixed;
+    z-index: -1;
+    left: 50%;
+}
+
+.tri {
+    height: 0;
+    width: 0;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+@for $i from 1 through $total {
+    $size: random(50) * 1px;
+    $rotate: random(360) * 1deg;
+    .tri:nth-child(#{$i}){
+        border-top: $size solid hsla(random(360), 100%, 50%, 1);
+        border-right: $size solid transparent;
+        border-left: $size solid transparent;
+        margin-left: -$size/2;
+        margin-top: -$size/2;
+        -webkit-filter: grayscale(1);
+        filter: grayscale(1);
+        transform: rotate($rotate) translate3d(0,0,-1500px) scale(0);
+        animation: anim#{$i} $time infinite linear;
+        animation-delay: $i * -($time/$total);
+        opacity: 0;
+    }
+    
+    @keyframes anim#{$i}{
+        0% {
+            opacity: 1;
+            transform: rotate($rotate * 1.5) translate3d(random(1000) * 1px, random(1000) * 1px,1000px) scale(1);
+        }
+    }
+}
+
+@media only screen and (max-width: 1026px) {
+  .img-container {
+      display: none;
+  }
+  .cov-img {
+    display: none;
+}
+.base-container{
+  width:30em;
+}
+}

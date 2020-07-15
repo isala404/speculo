@@ -1,0 +1,35 @@
+.dzu-inputLabel:hover{
+  color: #1ddd96;
+  transition: 0.3s;
+  font-family: "Gilroy-Regular";
+  cursor: pointer;
+  padding: 0.3em 1em;
+  border-radius: 3px;
+  margin: auto;
+  border: 3px solid #1ddd96
+}
+
+.dzu-inputLabel{
+  color: #2bba85;
+  transition: 0.3s;
+  font-family: "Gilroy-Regular";
+  cursor: pointer;
+  padding: 0.3em 1em;
+  border-radius: 3px;
+  margin: auto;
+  border: 2px solid #2bba85
+}
+
+.dzu-previewFileName{
+  font-family: "Lexend Deca", sans-serif
+}
+
+.dzu-dropzone{
+  width: auto;
+  margin: 4em 10%;
+  border: 2px solid #2bba85
+}
+
+// [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled){
+//   background: #2bba85;
+// }

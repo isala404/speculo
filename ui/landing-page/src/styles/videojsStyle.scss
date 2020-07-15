@@ -1,0 +1,42 @@
+//SASS styling to skin the video-js element
+.vjs-footage.video-js {
+  color: #1ddd96;
+}
+
+.vjs-footage .vjs-big-play-button {
+  color: #1ddd96;
+}
+
+.vjs-footage .vjs-volume-level,
+.vjs-footage .vjs-play-progress,
+.vjs-footage .vjs-slider-bar {
+  background: #1ddd96;
+}
+
+.vjs-theme-fantasy {
+  --vjs-theme-fantasy--secondary: #1ddd96;
+  --vjs-theme-fantasy--primary: #1ddd96;
+}
+
+.video-js .vjs-tech{
+  border-radius: 10px;
+}
+
+.vjs-has-started .vjs-control-bar{
+  margin: 1em;
+  width: auto;
+  border-radius: 5px;
+}
+
+.video-js .vjs-control-bar{
+  background-color:rgba(0, 0, 0, 0.7);
+
+}
+
+#video-js-responsive-container #vjs-hd #videoContainer{
+  background: white;
+}
+
+.video-js .vjs-fluid .vjs-theme-fantasy .videoPlayer-dimensions .vjs-controls-enabled .vjs-workinghover .vjs-v7 .vjs-layout-large .vjs-has-started .vjs-paused .vjs-user-active, .video-js .vjs-fluid .vjs-theme-fantasy .videoPlayer-dimensions .vjs-controls-enabled .vjs-workinghover .vjs-v7 .vjs-layout-large .vjs-has-started .vjs-paused .vjs-user-inactive{
+  background: white;
+}

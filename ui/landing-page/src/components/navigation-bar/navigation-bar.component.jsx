@@ -38,21 +38,6 @@ export const NavigationMenu = () => {
               {localStorage.getItem("type") !== null ? (
                 <Navlink to="/dashboard-panel">Dashboard</Navlink>
               ) : null}
-
-              {localStorage.getItem("token") === null ? (
-                [
-                  <Navlink to="/login">
-                    <span id="navbar-login-button">Log In</span>
-                  </Navlink>,
-                  <Navlink to="/sign-up">
-                    <BasicButton buttonTitle="Sign Up" />
-                  </Navlink>
-                ]
-              ) : (
-                <Navlink to="/profile">
-                  <BasicButton buttonTitle="Profile" />
-                </Navlink>
-              )}
             </Nav>
           </Navbar.Collapse>
         </Navbar>

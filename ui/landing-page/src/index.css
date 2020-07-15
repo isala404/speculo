@@ -1,0 +1,29 @@
+*{
+  font-family: "Lexend Deca", sans-serif
+}
+body {
+  margin: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+@font-face{
+  font-family: Gilroy-Regular;
+  src: local("Gilroy"), url(./fonts/Gilroy-Regular.ttf)format("truetype");
+}
+@font-face{
+  font-family: Gilroy-Bold;
+  src: local("Gilroy-Bold"), url(./fonts/Gilroy-Bold.ttf)format("truetype");
+}
+@font-face{
+  font-family: Gilroy-SemiBold;
+  src: local("Gilroy-SemiBold"), url(./fonts/Gilroy-SemiBold.ttf)format("truetype");
+}
