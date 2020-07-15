@@ -5,21 +5,27 @@ import { Login, Register, Profile } from "./components/login/index";
 import DashboardPanel from "./views/DashboardPanel.jsx";
 import { Upload } from "./views/Upload.jsx";
 import FilterResults from "./views/FilterResults.jsx";
+import { LandingPage } from "./views/LandingPage.jsx";
 
 
 // data object to make code simpler
 
 // All the routes in the application are defined here
 const privateRoutes = [
-    { name: 'Home', path: '/', Component: Home },
-    // {name: 'Dashboard', path:'/dashboard', Component:Dashboard},
-    //{ name: 'Unknown', path: '*', Component: Unknown },
-    { name: 'Dashboard Panel', path: '/dashboard-panel', Component: DashboardPanel },
-    { name: 'Upload Faces', path: '/upload', Component: Upload },
-    { name: 'Proof of Concept', path: '/live-detection', Component: WebCam },
-    { name: 'Profile', path: '/profile', Component: Profile },
-    { name: 'Filtered Detections', path: '/filter', Component: FilterResults }
-
+    //uncomment to enable routing
+//   { name: "Home", path: "/", Component: Home },
+  { name: "Home", path: "/", Component: LandingPage },
+  // {name: 'Dashboard', path:'/dashboard', Component:Dashboard},
+  //{ name: 'Unknown', path: '*', Component: Unknown },
+  {
+    name: "Dashboard Panel",
+    path: "/dashboard-panel",
+    Component: DashboardPanel
+  },
+  { name: "Upload Faces", path: "/upload", Component: Upload },
+  { name: "Proof of Concept", path: "/live-detection", Component: WebCam },
+  { name: "Profile", path: "/profile", Component: Profile },
+  { name: "Filtered Detections", path: "/filter", Component: FilterResults }
 ];
 
 const privateAdminRoutes = [

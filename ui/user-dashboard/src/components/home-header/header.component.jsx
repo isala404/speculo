@@ -22,19 +22,19 @@ export const Header = () => {
               </Row>
               <Row>
                 <Col style={{ padding: "1em 0em 1em 0em" }}>
-                  <Link to="/sign-up">
+                  {/* <Link to="/sign-up">
                     <BasicButton
                       buttonTitle="Get Started"
                       toggleShadow={true}
                     />
-                  </Link>
+                  </Link> */}
                 </Col>
               </Row>
-              <Row>
+              {/* <Row>
                 <SubText fontSize={"0.7em"} fontColor="grey">
                   Try it for free • No credit card required
                 </SubText>
-              </Row>
+              </Row> */}
             </HeaderHeadingDiv>
           </Col>
           <Col xs={12} sm={12} md={12} lg={6}>

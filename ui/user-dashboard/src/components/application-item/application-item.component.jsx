@@ -17,13 +17,14 @@ export const ApplicationItem =({appName, appContent, path, isFinalElement}) =>{
                 </ApplicationContent>
               </Row>
               <Row>
-                <ApplicationButtonDiv>
-                <Link to ={path}>
+          <ApplicationButtonDiv>
+            <div style={{height : 20}} />
+                {/* <Link to ={path}>
                   <BasicButton
                     buttonTitle="Check it out!"
                     buttonWidth={"60%"}
                   />
-                </Link>
+                </Link> */}
                 </ApplicationButtonDiv>
               </Row>
             </ApplicationDiv>
