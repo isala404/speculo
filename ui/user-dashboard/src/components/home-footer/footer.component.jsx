@@ -29,13 +29,13 @@ export const Footer = () => {
     <FooterDiv>
       <Grid>
         <Row>
-          <Col xs={12} sm={4} md={4} lg={3}>
+          {/* <Col xs={12} sm={4} md={4} lg={3}>
             <FooterLinkColumn
               links={links}
               windowWidth={width}
               columnHeading={"Features"}
             />
-          </Col>
+          </Col> */}
 
           <Col xs={12} sm={4} md={4} lg={3}>
             <FooterLinkColumn

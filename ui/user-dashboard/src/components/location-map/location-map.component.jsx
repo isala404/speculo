@@ -4,6 +4,7 @@ import { Row, Col, Grid } from "react-flexbox-grid";
 import { WorldMap } from "../../assets/world-map/world-map";
 import { GetWindowSize } from "../../helpers/window-size";
 import { ApplicationItem } from "../application-item copy/application-item.component";
+import repoImage from "../../assets/repo.png"
 
 export const UsageMap = () => {
   const [width, height] = GetWindowSize();
@@ -13,7 +14,7 @@ export const UsageMap = () => {
         <Row>
           <Col xs={12} sm={12} md={6} lg={6}>
             <MapDiv width={width}>
-              <WorldMap width={width * 0.6} height={height * 0.6} />
+              <img src={repoImage} width={800}/>
             </MapDiv>
           </Col>
           <Col xs={12} sm={12} md={6} lg={4}>

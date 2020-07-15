@@ -31,7 +31,7 @@ export const Applications = () => {
             <ReactPlayer
               width={"100%"}
               style={{ borderRadius: 10, margin: "1em" }}
-              url="https://youtu.be/eEf_24SJJjY"
+              url="https://www.youtube.com/watch?v=ht_QaEBrFU0&fbclid=IwAR1IoDa9jMMR033e3V0ADQGneOEqoNXk3la7bC6_tmaE3ohtgEg2jPZNDDg"
               playing={false}
             />
           </Col>
