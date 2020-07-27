@@ -34,8 +34,11 @@ Speculo uses MongoDB as the database therefore create a file called `database_co
 
 ```docker-compose up --build```
 
+## How to contribute?
 
-### More Info
+Please refer to [CONTRIBUTING.md](https://github.com/mrsupiri/speculo/blob/documentation/readme-rewrite/CONTRIBUTING.md).
+
+## More Information
 
 Here are the links to pages that explain the system in detail.
 
