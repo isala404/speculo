@@ -43,7 +43,7 @@ If you want to contribute to Speculo, be sure to review the guidelines in [CONTR
 Here are the links to pages that explain the system in detail.
 
 - [Speculo: Project Modules explained in depth](https://github.com/mrsupiri/speculo/wiki/Project-Components)
-- [Speculo: Project Structure](https://github.com/mrsupiri/speculo/blob/documentation/readme-rewrite/structure.md)
+- [Speculo: Project Structure](https://github.com/mrsupiri/speculo/wiki/Project-Structure)
 
 ## License
 [MIT](https://github.com/mrsupiri/speculo/blob/documentation/readme-rewrite/LICENSE.md)
