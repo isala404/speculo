@@ -2,7 +2,7 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/mrsupiri/speculo/badge?s=a75918dd8d73cd4933b6858e455efad553dcd7c9)](https://www.codefactor.io/repository/github/mrsupiri/speculo) ![CI/CD Pipeline](https://github.com/mrsupiri/speculo/workflows/CI/CD%20Pipeline/badge.svg)
 
-Speculo is an open source platform that utilizes a [Deep Convolution Inverse Graphics Network](https://www.microsoft.com/en-us/research/publication/deep-convolutional-inverse-graphics-network/) for indexing faces found in a video footage, specifically for CCTV surveillance. It allows you to browse through these footages by the faces found in them rather than thousands of frames.
+Speculo is an open source platform that utilizes a [Deep Convolution Inverse Graphics Network](https://www.microsoft.com/en-us/research/publication/deep-convolutional-inverse-graphics-network/) for indexing faces found in a video footage, specifically for CCTV surveillance. It allows you to browse through these footages by the faces found in them rather than thousands of frames. The key differentiator between regular face recognition software and Speculo is that Speculo can recognize faces in different angles.
  
 ## Prerequisites
 
