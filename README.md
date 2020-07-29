@@ -30,7 +30,7 @@ Speculo uses MongoDB as the database therefore create a file called `database_co
 ```
 #### Run it
 
-> Use --build only when you run it for the first time
+> Use --build only when you run it for the first time or if you have made changes to the code
 
 ```docker-compose up --build```
 
