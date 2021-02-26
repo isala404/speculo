@@ -1,4 +1,4 @@
-aiohttp==3.6.2
+aiohttp==3.7.4
 mongoengine==0.20.0
 numpy==1.18.4
 scikit-learn==0.22.2
