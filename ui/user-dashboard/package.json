@@ -19,7 +19,7 @@
     "downloadjs": "^1.4.7",
     "form-data": "^3.0.0",
     "html5-file-selector": "^2.1.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "notistack": "^0.9.11",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
@@ -69,6 +69,6 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "jest-canvas-mock": "^2.2.0",
-    "node-sass": "^4.14.1"
+    "node-sass": "^7.0.0"
   }
 }
